@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "prettier.printWidth": 80,
+  "solidity.enabledAsYouTypeCompilationErrorCheck": true,
+  "solidity.validationDelay": 1500,
+  "solidity.formatter": "prettier",
+  "solidity.compileUsingRemoteVersion": "v0.8.3+commit.8d00100c",
+  "solidity.linter": "solhint",
+  "files.eol": "\n"
+}

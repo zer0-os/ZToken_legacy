@@ -1,0 +1,15 @@
+node_modules
+bin
+
+#Hardhat files
+cache
+artifacts
+typechain/
+.env
+
+# OpenZeppelin
+.openzeppelin/dev-*.json
+.openzeppelin/unknown-*.json
+.openzeppelin/.session
+coverage/
+coverage.json
