@@ -1,24 +1,5 @@
 import { Contract, ContractTransaction, ethers, providers } from "ethers";
 
-export const getSubnodeHash = (
-  parentHash: string,
-  childHash: string
-): string => {
-  const calculatedHash = ethers.utils.keccak256(
-    ethers.utils.defaultAbiCoder.encode(
-      ["bytes32", "bytes32"],
-      [ethers.utils.arrayify(parentHash), ethers.utils.arrayify(childHash)]
-    )
-  );
-
-  return calculatedHash;
-};
-
-export const hashString = (name: string): string => {
-  const hash = ethers.utils.id(name);
-  return hash;
-};
-
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any */
 export function filterLogsWithTopics(
   logs: providers.Log[],

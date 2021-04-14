@@ -16,7 +16,7 @@ export interface DeploymentOutput {
   basicController?: DeployedContract;
 }
 
-const root = "zns";
+const root = "zdao-tokens";
 
 export const getLogger = (title: string): logdown.Logger => {
   const logger = logdown(`${root}::${title}`);
@@ -36,31 +36,4 @@ export const getDeploymentData = (network: string): DeploymentOutput => {
   const data = JSON.parse(fileContents.toString()) as DeploymentOutput;
 
   return data;
-};
-
-let wordsCache: string[] = [];
-
-const fetchWords = (): string[] => {
-  if (wordsCache.length) {
-    return wordsCache;
-  }
-
-  wordsCache = fs
-    .readFileSync(`${__dirname}/wordlist.txt`)
-    .toString()
-    .split("\n")
-    .map((e) => e.trim());
-
-  return wordsCache;
-};
-
-export const getWords = (): string[] => {
-  const words = fetchWords();
-  return words;
-};
-
-export const getWord = (index: number): string => {
-  const words = fetchWords();
-  const chosenWord = words[index % words.length];
-  return chosenWord;
 };
