@@ -31,6 +31,32 @@ library LibERC20 {
     emit Transfer(from, address(0), amount);
   }
 
+  /**
+   * @dev Retrieves the balance of `account` at the time `snapshotId` was created.
+   */
+  function balanceOfAt(address account, uint256 snapshotId)
+    internal
+    view
+    returns (uint256)
+  {
+    LibERC20Storage.ERC20Storage storage es = LibERC20Storage.erc20Storage();
+    (bool snapshotted, uint256 value) =
+      valueAt(snapshotId, es.accountBalanceSnapshots[account]);
+
+    return snapshotted ? value : es.balances[account];
+  }
+
+  /**
+   * @dev Retrieves the total supply at the time `snapshotId` was created.
+   */
+  function totalSupplyAt(uint256 snapshotId) internal view returns (uint256) {
+    LibERC20Storage.ERC20Storage storage es = LibERC20Storage.erc20Storage();
+    (bool snapshotted, uint256 value) =
+      valueAt(snapshotId, es.totalSupplySnapshots);
+
+    return snapshotted ? value : es.totalSupply;
+  }
+
   function valueAt(
     uint256 snapshotId,
     LibERC20Storage.Snapshots storage snapshots

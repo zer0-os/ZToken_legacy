@@ -164,6 +164,24 @@ contract ERC20Facet is IERC20, IERC20Facet, CallProtection {
     return LibERC20Storage.erc20Storage().totalSupply;
   }
 
+  /**
+   * @dev Retrieves the balance of `account` at the time `snapshotId` was created.
+   */
+  function balanceOfAt(address account, uint256 snapshotId)
+    external
+    view
+    returns (uint256)
+  {
+    return LibERC20.balanceOfAt(account, snapshotId);
+  }
+
+  /**
+   * @dev Retrieves the total supply at the time `snapshotId` was created.
+   */
+  function totalSupplyAt(uint256 snapshotId) external view returns (uint256) {
+    return LibERC20.totalSupplyAt(snapshotId);
+  }
+
   function _beforeTokenTransfer(
     address from,
     address to,
