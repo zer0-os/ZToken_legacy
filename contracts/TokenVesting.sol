@@ -30,11 +30,15 @@ contract TokenVesting is OwnableUpgradeable {
   uint256 public vestingCliff;
   uint256 public vestingDuration;
 
-  mapping(address => mapping(address => uint256)) public awardedAmount;
-  mapping(address => mapping(address => bool)) public awardRevocable;
+  struct TokenAward {
+    uint256 amount;
+    bool revocable;
+    uint256 released;
+    bool revoked;
+  }
 
-  mapping(address => mapping(address => uint256)) public releasedTokens;
-  mapping(address => mapping(address => bool)) public awardRevoked;
+  // Tracks the token awards for each user (user => token => award)
+  mapping(address => mapping(address => TokenAward)) awards;
 
   /**
    * @dev Creates a vesting contract that vests its balance of any ERC20 token to beneficiaries gradually in a linear fashion until _start + _duration. By then all
@@ -71,13 +75,11 @@ contract TokenVesting is OwnableUpgradeable {
     uint256 amount,
     bool revocable
   ) public onlyOwner {
-    require(
-      awardedAmount[beneficiary][address(token)] == 0,
-      "Cannot award twice"
-    );
+    TokenAward storage award = getTokenAwardStorage(beneficiary, token);
+    require(award.amount == 0, "Cannot award twice");
 
-    awardedAmount[beneficiary][address(token)] = amount;
-    awardRevocable[beneficiary][address(token)] = revocable;
+    award.amount = amount;
+    award.revocable = revocable;
 
     emit Awarded(beneficiary, address(token), amount, revocable);
   }
@@ -89,10 +91,10 @@ contract TokenVesting is OwnableUpgradeable {
    */
   function release(address beneficiary, IERC20 token) public {
     uint256 unreleased = getReleasableAmount(beneficiary, token);
-
     require(unreleased > 0, "Nothing to release");
 
-    releasedTokens[beneficiary][address(token)] += unreleased;
+    TokenAward storage award = getTokenAwardStorage(beneficiary, token);
+    award.released += unreleased;
 
     token.safeTransfer(beneficiary, unreleased);
 
@@ -106,19 +108,19 @@ contract TokenVesting is OwnableUpgradeable {
    * @param token ERC20 token which is being vested
    */
   function revoke(address beneficiary, IERC20 token) public onlyOwner {
-    require(awardRevocable[beneficiary][address(token)], "Cannot be revoked");
-    require(!awardRevoked[beneficiary][address(token)], "Already revoked");
+    TokenAward storage award = getTokenAwardStorage(beneficiary, token);
 
-    // Mark as revoked
-    awardRevoked[beneficiary][address(token)] = true;
+    require(award.revocable, "Cannot be revoked");
+    require(!award.revoked, "Already revoked");
 
     // Figure out how many tokens were owed up until revocation
     uint256 unreleased = getReleasableAmount(beneficiary, token);
-    releasedTokens[beneficiary][address(token)] += unreleased;
+    award.released += unreleased;
 
-    uint256 refund =
-      awardedAmount[beneficiary][address(token)] -
-        releasedTokens[beneficiary][address(token)];
+    uint256 refund = award.amount - award.released;
+
+    // Mark award as revoked
+    award.revoked = true;
 
     // Transfer owed vested tokens to beneficiary
     token.safeTransfer(beneficiary, unreleased);
@@ -139,13 +141,9 @@ contract TokenVesting is OwnableUpgradeable {
     view
     returns (uint256)
   {
-    if (awardRevoked[beneficiary][address(token)]) {
-      return 0;
-    }
+    TokenAward memory award = getTokenAward(beneficiary, token);
 
-    return
-      getVestedAmount(beneficiary, token) -
-      releasedTokens[beneficiary][address(token)];
+    return getVestedAmount(beneficiary, token) - award.released;
   }
 
   /**
@@ -158,16 +156,32 @@ contract TokenVesting is OwnableUpgradeable {
     view
     returns (uint256)
   {
-    uint256 totalAwarded = awardedAmount[beneficiary][address(token)];
+    TokenAward memory award = getTokenAward(beneficiary, token);
 
-    if (
-      block.number < vestingCliff || awardRevoked[beneficiary][address(token)]
-    ) {
+    if (block.number < vestingCliff || award.revoked) {
       return 0;
     } else if (block.number >= vestingStart + vestingDuration) {
-      return totalAwarded;
+      return award.amount;
     } else {
-      return (totalAwarded * (block.number - vestingStart)) / vestingDuration;
+      return (award.amount * (block.number - vestingStart)) / vestingDuration;
     }
+  }
+
+  function getTokenAward(address beneficiary, IERC20 token)
+    public
+    view
+    returns (TokenAward memory)
+  {
+    TokenAward memory award = awards[beneficiary][address(token)];
+    return award;
+  }
+
+  function getTokenAwardStorage(address beneficiary, IERC20 token)
+    internal
+    view
+    returns (TokenAward storage)
+  {
+    TokenAward storage award = awards[beneficiary][address(token)];
+    return award;
   }
 }
