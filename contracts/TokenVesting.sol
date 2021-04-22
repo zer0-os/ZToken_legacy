@@ -6,12 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-/**
- * @title TokenVesting
- * @dev A token holder contract that can release its token balance gradually like a
- * typical vesting scheme, with a cliff and vesting period. Optionally revocable by the
- * owner.
- */
 contract TokenVesting is OwnableUpgradeable {
   using SafeERC20 for IERC20;
 
@@ -32,43 +26,50 @@ contract TokenVesting is OwnableUpgradeable {
     uint256 amount
   );
 
-  uint256 public cliff;
-  uint256 public start;
-  uint256 public duration;
+  uint256 public vestingStart;
+  uint256 public vestingCliff;
+  uint256 public vestingDuration;
 
   mapping(address => mapping(address => uint256)) public awardedAmount;
-  mapping(address => mapping(address => bool)) public revocable;
+  mapping(address => mapping(address => bool)) public awardRevocable;
 
-  mapping(address => mapping(address => uint256)) public released;
-  mapping(address => mapping(address => bool)) public revoked;
+  mapping(address => mapping(address => uint256)) public releasedTokens;
+  mapping(address => mapping(address => bool)) public awardRevoked;
 
   /**
    * @dev Creates a vesting contract that vests its balance of any ERC20 token to beneficiaries gradually in a linear fashion until _start + _duration. By then all
    * of the balance will have vested.
-   * @param _start start block to begin vesting
-   * @param _cliff no tokens will vest before this block number (can be after start)
-   * @param _duration duration in blocks to vest over
+   * @param start start block to begin vesting
+   * @param cliff cliff to start vesting on, set to zero if immediately after start
+   * @param duration duration in blocks to vest over
    */
-
   function initialize(
-    uint256 _start,
-    uint256 _cliff,
-    uint256 _duration
+    uint256 start,
+    uint256 cliff,
+    uint256 duration
   ) public initializer {
     __Ownable_init();
 
-    require(_cliff <= _duration);
+    require(cliff <= duration);
 
-    duration = _duration;
-    cliff = _start + _cliff;
-    start = _start;
+    vestingStart = start;
+    vestingCliff = start + cliff;
+    vestingDuration = duration;
   }
 
+  /**
+   * @dev Awards tokens to a beneficiary.
+   * *** The tokens to be awarded must be separately transfered to this contract. ***
+   * @param beneficiary the address to award to
+   * @param token address of the token to award
+   * @param amount amount of tokens to award
+   * @param revocable whether this award can be revoced at a later time
+   */
   function awardTokens(
     address beneficiary,
     IERC20 token,
     uint256 amount,
-    bool _revocable
+    bool revocable
   ) public onlyOwner {
     require(
       awardedAmount[beneficiary][address(token)] == 0,
@@ -76,9 +77,9 @@ contract TokenVesting is OwnableUpgradeable {
     );
 
     awardedAmount[beneficiary][address(token)] = amount;
-    revocable[beneficiary][address(token)] = _revocable;
+    awardRevocable[beneficiary][address(token)] = revocable;
 
-    emit Awarded(beneficiary, address(token), amount, _revocable);
+    emit Awarded(beneficiary, address(token), amount, revocable);
   }
 
   /**
@@ -91,7 +92,7 @@ contract TokenVesting is OwnableUpgradeable {
 
     require(unreleased > 0, "Nothing to release");
 
-    released[beneficiary][address(token)] += unreleased;
+    releasedTokens[beneficiary][address(token)] += unreleased;
 
     token.safeTransfer(beneficiary, unreleased);
 
@@ -105,19 +106,19 @@ contract TokenVesting is OwnableUpgradeable {
    * @param token ERC20 token which is being vested
    */
   function revoke(address beneficiary, IERC20 token) public onlyOwner {
-    require(revocable[beneficiary][address(token)], "Cannot be revoked");
-    require(!revoked[beneficiary][address(token)], "Already revoked");
+    require(awardRevocable[beneficiary][address(token)], "Cannot be revoked");
+    require(!awardRevoked[beneficiary][address(token)], "Already revoked");
 
     // Mark as revoked
-    revoked[beneficiary][address(token)] = true;
+    awardRevoked[beneficiary][address(token)] = true;
 
     // Figure out how many tokens were owed up until revocation
     uint256 unreleased = getReleasableAmount(beneficiary, token);
-    released[beneficiary][address(token)] += unreleased;
+    releasedTokens[beneficiary][address(token)] += unreleased;
 
     uint256 refund =
       awardedAmount[beneficiary][address(token)] -
-        released[beneficiary][address(token)];
+        releasedTokens[beneficiary][address(token)];
 
     // Transfer owed vested tokens to beneficiary
     token.safeTransfer(beneficiary, unreleased);
@@ -138,13 +139,13 @@ contract TokenVesting is OwnableUpgradeable {
     view
     returns (uint256)
   {
-    if (revoked[beneficiary][address(token)]) {
+    if (awardRevoked[beneficiary][address(token)]) {
       return 0;
     }
 
     return
       getVestedAmount(beneficiary, token) -
-      released[beneficiary][address(token)];
+      releasedTokens[beneficiary][address(token)];
   }
 
   /**
@@ -159,12 +160,14 @@ contract TokenVesting is OwnableUpgradeable {
   {
     uint256 totalAwarded = awardedAmount[beneficiary][address(token)];
 
-    if (block.number < cliff || revoked[beneficiary][address(token)]) {
+    if (
+      block.number < vestingCliff || awardRevoked[beneficiary][address(token)]
+    ) {
       return 0;
-    } else if (block.number >= start + duration) {
+    } else if (block.number >= vestingStart + vestingDuration) {
       return totalAwarded;
     } else {
-      return (totalAwarded * (block.number - start)) / duration;
+      return (totalAwarded * (block.number - vestingStart)) / vestingDuration;
     }
   }
 }
