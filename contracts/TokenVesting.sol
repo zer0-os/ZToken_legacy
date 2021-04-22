@@ -6,26 +6,43 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
+/**
+ * @title TokenVesting
+ * @dev This contract is used to award vesting tokens to wallets.
+ * Multiple wallets can be vested to using this contract, all using the same vesting schedule.
+ */
 contract TokenVesting is OwnableUpgradeable {
   using SafeERC20 for IERC20;
 
+  /**
+   * Emitted when vesting tokens are rewarded to a beneficiary
+   */
   event Awarded(
     address indexed beneficiary,
     address indexed token,
     uint256 amount,
     bool revocable
   );
+
+  /**
+   * Emitted when vesting tokens are released to a beneficiary
+   */
   event Released(
     address indexed beneficiary,
     address indexed token,
     uint256 amount
   );
+
+  /**
+   * Emitted when vesting tokens are revoked from a beneficiary
+   */
   event Revoked(
     address indexed beneficiary,
     address indexed token,
-    uint256 amount
+    uint256 revokedAmount
   );
 
+  // Global vesting parameters for this contract
   uint256 public vestingStart;
   uint256 public vestingCliff;
   uint256 public vestingDuration;
@@ -38,7 +55,7 @@ contract TokenVesting is OwnableUpgradeable {
   }
 
   // Tracks the token awards for each user (user => token => award)
-  mapping(address => mapping(address => TokenAward)) awards;
+  mapping(address => mapping(address => TokenAward)) public awards;
 
   /**
    * @dev Creates a vesting contract that vests its balance of any ERC20 token to beneficiaries gradually in a linear fashion until _start + _duration. By then all
@@ -54,7 +71,7 @@ contract TokenVesting is OwnableUpgradeable {
   ) public initializer {
     __Ownable_init();
 
-    require(cliff <= duration);
+    require(cliff <= duration, "Cliff must be less than duration");
 
     vestingStart = start;
     vestingCliff = start + cliff;
