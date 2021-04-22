@@ -87,7 +87,7 @@ contract TokenVesting is OwnableUpgradeable {
    * @param token ERC20 token which is being vested
    */
   function release(address beneficiary, IERC20 token) public {
-    uint256 unreleased = releasableAmount(beneficiary, token);
+    uint256 unreleased = getReleasableAmount(beneficiary, token);
 
     require(unreleased > 0, "Nothing to release");
 
@@ -100,7 +100,7 @@ contract TokenVesting is OwnableUpgradeable {
 
   /**
    * @notice Allows the owner to revoke the vesting. Tokens already vested
-   * remain in the contract, the rest are returned to the owner.
+   * are transfered to the beneficiary, the rest are returned to the owner.
    * @param beneficiary Who the tokens are being released to
    * @param token ERC20 token which is being vested
    */
@@ -108,14 +108,23 @@ contract TokenVesting is OwnableUpgradeable {
     require(revocable[beneficiary][address(token)], "Cannot be revoked");
     require(!revoked[beneficiary][address(token)], "Already revoked");
 
-    uint256 balance = awardedAmount[beneficiary][address(token)];
-    uint256 unreleased = releasableAmount(beneficiary, token);
-    uint256 refund = balance - unreleased;
-
+    // Mark as revoked
     revoked[beneficiary][address(token)] = true;
 
+    // Figure out how many tokens were owed up until revocation
+    uint256 unreleased = getReleasableAmount(beneficiary, token);
+    released[beneficiary][address(token)] += unreleased;
+
+    uint256 refund =
+      awardedAmount[beneficiary][address(token)] -
+        released[beneficiary][address(token)];
+
+    // Transfer owed vested tokens to beneficiary
+    token.safeTransfer(beneficiary, unreleased);
+    // Transfer unvested tokens to owner (revoked amount)
     token.safeTransfer(owner(), refund);
 
+    emit Released(beneficiary, address(token), unreleased);
     emit Revoked(beneficiary, address(token), refund);
   }
 
@@ -124,7 +133,7 @@ contract TokenVesting is OwnableUpgradeable {
    * @param beneficiary Who the tokens are being released to
    * @param token ERC20 token which is being vested
    */
-  function releasableAmount(address beneficiary, IERC20 token)
+  function getReleasableAmount(address beneficiary, IERC20 token)
     public
     view
     returns (uint256)
@@ -134,7 +143,8 @@ contract TokenVesting is OwnableUpgradeable {
     }
 
     return
-      vestedAmount(beneficiary, token) - released[beneficiary][address(token)];
+      getVestedAmount(beneficiary, token) -
+      released[beneficiary][address(token)];
   }
 
   /**
@@ -142,7 +152,7 @@ contract TokenVesting is OwnableUpgradeable {
    * @param beneficiary Who the tokens are being released to
    * @param token ERC20 token which is being vested
    */
-  function vestedAmount(address beneficiary, IERC20 token)
+  function getVestedAmount(address beneficiary, IERC20 token)
     public
     view
     returns (uint256)
