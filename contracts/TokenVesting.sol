@@ -15,15 +15,30 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 contract TokenVesting is OwnableUpgradeable {
   using SafeERC20 for IERC20;
 
-  event Released(address beneficiary, address token, uint256 amount);
-  event Revoked(address beneficiary, address token, uint256 amount);
+  event Awarded(
+    address indexed beneficiary,
+    address indexed token,
+    uint256 amount,
+    bool revocable
+  );
+  event Released(
+    address indexed beneficiary,
+    address indexed token,
+    uint256 amount
+  );
+  event Revoked(
+    address indexed beneficiary,
+    address indexed token,
+    uint256 amount
+  );
 
   uint256 public cliff;
   uint256 public start;
   uint256 public duration;
 
-  mapping(address => bool) public revocable;
   mapping(address => mapping(address => uint256)) public awardedAmount;
+  mapping(address => mapping(address => bool)) public revocable;
+
   mapping(address => mapping(address => uint256)) public released;
   mapping(address => mapping(address => bool)) public revoked;
 
@@ -47,6 +62,23 @@ contract TokenVesting is OwnableUpgradeable {
     duration = _duration;
     cliff = _start + _cliff;
     start = _start;
+  }
+
+  function awardTokens(
+    address beneficiary,
+    IERC20 token,
+    uint256 amount,
+    bool _revocable
+  ) public onlyOwner {
+    require(
+      awardedAmount[beneficiary][address(token)] == 0,
+      "Cannot award twice"
+    );
+
+    awardedAmount[beneficiary][address(token)] = amount;
+    revocable[beneficiary][address(token)] = _revocable;
+
+    emit Awarded(beneficiary, address(token), amount, _revocable);
   }
 
   /**
@@ -73,7 +105,7 @@ contract TokenVesting is OwnableUpgradeable {
    * @param token ERC20 token which is being vested
    */
   function revoke(address beneficiary, IERC20 token) public onlyOwner {
-    require(revocable[beneficiary], "Cannot be revoked");
+    require(revocable[beneficiary][address(token)], "Cannot be revoked");
     require(!revoked[beneficiary][address(token)], "Already revoked");
 
     uint256 balance = awardedAmount[beneficiary][address(token)];
