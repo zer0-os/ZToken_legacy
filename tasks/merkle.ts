@@ -32,7 +32,7 @@ const generateMerkleTree = async (inputFile: string) => {
 
 const doVerifyMerkleTree = async (merkleFile: string) => {
   logger.log(`Verifying merkle tree from ${merkleFile}`);
-  logger.debug(
+  logger.info(
     `Make sure you are using the merkle tree file and not the input file here!`
   );
 

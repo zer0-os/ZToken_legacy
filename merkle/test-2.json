@@ -1,0 +1,10 @@
+{
+  "0xc0819e1e01204bcb9cb5a0a3be826afedad6edef": {
+    "amount": 81244,
+    "revocable": true
+  },
+  "0xc1119e1e01204bcb9cb5a0a3be826afedad6edef": {
+    "amount": 123,
+    "revocable": false
+  }
+}

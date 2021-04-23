@@ -19,7 +19,6 @@ contract TokenVesting is OwnableUpgradeable {
    */
   event Awarded(
     address indexed beneficiary,
-    address indexed token,
     uint256 amount,
     bool revocable
   );
@@ -29,7 +28,6 @@ contract TokenVesting is OwnableUpgradeable {
    */
   event Released(
     address indexed beneficiary,
-    address indexed token,
     uint256 amount
   );
 
@@ -38,7 +36,6 @@ contract TokenVesting is OwnableUpgradeable {
    */
   event Revoked(
     address indexed beneficiary,
-    address indexed token,
     uint256 revokedAmount
   );
 
@@ -54,8 +51,10 @@ contract TokenVesting is OwnableUpgradeable {
     bool revoked;
   }
 
-  // Tracks the token awards for each user (user => token => award)
-  mapping(address => mapping(address => TokenAward)) public awards;
+  // Tracks the token awards for each user (user => award)
+  mapping(address => TokenAward) public awards;
+
+  IERC20 public targetToken;
 
   /**
    * @dev Creates a vesting contract that vests its balance of any ERC20 token to beneficiaries gradually in a linear fashion until _start + _duration. By then all
@@ -67,8 +66,18 @@ contract TokenVesting is OwnableUpgradeable {
   function initialize(
     uint256 start,
     uint256 cliff,
-    uint256 duration
-  ) public initializer {
+    uint256 duration,
+    address token,
+  ) public virtual initializer {
+    __TokenVesting_init(start, cliff, duration, token);
+  }
+
+  function __TokenVesting_init(
+    uint256 start,
+    uint256 cliff,
+    uint256 duration,
+    address token,
+  ) internal initializer {
     __Ownable_init();
 
     require(cliff <= duration, "Cliff must be less than duration");
@@ -76,6 +85,7 @@ contract TokenVesting is OwnableUpgradeable {
     vestingStart = start;
     vestingCliff = start + cliff;
     vestingDuration = duration;
+    targetToken = token;
   }
 
   /**
@@ -88,50 +98,41 @@ contract TokenVesting is OwnableUpgradeable {
    */
   function awardTokens(
     address beneficiary,
-    IERC20 token,
     uint256 amount,
     bool revocable
-  ) public onlyOwner {
-    TokenAward storage award = getTokenAwardStorage(beneficiary, token);
-    require(award.amount == 0, "Cannot award twice");
-
-    award.amount = amount;
-    award.revocable = revocable;
-
-    emit Awarded(beneficiary, address(token), amount, revocable);
+  ) virtual public onlyOwner {
+    _awardTokens(beneficiary, amount, revocable);
   }
 
   /**
    * @notice Transfers vested tokens to beneficiary.
    * @param beneficiary Who the tokens are being released to
-   * @param token ERC20 token which is being vested
    */
-  function release(address beneficiary, IERC20 token) public {
-    uint256 unreleased = getReleasableAmount(beneficiary, token);
+  function release(address beneficiary) public {
+    uint256 unreleased = getReleasableAmount(beneficiary);
     require(unreleased > 0, "Nothing to release");
 
-    TokenAward storage award = getTokenAwardStorage(beneficiary, token);
+    TokenAward storage award = getTokenAwardStorage(beneficiary);
     award.released += unreleased;
 
-    token.safeTransfer(beneficiary, unreleased);
+    targetToken.safeTransfer(beneficiary, unreleased);
 
-    emit Released(beneficiary, address(token), unreleased);
+    emit Released(beneficiary, unreleased);
   }
 
   /**
    * @notice Allows the owner to revoke the vesting. Tokens already vested
    * are transfered to the beneficiary, the rest are returned to the owner.
    * @param beneficiary Who the tokens are being released to
-   * @param token ERC20 token which is being vested
    */
-  function revoke(address beneficiary, IERC20 token) public onlyOwner {
-    TokenAward storage award = getTokenAwardStorage(beneficiary, token);
+  function revoke(address beneficiary) public onlyOwner {
+    TokenAward storage award = getTokenAwardStorage(beneficiary);
 
     require(award.revocable, "Cannot be revoked");
     require(!award.revoked, "Already revoked");
 
     // Figure out how many tokens were owed up until revocation
-    uint256 unreleased = getReleasableAmount(beneficiary, token);
+    uint256 unreleased = getReleasableAmount(beneficiary);
     award.released += unreleased;
 
     uint256 refund = award.amount - award.released;
@@ -140,40 +141,38 @@ contract TokenVesting is OwnableUpgradeable {
     award.revoked = true;
 
     // Transfer owed vested tokens to beneficiary
-    token.safeTransfer(beneficiary, unreleased);
+    targetToken.safeTransfer(beneficiary, unreleased);
     // Transfer unvested tokens to owner (revoked amount)
-    token.safeTransfer(owner(), refund);
+    targetToken.safeTransfer(owner(), refund);
 
-    emit Released(beneficiary, address(token), unreleased);
-    emit Revoked(beneficiary, address(token), refund);
+    emit Released(beneficiary, unreleased);
+    emit Revoked(beneficiary, refund);
   }
 
   /**
    * @dev Calculates the amount that has already vested but hasn't been released yet.
    * @param beneficiary Who the tokens are being released to
-   * @param token ERC20 token which is being vested
    */
-  function getReleasableAmount(address beneficiary, IERC20 token)
+  function getReleasableAmount(address beneficiary)
     public
     view
     returns (uint256)
   {
-    TokenAward memory award = getTokenAward(beneficiary, token);
+    TokenAward memory award = getTokenAward(beneficiary);
 
-    return getVestedAmount(beneficiary, token) - award.released;
+    return getVestedAmount(beneficiary) - award.released;
   }
 
   /**
    * @dev Calculates the amount that has already vested.
    * @param beneficiary Who the tokens are being released to
-   * @param token ERC20 token which is being vested
    */
-  function getVestedAmount(address beneficiary, IERC20 token)
+  function getVestedAmount(address beneficiary)
     public
     view
     returns (uint256)
   {
-    TokenAward memory award = getTokenAward(beneficiary, token);
+    TokenAward memory award = getTokenAward(beneficiary);
 
     if (block.number < vestingCliff || award.revoked) {
       return 0;
@@ -184,12 +183,26 @@ contract TokenVesting is OwnableUpgradeable {
     }
   }
 
-  function getTokenAward(address beneficiary, IERC20 token)
-    public
+  function _awardTokens(
+    address beneficiary
+    uint256 amount,
+    bool revocable
+  ) internal {
+    TokenAward storage award = getTokenAwardStorage(beneficiary);
+    require(award.amount == 0, "Cannot award twice");
+
+    award.amount = amount;
+    award.revocable = revocable;
+
+    emit Awarded(beneficiary, amount, revocable);
+  }
+
+  function getTokenAward(address beneficiary)
+    internal
     view
     returns (TokenAward memory)
   {
-    TokenAward memory award = awards[beneficiary][address(token)];
+    TokenAward memory award = awards[beneficiary];
     return award;
   }
 
@@ -198,7 +211,7 @@ contract TokenVesting is OwnableUpgradeable {
     view
     returns (TokenAward storage)
   {
-    TokenAward storage award = awards[beneficiary][address(token)];
+    TokenAward storage award = awards[beneficiary];
     return award;
   }
 }

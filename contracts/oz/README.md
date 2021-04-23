@@ -11,7 +11,7 @@ This document serves as a complete list of changes:
 - `_balances` is now internal (was private)
 - `_allowances` is now internal (was private)
 
-## ERC20PausableUpgradeable
+## ERC20PauseableUpgradeable
 
 - `_updateAccountSnapshot` is now internal (was private)
 - `_updateTotalSupplySnapshot` is now internal (was private)

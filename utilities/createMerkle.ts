@@ -14,6 +14,7 @@ export interface MerkleDistributorInfo {
     [account: string]: {
       index: number;
       amount: string;
+      revocable: boolean;
       proof: string[];
       flags?: {
         [flag: string]: boolean;
@@ -22,8 +23,18 @@ export interface MerkleDistributorInfo {
   };
 }
 
-type OldFormat = { [account: string]: number | string };
-type NewFormat = { address: string; balance: string; reasons: string };
+type OldFormat = {
+  [account: string]: {
+    amount: number | string;
+    revocable: boolean;
+  };
+};
+type NewFormat = {
+  address: string;
+  balance: string;
+  revocable: boolean;
+  reasons: string;
+};
 
 export function parseBalanceMap(
   balances: OldFormat | NewFormat[]
@@ -35,7 +46,8 @@ export function parseBalanceMap(
         (account): NewFormat => ({
           address: account,
           // earnings: `0x${balances[account].toString(16)}`,
-          balance: balances[account].toString(),
+          balance: balances[account].amount.toString(),
+          revocable: balances[account].revocable,
           reasons: "",
         })
       );
@@ -43,9 +55,10 @@ export function parseBalanceMap(
   const dataByAddress = balancesInNewFormat.reduce<{
     [address: string]: {
       amount: BigNumber;
+      revocable: boolean;
       flags?: { [flag: string]: boolean };
     };
-  }>((memo, { address: account, balance, reasons }) => {
+  }>((memo, { address: account, balance, reasons, revocable }) => {
     if (!isAddress(account)) {
       throw new Error(`Found invalid address: ${account}`);
     }
@@ -55,13 +68,13 @@ export function parseBalanceMap(
     if (parsedNum.lte(0))
       throw new Error(`Invalid amount for account: ${account}`);
 
-    const flags = {
-      isSOCKS: reasons.includes("socks"),
-      isLP: reasons.includes("lp"),
-      isUser: reasons.includes("user"),
-    };
+    const flags = {};
 
-    memo[parsed] = { amount: parsedNum, ...(reasons === "" ? {} : { flags }) };
+    memo[parsed] = {
+      amount: parsedNum,
+      revocable,
+      ...(reasons === "" ? {} : { flags }),
+    };
     return memo;
   }, {});
 
@@ -72,6 +85,7 @@ export function parseBalanceMap(
     sortedAddresses.map((address) => ({
       account: address,
       amount: dataByAddress[address].amount,
+      revocable: dataByAddress[address].revocable,
     }))
   );
 
@@ -79,16 +93,18 @@ export function parseBalanceMap(
   const claims = sortedAddresses.reduce<{
     [address: string]: {
       amount: string;
+      revocable: boolean;
       index: number;
       proof: string[];
       flags?: { [flag: string]: boolean };
     };
   }>((memo, address, index) => {
-    const { amount, flags } = dataByAddress[address];
+    const { amount, flags, revocable } = dataByAddress[address];
     memo[address] = {
       index,
       amount: amount.toString(),
-      proof: tree.getProof(index, address, amount),
+      revocable,
+      proof: tree.getProof(index, address, amount, revocable),
       ...(flags ? { flags } : {}),
     };
     return memo;

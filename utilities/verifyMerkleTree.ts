@@ -26,11 +26,12 @@ const combinedHash = (first: Buffer, second: Buffer): Buffer => {
 const toNode = (
   index: number | BigNumber,
   account: string,
-  amount: BigNumber
+  amount: BigNumber,
+  revocable: boolean
 ): Buffer => {
   const pairHex = utils.solidityKeccak256(
-    ["uint256", "address", "uint256"],
-    [index, account, amount]
+    ["uint256", "address", "uint256", "bool"],
+    [index, account, amount, revocable]
   );
   return Buffer.from(pairHex.slice(2), "hex");
 };
@@ -39,10 +40,11 @@ const verifyProof = (
   index: number | BigNumber,
   account: string,
   amount: BigNumber,
+  revocable: boolean,
   proof: Buffer[],
   root: Buffer
 ): boolean => {
-  let pair = toNode(index, account, amount);
+  let pair = toNode(index, account, amount, revocable);
   for (const item of proof) {
     pair = combinedHash(pair, item);
   }
@@ -62,10 +64,17 @@ const getNextLayer = (elements: Buffer[]): Buffer[] => {
 };
 
 const getRoot = (
-  balances: { account: string; amount: BigNumber; index: number }[]
+  balances: {
+    account: string;
+    amount: BigNumber;
+    revocable: boolean;
+    index: number;
+  }[]
 ): Buffer => {
   let nodes = balances
-    .map(({ account, amount, index }) => toNode(index, account, amount))
+    .map(({ account, amount, revocable, index }) =>
+      toNode(index, account, amount, revocable)
+    )
     // sort by lexicographical order
     .sort(Buffer.compare);
 
@@ -89,7 +98,12 @@ export const verifyMerkleTree = (tree: MerkleDistributorInfo) => {
   const merkleRootHex = tree.merkleRoot;
   const merkleRoot = Buffer.from(merkleRootHex.slice(2), "hex");
 
-  let balances: { index: number; account: string; amount: BigNumber }[] = [];
+  let balances: {
+    index: number;
+    account: string;
+    amount: BigNumber;
+    revocable: boolean;
+  }[] = [];
   let valid = true;
 
   Object.keys(tree.claims).forEach((address) => {
@@ -103,8 +117,18 @@ export const verifyMerkleTree = (tree: MerkleDistributorInfo) => {
       index: claim.index,
       account: address,
       amount: claimAmount,
+      revocable: claim.revocable,
     });
-    if (verifyProof(claim.index, address, claimAmount, proof, merkleRoot)) {
+    if (
+      verifyProof(
+        claim.index,
+        address,
+        claimAmount,
+        claim.revocable,
+        proof,
+        merkleRoot
+      )
+    ) {
       logger.debug("Verified proof for", claim.index, address);
     } else {
       logger.debug("Verification for", address, "failed");
