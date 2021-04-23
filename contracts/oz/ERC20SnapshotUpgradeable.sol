@@ -190,7 +190,7 @@ abstract contract ERC20SnapshotUpgradeable is Initializable, ERC20Upgradeable {
   }
 
   function _updateSnapshot(Snapshots storage snapshots, uint256 currentValue)
-    internal
+    private
   {
     uint256 currentId = _currentSnapshotId.current();
     if (_lastSnapshotId(snapshots.ids) < currentId) {

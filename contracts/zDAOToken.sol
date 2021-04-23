@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-/**
- * Modifications from base ERC20 token:
- *  > mapping(address => uint256) _balances
- *       is now internal instead of private.
- */
+// Slight modifiations from base Open Zeppelin Contracts
+// Consult /oz/README.md for more information
 import "./oz/ERC20Upgradeable.sol";
 import "./oz/ERC20SnapshotUpgradeable.sol";
 import "./oz/ERC20PausableUpgradeable.sol";
@@ -56,6 +53,54 @@ contract ZDAOToken is
     );
 
     require(!paused(), "ERC20Pausable: token transfer while paused");
+
+    _balances[sender] -= total;
+    _updateAccountSnapshot(sender);
+
+    for (uint256 i = 0; i < recipients.length; ++i) {
+      address recipient = recipients[i];
+      require(recipient != address(0), "ERC20: transfer to the zero address");
+
+      // Note: _beforeTokenTransfer isn't called here
+      // This function emulates what it would do (paused and snapshot)
+
+      _balances[recipient] += amount;
+
+      _updateAccountSnapshot(recipient);
+
+      emit Transfer(sender, recipient, amount);
+    }
+
+    return true;
+  }
+
+  /**
+   * Utility function to transfer tokens to many addresses at once.
+   * @param sender The address to send the tokens from
+   * @param recipients The addresses to send tokens to
+   * @param amount The amount of tokens to send
+   * @return Boolean if the transfer was a success
+   */
+  function transferFromBulk(
+    address sender,
+    address[] calldata recipients,
+    uint256 amount
+  ) external returns (bool) {
+    require(!paused(), "ERC20Pausable: token transfer while paused");
+
+    uint256 total = amount * recipients.length;
+    require(
+      _balances[sender] >= total,
+      "ERC20: transfer amount exceeds balance"
+    );
+
+    // Ensure enough allowance
+    uint256 currentAllowance = _allowances[sender][_msgSender()];
+    require(
+      currentAllowance >= total,
+      "ERC20: transfer total exceeds allowance"
+    );
+    _approve(sender, _msgSender(), currentAllowance - total);
 
     _balances[sender] -= total;
     _updateAccountSnapshot(sender);
