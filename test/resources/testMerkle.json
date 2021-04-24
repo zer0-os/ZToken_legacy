@@ -1,0 +1,42 @@
+{
+  "merkleRoot": "0xf7a2b380c68a5ba4aa211ccf1b05371dcea99b90bbf0e07eec69af34d0b90f38",
+  "tokenTotal": "80036000000",
+  "claims": {
+    "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": {
+      "index": 0,
+      "amount": "1000000",
+      "revocable": true,
+      "proof": [
+        "0xf13a297d2b119a5fd08a66e8ba0aec5f2b5adb2b9e21dea442d08f27a71cd603",
+        "0xad0c511dd032c70c69a73221e46a208b19e79c8bcec9f5fb6de5620c9d3824a2"
+      ]
+    },
+    "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": {
+      "index": 1,
+      "amount": "80000000000",
+      "revocable": true,
+      "proof": [
+        "0x84d479c8bdcd712e21678932596c767359cb96277dc0197dacd6b0bd7d31660a",
+        "0xad0c511dd032c70c69a73221e46a208b19e79c8bcec9f5fb6de5620c9d3824a2"
+      ]
+    },
+    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": {
+      "index": 2,
+      "amount": "5000000",
+      "revocable": false,
+      "proof": [
+        "0x7e75bffb501f3e9ff93281f87d91abbe2a5dab680a18c408abff417c09c92fac",
+        "0x183aff45ecb843a1716ac1c69fcfd2286894bd0ff6259daee3d88d9cd7add6fa"
+      ]
+    },
+    "0x90F79bf6EB2c4f870365E785982E1f101E93b906": {
+      "index": 3,
+      "amount": "30000000",
+      "revocable": false,
+      "proof": [
+        "0x5f8a944dbdd45abd4bc78d6e4dba8b374295059a26eacb155395f0d08bf169ea",
+        "0x183aff45ecb843a1716ac1c69fcfd2286894bd0ff6259daee3d88d9cd7add6fa"
+      ]
+    }
+  }
+}

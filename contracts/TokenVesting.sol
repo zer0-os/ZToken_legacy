@@ -11,33 +11,23 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * @dev This contract is used to award vesting tokens to wallets.
  * Multiple wallets can be vested to using this contract, all using the same vesting schedule.
  */
-contract TokenVesting is OwnableUpgradeable {
+abstract contract TokenVesting is OwnableUpgradeable {
   using SafeERC20 for IERC20;
 
   /**
    * Emitted when vesting tokens are rewarded to a beneficiary
    */
-  event Awarded(
-    address indexed beneficiary,
-    uint256 amount,
-    bool revocable
-  );
+  event Awarded(address indexed beneficiary, uint256 amount, bool revocable);
 
   /**
    * Emitted when vesting tokens are released to a beneficiary
    */
-  event Released(
-    address indexed beneficiary,
-    uint256 amount
-  );
+  event Released(address indexed beneficiary, uint256 amount);
 
   /**
    * Emitted when vesting tokens are revoked from a beneficiary
    */
-  event Revoked(
-    address indexed beneficiary,
-    uint256 revokedAmount
-  );
+  event Revoked(address indexed beneficiary, uint256 revokedAmount);
 
   // Global vesting parameters for this contract
   uint256 public vestingStart;
@@ -56,27 +46,11 @@ contract TokenVesting is OwnableUpgradeable {
 
   IERC20 public targetToken;
 
-  /**
-   * @dev Creates a vesting contract that vests its balance of any ERC20 token to beneficiaries gradually in a linear fashion until _start + _duration. By then all
-   * of the balance will have vested.
-   * @param start start block to begin vesting
-   * @param cliff cliff to start vesting on, set to zero if immediately after start
-   * @param duration duration in blocks to vest over
-   */
-  function initialize(
-    uint256 start,
-    uint256 cliff,
-    uint256 duration,
-    address token,
-  ) public virtual initializer {
-    __TokenVesting_init(start, cliff, duration, token);
-  }
-
   function __TokenVesting_init(
     uint256 start,
     uint256 cliff,
     uint256 duration,
-    address token,
+    address token
   ) internal initializer {
     __Ownable_init();
 
@@ -85,23 +59,7 @@ contract TokenVesting is OwnableUpgradeable {
     vestingStart = start;
     vestingCliff = start + cliff;
     vestingDuration = duration;
-    targetToken = token;
-  }
-
-  /**
-   * @dev Awards tokens to a beneficiary.
-   * *** The tokens to be awarded must be separately transfered to this contract. ***
-   * @param beneficiary the address to award to
-   * @param token address of the token to award
-   * @param amount amount of tokens to award
-   * @param revocable whether this award can be revoced at a later time
-   */
-  function awardTokens(
-    address beneficiary,
-    uint256 amount,
-    bool revocable
-  ) virtual public onlyOwner {
-    _awardTokens(beneficiary, amount, revocable);
+    targetToken = IERC20(token);
   }
 
   /**
@@ -167,11 +125,7 @@ contract TokenVesting is OwnableUpgradeable {
    * @dev Calculates the amount that has already vested.
    * @param beneficiary Who the tokens are being released to
    */
-  function getVestedAmount(address beneficiary)
-    public
-    view
-    returns (uint256)
-  {
+  function getVestedAmount(address beneficiary) public view returns (uint256) {
     TokenAward memory award = getTokenAward(beneficiary);
 
     if (block.number < vestingCliff || award.revoked) {
@@ -184,7 +138,7 @@ contract TokenVesting is OwnableUpgradeable {
   }
 
   function _awardTokens(
-    address beneficiary
+    address beneficiary,
     uint256 amount,
     bool revocable
   ) internal {
@@ -206,7 +160,7 @@ contract TokenVesting is OwnableUpgradeable {
     return award;
   }
 
-  function getTokenAwardStorage(address beneficiary, IERC20 token)
+  function getTokenAwardStorage(address beneficiary)
     internal
     view
     returns (TokenAward storage)

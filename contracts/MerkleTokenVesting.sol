@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import {TokenVesting, IERC20} from "./TokenVesting.sol";
 
 contract MerkleTokenVesting is TokenVesting {
-  event Claimed(uint256 index, address account, uint256 amount);
+  event Claimed(uint256 index, address account, uint256 amount, bool revocable);
 
   bytes32 public merkleRoot;
 
@@ -30,13 +30,13 @@ contract MerkleTokenVesting is TokenVesting {
     merkleRoot = _merkleRoot;
   }
 
-  function claim(
+  function claimAward(
     uint256 index,
     address account,
     uint256 amount,
     bool revocable,
     bytes32[] calldata merkleProof
-  ) external override {
+  ) external {
     require(!isClaimed(index), "MerkleTokenVesting: Award already claimed.");
 
     // Verify the merkle proof.
@@ -49,9 +49,9 @@ contract MerkleTokenVesting is TokenVesting {
 
     _setClaimed(index);
 
-    awardTokens(account, amount, revocable);
+    _awardTokens(account, amount, revocable);
 
-    emit Claimed(index, account, amount);
+    emit Claimed(index, account, amount, revocable);
   }
 
   /**

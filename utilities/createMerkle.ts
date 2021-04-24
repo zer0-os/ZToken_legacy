@@ -5,8 +5,6 @@ const { isAddress, getAddress } = utils;
 
 // This is the blob that gets distributed and pinned to IPFS.
 // It is completely sufficient for recreating the entire merkle tree.
-// Anyone can verify that all air drops are included in the tree,
-// and the tree has no additional distributions.
 export interface MerkleDistributorInfo {
   merkleRoot: string;
   tokenTotal: string;
