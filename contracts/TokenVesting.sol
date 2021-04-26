@@ -97,6 +97,7 @@ abstract contract TokenVesting is OwnableUpgradeable {
 
     // Mark award as revoked
     award.revoked = true;
+    award.amount = award.released;
 
     // Transfer owed vested tokens to beneficiary
     targetToken.safeTransfer(beneficiary, unreleased);
@@ -128,9 +129,11 @@ abstract contract TokenVesting is OwnableUpgradeable {
   function getVestedAmount(address beneficiary) public view returns (uint256) {
     TokenAward memory award = getTokenAward(beneficiary);
 
-    if (block.number < vestingCliff || award.revoked) {
+    if (block.number < vestingCliff) {
       return 0;
-    } else if (block.number >= vestingStart + vestingDuration) {
+    } else if (
+      block.number >= vestingStart + vestingDuration || award.revoked
+    ) {
       return award.amount;
     } else {
       return (award.amount * (block.number - vestingStart)) / vestingDuration;

@@ -32,7 +32,7 @@ contract MerkleTokenVesting is TokenVesting, MerkleDistributor {
     bool revocable,
     bytes32[] calldata merkleProof
   ) external {
-    require(!isClaimed(index), "Award already claimed.");
+    require(!isClaimed(index), "Award already claimed");
 
     // Verify the merkle proof.
     bytes32 node =

@@ -43,7 +43,7 @@ abstract contract MerkleDistributor {
   {
     require(
       MerkleProof.verify(merkleProof, merkleRoot, node),
-      "MerkleDistributor: Invalid proof."
+      "MerkleDistributor: Invalid proof"
     );
   }
 }

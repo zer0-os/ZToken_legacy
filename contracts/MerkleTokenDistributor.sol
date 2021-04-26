@@ -31,7 +31,7 @@ contract MerkleTokenDistributor is MerkleDistributor {
     uint256 amount,
     bytes32[] calldata merkleProof
   ) external {
-    require(!isClaimed(index), "MerkleDistributor: Drop already claimed.");
+    require(!isClaimed(index), "Tokens already claimed.");
 
     // Verify the merkle proof.
     bytes32 node = keccak256(abi.encodePacked(index, account, amount));
