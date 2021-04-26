@@ -12,7 +12,6 @@ export interface MerkleDistributorInfo extends MerkleInfo {
     [account: string]: {
       index: number;
       amount: string;
-      revocable: boolean;
       proof: string[];
       flags?: {
         [flag: string]: boolean;
@@ -24,13 +23,11 @@ export interface MerkleDistributorInfo extends MerkleInfo {
 type OldFormat = {
   [account: string]: {
     amount: number | string;
-    revocable: boolean;
   };
 };
 type NewFormat = {
   address: string;
   balance: string;
-  revocable: boolean;
   reasons: string;
 };
 
@@ -45,7 +42,6 @@ export function parseBalanceMap(
           address: account,
           // earnings: `0x${balances[account].toString(16)}`,
           balance: balances[account].amount.toString(),
-          revocable: balances[account].revocable,
           reasons: "",
         })
       );
@@ -53,10 +49,9 @@ export function parseBalanceMap(
   const dataByAddress = balancesInNewFormat.reduce<{
     [address: string]: {
       amount: BigNumber;
-      revocable: boolean;
       flags?: { [flag: string]: boolean };
     };
-  }>((memo, { address: account, balance, reasons, revocable }) => {
+  }>((memo, { address: account, balance, reasons }) => {
     if (!isAddress(account)) {
       throw new Error(`Found invalid address: ${account}`);
     }
@@ -70,7 +65,6 @@ export function parseBalanceMap(
 
     memo[parsed] = {
       amount: parsedNum,
-      revocable,
       ...(reasons === "" ? {} : { flags }),
     };
     return memo;
@@ -83,7 +77,6 @@ export function parseBalanceMap(
     sortedAddresses.map((address) => ({
       account: address,
       amount: dataByAddress[address].amount,
-      revocable: dataByAddress[address].revocable,
     }))
   );
 
@@ -91,18 +84,16 @@ export function parseBalanceMap(
   const claims = sortedAddresses.reduce<{
     [address: string]: {
       amount: string;
-      revocable: boolean;
       index: number;
       proof: string[];
       flags?: { [flag: string]: boolean };
     };
   }>((memo, address, index) => {
-    const { amount, flags, revocable } = dataByAddress[address];
+    const { amount, flags } = dataByAddress[address];
     memo[address] = {
       index,
       amount: amount.toString(),
-      revocable,
-      proof: tree.getProof(index, address, amount, revocable),
+      proof: tree.getProof(index, address, amount),
       ...(flags ? { flags } : {}),
     };
     return memo;

@@ -2,10 +2,14 @@ import { task, types } from "hardhat/config";
 import { getLogger } from "../utilities";
 import * as fs from "fs";
 import * as vesting from "../utilities/vesting";
+import * as airdrop from "../utilities/airdrop";
 
 const logger = getLogger("tasks::merkle");
 
-const generateVestingMerkleTree = async (inputFile: string) => {
+type generateFunc = (json: any) => any;
+type verifyFunc = (json: any) => boolean;
+
+const doGenerate = async (inputFile: string, generate: generateFunc) => {
   logger.log(`Generating merkle tree from ${inputFile}`);
 
   const jsonContents = JSON.parse(
@@ -16,7 +20,7 @@ const generateVestingMerkleTree = async (inputFile: string) => {
     throw new Error(`Invalid json object`);
   }
 
-  const merkleTree = vesting.parseBalanceMap(jsonContents);
+  const merkleTree = generate(jsonContents);
   const merkleJson = JSON.stringify(merkleTree, null, 2);
 
   // strip extension
@@ -29,7 +33,7 @@ const generateVestingMerkleTree = async (inputFile: string) => {
   fs.writeFileSync(outputFileName, merkleJson);
 };
 
-const doVerifyVestingMerkleTree = async (merkleFile: string) => {
+const doVerify = async (merkleFile: string, verify: verifyFunc) => {
   logger.log(`Verifying merkle tree from ${merkleFile}`);
   logger.info(
     `Make sure you are using the merkle tree file and not the input file here!`
@@ -43,26 +47,26 @@ const doVerifyVestingMerkleTree = async (merkleFile: string) => {
     throw new Error(`Invalid json object`);
   }
 
-  const wasValid = vesting.verifyMerkleTree(jsonContents);
+  const wasValid = verify(jsonContents);
 
   if (wasValid) {
-    logger.log(`Valid merkle tree.`);
+    logger.log(`✅ Valid merkle tree.`);
   } else {
-    logger.error(`Invalid merkle tree.`);
+    logger.error(`❌ Invalid merkle tree.`);
   }
 };
 
 task("merkle", "Generates a merkle tree from a json file.")
   .addPositionalParam(
-    "type",
-    "'vesting' for vesting merkle tree or 'token' for token distribution merkle tree",
-    "vesting",
-    types.string
-  )
-  .addPositionalParam(
     "action",
     "'generate' to create 'verify' to verify'",
     "generate",
+    types.string
+  )
+  .addPositionalParam(
+    "type",
+    "'vesting' for vesting merkle tree or 'airdrop' for airdrop merkle tree",
+    "vesting",
     types.string
   )
   .addPositionalParam(
@@ -72,10 +76,46 @@ task("merkle", "Generates a merkle tree from a json file.")
     types.string
   )
   .setAction(async (taskArguments) => {
+    // vesting
+    const vestingGenerateFunc = (jsonContents: any) => {
+      return vesting.parseBalanceMap(jsonContents);
+    };
+    const vestingVerifyFunc = (jsonContents: any) => {
+      return vesting.verifyMerkleTree(jsonContents);
+    };
+
+    // airdrop
+    const airdropGenerateFunc = (jsonContents: any) => {
+      return airdrop.parseBalanceMap(jsonContents);
+    };
+    const airdropVerifyFunc = (jsonContents: any) => {
+      return airdrop.verifyMerkleTree(jsonContents);
+    };
+
+    const generateFuncs: { [key: string]: generateFunc } = {
+      vesting: vestingGenerateFunc,
+      airdrop: airdropGenerateFunc,
+    };
+
+    const verifyFuncs: { [key: string]: verifyFunc } = {
+      vesting: vestingVerifyFunc,
+      airdrop: airdropVerifyFunc,
+    };
+
+    if (taskArguments.type != "vesting" && taskArguments.type != "airdrop") {
+      throw new Error(`Unsupported type '${taskArguments.type}'`);
+    }
+
     if (taskArguments.action === "generate") {
-      await generateVestingMerkleTree(taskArguments.file);
+      await doGenerate(
+        taskArguments.file,
+        generateFuncs[taskArguments.type as string]
+      );
     } else if (taskArguments.action === "verify") {
-      await doVerifyVestingMerkleTree(taskArguments.file);
+      await doVerify(
+        taskArguments.file,
+        verifyFuncs[taskArguments.type as string]
+      );
     } else {
       throw new Error(`Invalid action ${taskArguments.action}`);
     }
