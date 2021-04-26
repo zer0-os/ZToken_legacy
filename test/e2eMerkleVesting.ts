@@ -8,8 +8,8 @@ import * as fs from "fs";
 import { MerkleDistributorInfo } from "../utilities/vesting/createMerkle";
 import { MerkleTokenVesting } from "../typechain/MerkleTokenVesting";
 import { MerkleTokenVesting__factory } from "../typechain/factories/MerkleTokenVesting__factory";
-import { ZDAOToken } from "../typechain/ZDAOToken";
-import { ZDAOToken__factory } from "../typechain/factories/ZDAOToken__factory";
+import { ZeroDAOToken } from "../typechain/ZeroDAOToken";
+import { ZeroDAOToken__factory } from "../typechain/factories/ZeroDAOToken__factory";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ContractTransaction } from "ethers";
 

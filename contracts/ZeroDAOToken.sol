@@ -26,12 +26,21 @@ contract ZeroDAOToken is
   }
 
   /**
-   * Mints new tokens. Minting logic is delegated to the owner of this contract.
+   * Mints new tokens.
    * @param account the account to mint the tokens for
    * @param amount the amount of tokens to mint.
    */
   function mint(address account, uint256 amount) external onlyOwner {
     _mint(account, amount);
+  }
+
+  /**
+   * Burns tokens from an address.
+   * @param account the account to mint the tokens for
+   * @param amount the amount of tokens to mint.
+   */
+  function burn(address account, uint256 amount) external onlyOwner {
+    _burn(account, amount);
   }
 
   /**
