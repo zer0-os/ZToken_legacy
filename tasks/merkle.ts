@@ -1,12 +1,11 @@
 import { task, types } from "hardhat/config";
 import { getLogger } from "../utilities";
 import * as fs from "fs";
-import { parseBalanceMap } from "../utilities/createMerkle";
-import { verifyMerkleTree } from "../utilities/verifyMerkleTree";
+import * as vesting from "../utilities/vesting";
 
 const logger = getLogger("tasks::merkle");
 
-const generateMerkleTree = async (inputFile: string) => {
+const generateVestingMerkleTree = async (inputFile: string) => {
   logger.log(`Generating merkle tree from ${inputFile}`);
 
   const jsonContents = JSON.parse(
@@ -17,7 +16,7 @@ const generateMerkleTree = async (inputFile: string) => {
     throw new Error(`Invalid json object`);
   }
 
-  const merkleTree = parseBalanceMap(jsonContents);
+  const merkleTree = vesting.parseBalanceMap(jsonContents);
   const merkleJson = JSON.stringify(merkleTree, null, 2);
 
   // strip extension
@@ -30,7 +29,7 @@ const generateMerkleTree = async (inputFile: string) => {
   fs.writeFileSync(outputFileName, merkleJson);
 };
 
-const doVerifyMerkleTree = async (merkleFile: string) => {
+const doVerifyVestingMerkleTree = async (merkleFile: string) => {
   logger.log(`Verifying merkle tree from ${merkleFile}`);
   logger.info(
     `Make sure you are using the merkle tree file and not the input file here!`
@@ -44,7 +43,7 @@ const doVerifyMerkleTree = async (merkleFile: string) => {
     throw new Error(`Invalid json object`);
   }
 
-  const wasValid = verifyMerkleTree(jsonContents);
+  const wasValid = vesting.verifyMerkleTree(jsonContents);
 
   if (wasValid) {
     logger.log(`Valid merkle tree.`);
@@ -54,6 +53,12 @@ const doVerifyMerkleTree = async (merkleFile: string) => {
 };
 
 task("merkle", "Generates a merkle tree from a json file.")
+  .addPositionalParam(
+    "type",
+    "'vesting' for vesting merkle tree or 'token' for token distribution merkle tree",
+    "vesting",
+    types.string
+  )
   .addPositionalParam(
     "action",
     "'generate' to create 'verify' to verify'",
@@ -68,9 +73,9 @@ task("merkle", "Generates a merkle tree from a json file.")
   )
   .setAction(async (taskArguments) => {
     if (taskArguments.action === "generate") {
-      await generateMerkleTree(taskArguments.file);
+      await generateVestingMerkleTree(taskArguments.file);
     } else if (taskArguments.action === "verify") {
-      await doVerifyMerkleTree(taskArguments.file);
+      await doVerifyVestingMerkleTree(taskArguments.file);
     } else {
       throw new Error(`Invalid action ${taskArguments.action}`);
     }

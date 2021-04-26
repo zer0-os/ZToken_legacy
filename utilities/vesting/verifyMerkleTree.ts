@@ -1,6 +1,6 @@
 import { BigNumber, utils } from "ethers";
-import { getLogger } from ".";
 import { MerkleDistributorInfo } from "./createMerkle";
+import { getLogger } from "../";
 
 const logger = getLogger("utilities::verifyMerkleTree");
 

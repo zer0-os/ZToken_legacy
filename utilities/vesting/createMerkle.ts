@@ -1,12 +1,12 @@
 import { BigNumber, utils } from "ethers";
+import { MerkleInfo } from "../merkle";
 import BalanceTree from "./balanceTree";
 
 const { isAddress, getAddress } = utils;
 
 // This is the blob that gets distributed and pinned to IPFS.
 // It is completely sufficient for recreating the entire merkle tree.
-export interface MerkleDistributorInfo {
-  merkleRoot: string;
+export interface MerkleDistributorInfo extends MerkleInfo {
   tokenTotal: string;
   claims: {
     [account: string]: {
