@@ -1,5 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { ethers, network } from "hardhat";
+import { ethers } from "hardhat";
 
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
@@ -20,7 +20,7 @@ const { expect } = chai;
  * Depends on this JSON file for testing.
  * Please do not change values in this JSON file unless you intend to change tests to match.
  */
-const merkleTreeFilePath = "./test/resources/testMerkle.json";
+const merkleTreeFilePath = "./test/resources/vesting/testMerkle.json";
 
 describe("End 2 End Tests - Merkle Token Vesting", () => {
   let accounts: SignerWithAddress[];
@@ -68,8 +68,26 @@ describe("End 2 End Tests - Merkle Token Vesting", () => {
       const vestingFactory = new MerkleTokenVesting__factory(creator);
 
       // In non-test environments this needs to be done using the oz upgrade library
+      // which will do deployment + initialization all in one transaction
+      // doing them in two transactions like this is dangerous
       merkleVesting = await vestingFactory.deploy();
+    });
 
+    it("prevents initialization of the cliff being after the duration", async () => {
+      vestingStartBlock = ethers.provider.blockNumber + vestingStartDelay;
+
+      await expect(
+        merkleVesting.initialize(
+          vestingStartBlock,
+          vestingDuration + vestingCliff,
+          vestingDuration,
+          token.address,
+          merkleTree.merkleRoot
+        )
+      ).to.be.revertedWith("Cliff must be less than duration");
+    });
+
+    it("initializes the token vesting contract", async () => {
       vestingStartBlock = ethers.provider.blockNumber + vestingStartDelay;
 
       await merkleVesting.initialize(
@@ -79,6 +97,20 @@ describe("End 2 End Tests - Merkle Token Vesting", () => {
         token.address,
         merkleTree.merkleRoot
       );
+    });
+
+    it("does not allow a second initialization", async () => {
+      vestingStartBlock = ethers.provider.blockNumber + vestingStartDelay;
+
+      await expect(
+        merkleVesting.initialize(
+          vestingStartBlock,
+          vestingCliff,
+          vestingDuration,
+          token.address,
+          merkleTree.merkleRoot
+        )
+      ).to.be.revertedWith("Initializable: contract is already initialized");
     });
   });
 
@@ -299,6 +331,18 @@ describe("End 2 End Tests - Merkle Token Vesting", () => {
       const merkleAsUser3 = await merkleVesting.connect(user3);
       await expect(merkleAsUser3.revoke(user1.address)).to.be.revertedWith(
         "Ownable: caller is not the owner"
+      );
+    });
+
+    it("does not allow a non-revocable award to be revoked", async () => {
+      await expect(merkleVesting.revoke(user1.address)).to.be.revertedWith(
+        "Cannot be revoked"
+      );
+    });
+
+    it("does not allow a revoked award to be revoked twice", async () => {
+      await expect(merkleVesting.revoke(user2.address)).to.be.revertedWith(
+        "Already revoked"
       );
     });
 
