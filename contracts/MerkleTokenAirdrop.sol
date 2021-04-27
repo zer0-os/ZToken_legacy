@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./MerkleDistributor.sol";
 
-contract MerkleTokenDistributor is MerkleDistributor {
+contract MerkleTokenAirdrop is MerkleDistributor {
   using SafeERC20 for IERC20;
 
   event Claimed(uint256 index, address account, uint256 amount);
