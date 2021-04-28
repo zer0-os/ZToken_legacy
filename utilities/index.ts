@@ -1,19 +1,24 @@
 import logdown from "logdown";
 import * as fs from "fs";
+import { network } from "hardhat";
 
 export const deploymentsFolder = "./deployments";
 
-export interface DeployedContract {
-  name: string;
+export interface DeploymentData {
+  tag?: string;
   address: string;
   version: string;
+  date: string;
+  args: { [key: string]: any };
+  isUpgradable: boolean;
+  admin?: string;
   implementation?: string;
-  date?: string;
+  metadata?: { [key: string]: any };
 }
 
 export interface DeploymentOutput {
-  registrar?: DeployedContract;
-  basicController?: DeployedContract;
+  // array must always be sorted from oldest->most recent
+  [type: string]: DeploymentData[];
 }
 
 const root = "zdao-tokens";
@@ -22,6 +27,12 @@ export const getLogger = (title: string): logdown.Logger => {
   const logger = logdown(`${root}::${title}`);
   logger.state.isEnabled = true;
   return logger;
+};
+
+export const getDeploymentDataFilepath = (network: string): string => {
+  const filepath = `${deploymentsFolder}/${network}.json`;
+
+  return filepath;
 };
 
 export const getDeploymentData = (network: string): DeploymentOutput => {
@@ -36,4 +47,14 @@ export const getDeploymentData = (network: string): DeploymentOutput => {
   const data = JSON.parse(fileContents.toString()) as DeploymentOutput;
 
   return data;
+};
+
+export const writeDeploymentData = (
+  network: string,
+  data: DeploymentOutput
+) => {
+  const filepath = `${deploymentsFolder}/${network}.json`;
+  const jsonToWrite = JSON.stringify(data, undefined, 2);
+
+  fs.writeFileSync(filepath, jsonToWrite);
 };
