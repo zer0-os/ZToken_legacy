@@ -1,94 +1,42 @@
-import { ethers, upgrades, network, run } from "hardhat";
-import * as fs from "fs";
+import * as hre from "hardhat";
 import {
-  DeployedContract,
-  DeploymentOutput,
-  deploymentsFolder,
-  getLogger,
-} from "../utilities";
-
-import {
-  hashBytecodeWithoutMetadata,
-  Manifest,
-} from "@openzeppelin/upgrades-core";
-import { MerkleTokenVesting__factory } from "../typechain";
+  MerkleVestingDeploymentParams,
+  doDeployVesting,
+} from "../tasks/deploy";
+import { getLogger } from "../utilities";
 
 const logger = getLogger("scripts::deployVesting");
 
+/**
+ * This is an example of how to deploy via a script.
+ * This isn't recommended, instead you should use the cli 'yarn hardhat deploy vesting'
+ */
+
 async function main() {
-  await run("compile");
+  await hre.run("compile");
 
-  const accounts = await ethers.getSigners();
+  logger.log("programmatically deploying vesting contract");
+
+  logger.log(`Deploying to ${hre.network.name}`);
+
+  const accounts = await hre.ethers.getSigners();
   const deploymentAccount = accounts[0];
-
-  logger.log(`Deploying to ${network.name}`);
 
   logger.log(
     `'${deploymentAccount.address}' will be used as the deployment account`
   );
 
-  const factory = new MerkleTokenVesting__factory(deploymentAccount);
-  const bytecodeHash = hashBytecodeWithoutMetadata(factory.bytecode);
-
-  logger.log(`Implementation version is ${bytecodeHash}`);
-
-  const instance = await upgrades.deployProxy(factory, [], {
-    initializer: "initialize",
-  });
-  await instance.deployed();
-
-  logger.log(`Deployed Merkle Token Vesting Contract to '${instance.address}'`);
-
-  const fileName = `${network.name}.json`;
-  const filepath = `${deploymentsFolder}/${fileName}`;
-  let deploymentData: DeploymentOutput;
-  try {
-    deploymentData = JSON.parse(
-      fs.readFileSync(filepath).toString()
-    ) as DeploymentOutput;
-  } catch (e) {
-    logger.debug(`New deployment for network detected.`);
-    deploymentData = {};
-  }
-
-  const registrarObject: DeployedContract = {
-    name: "Registrar",
-    address: instance.address,
-    version: bytecodeHash,
-    date: new Date().toISOString(),
+  const params: MerkleVestingDeploymentParams = {
+    token: "0x59b670e9fA9D0A427751Af201D676719a970857b",
+    merkleRoot:
+      "0x6e5b3877dc2af6fa275f85de82e2eb9b925b5b1642edaa4ace8a1dccf6e60301",
+    startBlock: 13214124,
+    cliff: 10000,
+    duration: 500000,
+    merkleFile: "some file",
   };
 
-  const ozUpgradesManifestClient = await Manifest.forNetwork(network.provider);
-  const manifest = await ozUpgradesManifestClient.read();
-  const implementationContract = manifest.impls[bytecodeHash];
-
-  if (implementationContract) {
-    registrarObject.implementation = implementationContract.address;
-  }
-
-  deploymentData.registrar = registrarObject;
-
-  const jsonToWrite = JSON.stringify(deploymentData, undefined, 2);
-
-  logger.log(`Updated ${filepath}`);
-
-  fs.mkdirSync(deploymentsFolder, { recursive: true });
-  fs.writeFileSync(filepath, jsonToWrite);
-
-  if (implementationContract) {
-    logger.log(`Waiting for 5 confirmations`);
-    await instance.deployTransaction.wait(5);
-
-    logger.log(`Attempting to verify implementation contract with etherscan`);
-    try {
-      await run("verify:verify", {
-        address: implementationContract.address,
-        constructorArguments: [],
-      });
-    } catch (e) {
-      logger.error(`Failed to verify contract: ${e}`);
-    }
-  }
+  await doDeployVesting(hre, deploymentAccount, params, "v2");
 }
 
 main();

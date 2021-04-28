@@ -111,5 +111,21 @@
         "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
       }
     }
+  ],
+  "airdrop": [
+    {
+      "tag": "v1",
+      "address": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+      "version": "bf242125087ade969b5883801f82235460fa0f751dbe83015b5f0181625231ec",
+      "date": "2021-04-28T22:55:59.484Z",
+      "args": {
+        "token_": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+        "merkleRoot_": "0x73e9ab882da5e26fbfb0323ad8c171fa34847aedf17518960144a3d7712b8fb0"
+      },
+      "isUpgradable": false,
+      "metadata": {
+        "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
+      }
+    }
   ]
 }

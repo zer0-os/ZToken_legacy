@@ -11,6 +11,7 @@ import {
 import * as fs from "fs";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
+  MerkleTokenAirdrop__factory,
   MerkleTokenVesting__factory,
   ZeroDAOToken__factory,
 } from "../typechain";
@@ -35,6 +36,25 @@ interface UpgradableDeployedContract extends DeployedContract {
   implementationAddress: string;
   admin: string;
 }
+
+const deployContract = async (factory: ContractFactory, args: any[]) => {
+  const bytecodeHash = hashBytecodeWithoutMetadata(factory.bytecode);
+
+  logger.debug(`Implementation version is ${bytecodeHash}`);
+
+  const instance = await factory.deploy.apply(factory, args);
+
+  logger.log(`Deployed contract to ${instance.address}`);
+
+  const deploymentData: DeployedContract = {
+    isUpgradable: false,
+    instance,
+    version: bytecodeHash,
+    date: new Date().toISOString(),
+  };
+
+  return deploymentData;
+};
 
 const deployUpgradableContract = async (
   hre: HardhatRuntimeEnvironment,
@@ -176,7 +196,40 @@ export const doDeployToken = async (
   );
 };
 
-export const doDeployAirdrop = async () => {};
+export interface MerkleAirdropDeploymentParams {
+  token: string;
+  merkleRoot: string;
+  merkleFile: string;
+}
+
+export const doDeployAirdrop = async (
+  hre: HardhatRuntimeEnvironment,
+  deployer: SignerWithAddress,
+  params: MerkleAirdropDeploymentParams,
+  tag?: string
+) => {
+  const factory = new MerkleTokenAirdrop__factory(deployer);
+  logger.debug(`Deploying Merkle Airdrop Contract...`);
+  const deploymentData = await deployContract(factory, [
+    params.token,
+    params.merkleRoot,
+  ]);
+
+  logger.debug(`Saving deployment data...`);
+  await saveDeploymentData(
+    hre,
+    "airdrop",
+    deploymentData,
+    {
+      token_: params.token,
+      merkleRoot_: params.merkleRoot,
+    },
+    {
+      merkleFile: params.merkleFile,
+    },
+    tag
+  );
+};
 
 export interface MerkleVestingDeploymentParams {
   token: string;
@@ -401,6 +454,21 @@ task("deploy", "Deploys contracts")
         };
 
         await doDeployVesting(
+          hre,
+          deploymentAccount,
+          params,
+          taskArguments.tag
+        );
+      }
+
+      if (taskArguments.contract == "airdrop") {
+        const params: MerkleAirdropDeploymentParams = {
+          token: targetToken,
+          merkleRoot: merkleFileContents.merkleRoot,
+          merkleFile: taskArguments.merkle,
+        };
+
+        await doDeployAirdrop(
           hre,
           deploymentAccount,
           params,
