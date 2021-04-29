@@ -12,17 +12,23 @@ Zer0 DAO Tokens may need to be given to a large number of users, this contract p
 
 This is a list of feature specifications, it will attempt to describe each fundamental feature and any requirements around them.
 
-### Merkle Tree for Giving Awards
+### Merkle Tree for Claiming Tokens
 
-So that many Vesting Token Awards can be given to many different accounts, a Merkle Tree must be used to define what accounts are entitled what awards.
+So that tokens can be "air dropped" to many accounts a Merkle Tree must be used to define what accounts are entitled what amount of tokens.
 
-Each award defined in the Merkle Tree must have the following parameters:
+Each airdrop is defined in the Merkle Tree must have the following parameters:
 
-- `account`: What account (address) is this award for
-- `amount`: How many vested tokens are given to the account
-- `revocable`: Whether or not unvested tokens can be revoked from the account (See the *Revocable Awards* specification for more information)
+- `account`: What account (address) is this airdrop for
+- `amount`: How many tokens are given to the account
 
 A Merkle Tree Root must be set on contract creation.
 
-### Claiming Vesting Token Awards
+### Claiming Tokens
 
+A user must call a method on the contract to "claim" their tokens.
+
+Calls are validated using the Merkle Tree.
+
+Each token claim can only be claimed once.
+
+Users are able to claim for another user, but the tokens will still be given to the user who it belongs to (the other user).
