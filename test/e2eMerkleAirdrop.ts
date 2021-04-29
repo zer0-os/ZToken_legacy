@@ -3,7 +3,6 @@ import { ethers } from "hardhat";
 
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
-import { BigNumber } from "@ethersproject/bignumber";
 import { ContractTransaction } from "ethers";
 
 import { MerkleDistributorInfo } from "../utilities/airdrop/createMerkle";

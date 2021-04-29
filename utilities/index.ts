@@ -1,6 +1,5 @@
 import logdown from "logdown";
 import * as fs from "fs";
-import { network } from "hardhat";
 
 export const deploymentsFolder = "./deployments";
 
@@ -9,10 +8,12 @@ export interface DeploymentData {
   address: string;
   version: string;
   date: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: { [key: string]: any };
   isUpgradable: boolean;
   admin?: string;
   implementation?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: { [key: string]: any };
 }
 
@@ -52,7 +53,7 @@ export const getDeploymentData = (network: string): DeploymentOutput => {
 export const writeDeploymentData = (
   network: string,
   data: DeploymentOutput
-) => {
+): void => {
   const filepath = `${deploymentsFolder}/${network}.json`;
   const jsonToWrite = JSON.stringify(data, undefined, 2);
 

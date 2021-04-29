@@ -4,6 +4,8 @@ import * as fs from "fs";
 import * as vesting from "../utilities/vesting";
 import * as airdrop from "../utilities/airdrop";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const logger = getLogger("tasks::merkle");
 
 type generateFunc = (json: any) => any;

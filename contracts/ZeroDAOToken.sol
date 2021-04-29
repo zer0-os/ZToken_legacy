@@ -44,6 +44,22 @@ contract ZeroDAOToken is
   }
 
   /**
+   * Pauses the token contract preventing any token mint/transfer/burn operations.
+   * Can only be called if the contract is unpaused.
+   */
+  function pause() external onlyOwner {
+    _pause();
+  }
+
+  /**
+   * Unpauses the token contract preventing any token mint/transfer/burn operations
+   * Can only be called if the contract is paused.
+   */
+  function unpause() external onlyOwner {
+    _unpause();
+  }
+
+  /**
    * Utility function to transfer tokens to many addresses at once.
    * @param recipients The addresses to send tokens to
    * @param amount The amount of tokens to send

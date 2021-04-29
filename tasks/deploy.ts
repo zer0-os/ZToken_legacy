@@ -37,12 +37,13 @@ interface UpgradableDeployedContract extends DeployedContract {
   admin: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const deployContract = async (factory: ContractFactory, args: any[]) => {
   const bytecodeHash = hashBytecodeWithoutMetadata(factory.bytecode);
 
   logger.debug(`Implementation version is ${bytecodeHash}`);
 
-  const instance = await factory.deploy.apply(factory, args);
+  const instance = await factory.deploy(factory, ...args);
 
   logger.log(`Deployed contract to ${instance.address}`);
 
@@ -115,7 +116,9 @@ const saveDeploymentData = async (
   hre: HardhatRuntimeEnvironment,
   type: string,
   deployment: DeployedContract | UpgradableDeployedContract,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: { [key: string]: any },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: { [key: string]: any },
   tag?: string
 ) => {
@@ -146,7 +149,7 @@ const saveDeploymentData = async (
     admin = upgradableDeployment.admin;
   }
 
-  let finalTag = tag || "untagged";
+  const finalTag = tag || "untagged";
 
   checkUniqueTag(finalTag, deployments);
 
@@ -175,7 +178,7 @@ export const doDeployToken = async (
   name: string,
   symbol: string,
   tag?: string
-) => {
+): Promise<void> => {
   const factory = new ZeroDAOToken__factory(deployer);
   logger.debug(`Deploying token contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
@@ -207,7 +210,7 @@ export const doDeployAirdrop = async (
   deployer: SignerWithAddress,
   params: MerkleAirdropDeploymentParams,
   tag?: string
-) => {
+): Promise<void> => {
   const factory = new MerkleTokenAirdrop__factory(deployer);
   logger.debug(`Deploying Merkle Airdrop Contract...`);
   const deploymentData = await deployContract(factory, [
@@ -245,7 +248,7 @@ export const doDeployVesting = async (
   deployer: SignerWithAddress,
   params: MerkleVestingDeploymentParams,
   tag?: string
-) => {
+): Promise<void> => {
   const factory = new MerkleTokenVesting__factory(deployer);
   logger.debug(`Deploying Merkle Vesting Contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [

@@ -2,6 +2,8 @@
 
 This repository contains the Zer0 DAO Token and other utility contracts for airdropping and vesting ERC20 tokens.
 
+Check out the (docs)[./docs] folder for more information on what they do.
+
 ## Building and Development
 
 Follow this guide to learn how to get started with building and developing locally.

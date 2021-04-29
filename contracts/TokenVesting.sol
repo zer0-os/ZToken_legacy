@@ -36,8 +36,8 @@ abstract contract TokenVesting is OwnableUpgradeable {
 
   struct TokenAward {
     uint256 amount;
-    bool revocable;
     uint256 released;
+    bool revocable;
     bool revoked;
   }
 
