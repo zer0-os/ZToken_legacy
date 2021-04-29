@@ -208,7 +208,65 @@ Where:
 
 ## Deployment
 
-There is no deployment story (yet)
+You can use the `yarn hardhat deploy` task to deploy contracts.
+
+Information about deployments are stored in the `deployments/` folder where the name of the file is the network you deployed to.
+
+### Deploying Token Contract
+
+Run the this command to deploy a token contract:
+
+```
+yarn hardhat deploy token --tag "<tag>" --name "<name>" --symbol "<symbol>" --network <network>
+```
+
+Where:
+
+- `<tag>` is a user friendly tag (used in the deployment file)
+- `<name>` is the token name to be used
+- `<symbol>` is the token symbol to be used
+- `<network>` is the network to deploy to
+
+### Deploying Merkle Token Airdrop Contract
+
+Run the this command to deploy a Merkle Token Airdrop contract:
+
+```
+yarn hardhat deploy airdrop --tag "<tag>" --merkle "<merkle file>" --token "<token>"
+```
+
+Where:
+
+- `<tag>` is a user friendly tag (used in the deployment file)
+- `<merkle file>` is the path to the merkle file to use
+- `<token>` is the address of the token that is being airdropped
+
+You will need to transfer the proper quantity of tokens to the contract once it has been deployed so users can claim their tokens.
+
+> Make sure that `<merkle_file>` is a path to a JSON file which is the proper type (*airdrop*, not vesting)  
+> You can find `<token>` (the address) in the deployment file if you deployed a token wih the deployment scripts
+
+### Deploying Merkle Token Vesting Contract
+
+Run the this command to deploy a Merkle Token Airdrop contract:
+
+```
+yarn hardhat deploy vesting --tag "<tag>" --merkle "<merkle file>" --token "<token>" --start <start> --duration <duration> --cliff <cliff>
+```
+
+Where:
+
+- `<tag>` is a user friendly tag (used in the deployment file)
+- `<merkle file>` is the path to the merkle file to use
+- `<token>` is the address of the token that is being airdropped
+- `<start>` is what block number vesting should start on
+- `<duration>` is how many blocks until all tokens are vested (linearly)
+- `<cliff>` is how many blocks until the vesting cliff is reached
+
+You will need to transfer the proper quantity of tokens to the contract once it has been deployed so users can claim their tokens.
+
+> Make sure that `<merkle_file>` is a path to a JSON file which is the proper type (*vesting*, not airdrop)  
+> You can find `<token>` (the address) in the deployment file if you deployed a token wih the deployment scripts
 
 ## Open Zeppelin Modifications
 

@@ -89,7 +89,7 @@ const getRoot = (
   return layers[layers.length - 1][0];
 };
 
-export const verifyMerkleTree: boolean = (tree: MerkleDistributorInfo) => {
+export const verifyMerkleTree = (tree: MerkleDistributorInfo): boolean => {
   const merkleRootHex = tree.merkleRoot;
   const merkleRoot = Buffer.from(merkleRootHex.slice(2), "hex");
 
