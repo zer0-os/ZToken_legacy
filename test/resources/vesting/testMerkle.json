@@ -1,0 +1,42 @@
+{
+  "merkleRoot": "0x6e5b3877dc2af6fa275f85de82e2eb9b925b5b1642edaa4ace8a1dccf6e60301",
+  "tokenTotal": "12000000",
+  "claims": {
+    "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65": {
+      "index": 0,
+      "amount": "5000000",
+      "revocable": true,
+      "proof": [
+        "0xa37073a8f5de6a1f6cbd4fc4dc2bb9ecfbbfd4abd604414174051e719815ceff",
+        "0xabbbcab70b10297e0d97f976a6e863595bcf30a44a2dc8cb3a4936a03da74db0"
+      ]
+    },
+    "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": {
+      "index": 1,
+      "amount": "1000000",
+      "revocable": true,
+      "proof": [
+        "0x60457801c35e14dfb087c4ca313a41c26f9900216dd50a12dbbcb9f00980975a",
+        "0xf616c15e92595f0773d0035f33d89d693dd591e39face898e472f99eeb4e11a7"
+      ]
+    },
+    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": {
+      "index": 2,
+      "amount": "1000000",
+      "revocable": false,
+      "proof": [
+        "0x7d94d99b168d102ef302a20d7ccd37ebc03846f8fc19f9e2b2b3036605e7a89b",
+        "0xabbbcab70b10297e0d97f976a6e863595bcf30a44a2dc8cb3a4936a03da74db0"
+      ]
+    },
+    "0x90F79bf6EB2c4f870365E785982E1f101E93b906": {
+      "index": 3,
+      "amount": "5000000",
+      "revocable": false,
+      "proof": [
+        "0x60f56ce2a40343bd83c26f6ed4f6a60a1e774c56eb87f42f7bfcb6e6c4e3a8e3",
+        "0xf616c15e92595f0773d0035f33d89d693dd591e39face898e472f99eeb4e11a7"
+      ]
+    }
+  }
+}

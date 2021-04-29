@@ -1,0 +1,131 @@
+{
+  "token": [
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "ad837459efd84ba192ccc16829cc42438b595c2b05308dc47d56e0fd9399394e",
+      "date": "2021-04-28T22:35:07.567Z",
+      "args": {
+        "name": "Test Token",
+        "symbol": "TST"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+    },
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "ad837459efd84ba192ccc16829cc42438b595c2b05308dc47d56e0fd9399394e",
+      "date": "2021-04-28T22:35:25.829Z",
+      "args": {
+        "name": "Test Token",
+        "symbol": "TST"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+    },
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "ad837459efd84ba192ccc16829cc42438b595c2b05308dc47d56e0fd9399394e",
+      "date": "2021-04-28T22:38:32.588Z",
+      "args": {
+        "name": "Test Token",
+        "symbol": "TST"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+    },
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "ad837459efd84ba192ccc16829cc42438b595c2b05308dc47d56e0fd9399394e",
+      "date": "2021-04-28T22:38:47.532Z",
+      "args": {
+        "name": "Test Token",
+        "symbol": "TST"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+    }
+  ],
+  "vesting": [
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "acde56b3f6a4717b10d1e81b4c6836556dc0ee0870c11117415f5667faf2dc69",
+      "date": "2021-04-28T22:47:02.383Z",
+      "args": {
+        "start": 10,
+        "cliff": 10,
+        "duration": 100,
+        "token": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+        "_merkleRoot": "0x73e9ab882da5e26fbfb0323ad8c171fa34847aedf17518960144a3d7712b8fb0"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+      "metadata": {
+        "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
+      }
+    },
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "acde56b3f6a4717b10d1e81b4c6836556dc0ee0870c11117415f5667faf2dc69",
+      "date": "2021-04-28T22:47:28.260Z",
+      "args": {
+        "start": 11845680,
+        "cliff": 10,
+        "duration": 100,
+        "token": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+        "_merkleRoot": "0x73e9ab882da5e26fbfb0323ad8c171fa34847aedf17518960144a3d7712b8fb0"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+      "metadata": {
+        "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
+      }
+    },
+    {
+      "tag": "v1",
+      "address": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+      "version": "acde56b3f6a4717b10d1e81b4c6836556dc0ee0870c11117415f5667faf2dc69",
+      "date": "2021-04-28T22:47:47.197Z",
+      "args": {
+        "start": 11845680,
+        "cliff": 10,
+        "duration": 100,
+        "token": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+        "_merkleRoot": "0x73e9ab882da5e26fbfb0323ad8c171fa34847aedf17518960144a3d7712b8fb0"
+      },
+      "isUpgradable": true,
+      "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+      "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+      "metadata": {
+        "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
+      }
+    }
+  ],
+  "airdrop": [
+    {
+      "tag": "v1",
+      "address": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+      "version": "bf242125087ade969b5883801f82235460fa0f751dbe83015b5f0181625231ec",
+      "date": "2021-04-28T22:55:59.484Z",
+      "args": {
+        "token_": "0x59b670e9fA9D0A427751Af201D676719a970857b",
+        "merkleRoot_": "0x73e9ab882da5e26fbfb0323ad8c171fa34847aedf17518960144a3d7712b8fb0"
+      },
+      "isUpgradable": false,
+      "metadata": {
+        "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
+      }
+    }
+  ]
+}
