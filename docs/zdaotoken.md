@@ -52,3 +52,8 @@ Any `transfer`, `mint`, or `burn` operation should result in a snapshot of the t
 ### Bulk Transfer
 
 The ability to transfer tokens from one account to many accounts with a single transaction is required to save on gas.
+
+### Ownable
+
+The owner of the token contract has the ability to mint and burn tokens.  
+The intended owner of this token is a Zer0 DAO.
