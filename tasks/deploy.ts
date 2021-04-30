@@ -11,11 +11,6 @@ import {
 import * as fs from "fs";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  MerkleTokenAirdrop__factory,
-  MerkleTokenVesting__factory,
-  ZeroDAOToken__factory,
-} from "../typechain";
-import {
   hashBytecodeWithoutMetadata,
   Manifest,
 } from "@openzeppelin/upgrades-core";
@@ -179,7 +174,7 @@ export const doDeployToken = async (
   symbol: string,
   tag?: string
 ): Promise<void> => {
-  const factory = new ZeroDAOToken__factory(deployer);
+  const factory = await hre.ethers.getContractFactory("ZeroDAOToken");
   logger.debug(`Deploying token contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
     name,
@@ -211,7 +206,7 @@ export const doDeployAirdrop = async (
   params: MerkleAirdropDeploymentParams,
   tag?: string
 ): Promise<void> => {
-  const factory = new MerkleTokenAirdrop__factory(deployer);
+  const factory = await hre.ethers.getContractFactory("MerkleTokenAirdrop");
   logger.debug(`Deploying Merkle Airdrop Contract...`);
   const deploymentData = await deployContract(factory, [
     params.token,
@@ -249,7 +244,7 @@ export const doDeployVesting = async (
   params: MerkleVestingDeploymentParams,
   tag?: string
 ): Promise<void> => {
-  const factory = new MerkleTokenVesting__factory(deployer);
+  const factory = await hre.ethers.getContractFactory("MerkleTokenVesting");
   logger.debug(`Deploying Merkle Vesting Contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
     params.startBlock,
