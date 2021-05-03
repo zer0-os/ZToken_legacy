@@ -45,9 +45,10 @@ Voting on a zDAO proposal may not require tokens to be ‘spent’ or ‘locked�
 
 As such, the weight of a users vote must not change during the duration of a proposal. If it were changeable then it would be possible for a user to vote on a proposal, transfer their tokens, then vote a second time on the same proposal.
 
-To prevent this balance snapshotting must be implemented, which will snapshot a users balance every time they send or receive tokens. zDAO can therefore use a users token balance at the start time of a proposal to determine voting weight.
+To prevent this balance snapshotting must be implemented, which will snapshot a users balances when a snapshot is taken. zDAO can therefore use a users token balance at the start time of a proposal to determine voting weight.
 
-Any `transfer`, `mint`, or `burn` operation should result in a snapshot of the token balances of involved users being taken.
+Authorized users, such as the owner, or "snapshotters" are allowed to call a `snapshot` method which will take a snapshot of user balances.
+This `snapshot` method returns the taken snapshot id which can be used to retrieve the balances at that snapshot.
 
 ### Bulk Transfer
 

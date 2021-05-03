@@ -15,6 +15,12 @@ contract ZeroDAOToken is
   ERC20PausableUpgradeable,
   ERC20SnapshotUpgradeable
 {
+  event AuthorizedSnapshotter(address account);
+  event DeauthorizedSnapshotter(address account);
+
+  // Mapping which stores all addresses allowed to snapshot
+  mapping(address => bool) authorizedToSnapshot;
+
   function initialize(string memory name, string memory symbol)
     public
     initializer
@@ -57,6 +63,43 @@ contract ZeroDAOToken is
    */
   function unpause() external onlyOwner {
     _unpause();
+  }
+
+  /**
+   * Creates a token balance snapshot. Ideally this would be called by the
+   * controlling DAO whenever a proposal is made.
+   */
+  function snapshot() external returns (uint256) {
+    require(
+      authorizedToSnapshot[_msgSender()] || _msgSender() == owner(),
+      "zDAOToken: Not authorized to snapshot"
+    );
+    return _snapshot();
+  }
+
+  /**
+   * Authorizes an account to take snapshots
+   * @param account The account to authorize
+   */
+  function authorizeSnapshotter(address account) external onlyOwner {
+    require(
+      !authorizedToSnapshot[account],
+      "zDAOToken: Account already authorized"
+    );
+
+    authorizedToSnapshot[account] = true;
+    emit AuthorizedSnapshotter(account);
+  }
+
+  /**
+   * Deauthorizes an account to take snapshots
+   * @param account The account to de-authorize
+   */
+  function deauthorizeSnapshotter(address account) external onlyOwner {
+    require(authorizedToSnapshot[account], "zDAOToken: Account not authorized");
+
+    authorizedToSnapshot[account] = false;
+    emit DeauthorizedSnapshotter(account);
   }
 
   /**
