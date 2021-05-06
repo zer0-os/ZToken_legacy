@@ -17,6 +17,11 @@ import {
 import { Contract, ContractFactory } from "ethers";
 import { MerkleInfo } from "../utilities/helpers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import {
+  MerkleTokenAirdrop,
+  MerkleTokenVesting,
+  ZeroDAOToken,
+} from "../typechain";
 
 const logger = getLogger("tasks::deploy");
 
@@ -173,8 +178,8 @@ export const doDeployToken = async (
   name: string,
   symbol: string,
   tag?: string
-): Promise<void> => {
-  const factory = await hre.ethers.getContractFactory("ZeroDAOToken");
+): Promise<ZeroDAOToken> => {
+  const factory = await hre.ethers.getContractFactory("ZeroDAOToken", deployer);
   logger.debug(`Deploying token contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
     name,
@@ -192,6 +197,8 @@ export const doDeployToken = async (
     undefined,
     tag
   );
+
+  return deploymentData.instance as ZeroDAOToken;
 };
 
 export interface MerkleAirdropDeploymentParams {
@@ -205,8 +212,11 @@ export const doDeployAirdrop = async (
   deployer: SignerWithAddress,
   params: MerkleAirdropDeploymentParams,
   tag?: string
-): Promise<void> => {
-  const factory = await hre.ethers.getContractFactory("MerkleTokenAirdrop");
+): Promise<MerkleTokenAirdrop> => {
+  const factory = await hre.ethers.getContractFactory(
+    "MerkleTokenAirdrop",
+    deployer
+  );
   logger.debug(`Deploying Merkle Airdrop Contract...`);
   const deploymentData = await deployContract(factory, [
     params.token,
@@ -227,6 +237,8 @@ export const doDeployAirdrop = async (
     },
     tag
   );
+
+  return deploymentData.instance as MerkleTokenAirdrop;
 };
 
 export interface MerkleVestingDeploymentParams {
@@ -243,8 +255,11 @@ export const doDeployVesting = async (
   deployer: SignerWithAddress,
   params: MerkleVestingDeploymentParams,
   tag?: string
-): Promise<void> => {
-  const factory = await hre.ethers.getContractFactory("MerkleTokenVesting");
+): Promise<MerkleTokenVesting> => {
+  const factory = await hre.ethers.getContractFactory(
+    "MerkleTokenVesting",
+    deployer
+  );
   logger.debug(`Deploying Merkle Vesting Contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
     params.startBlock,
@@ -271,6 +286,8 @@ export const doDeployVesting = async (
     },
     tag
   );
+
+  return deploymentData.instance as MerkleTokenVesting;
 };
 
 const killWithError = (error: string) => {
