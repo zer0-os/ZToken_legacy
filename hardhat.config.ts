@@ -21,7 +21,17 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: {
-    compilers: [{ version: "0.8.3", settings: {} }],
+    compilers: [
+      {
+        version: "0.8.3",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   paths: {
     sources: "./contracts",
@@ -37,6 +47,11 @@ const config: HardhatUserConfig = {
           "https://eth-mainnet.alchemyapi.io/v2/MnO3SuHlzuCydPWE1XhsYZM_pHZP8_ix",
         blockNumber: 11845661,
       },
+    },
+    mainnet: {
+      accounts: { mnemonic: process.env.MAINNET_MNEMONIC || "" },
+      url: `https://mainnet.infura.io/v3/0e6434f252a949719227b5d68caa2657`,
+      gasPrice: 75000000000,
     },
     kovan: {
       accounts: { mnemonic: process.env.TESTNET_MNEMONIC || "" },
