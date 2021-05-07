@@ -4,7 +4,7 @@ import { doDeployToken } from "../tasks/deploy";
 import { ZeroDAOToken } from "../typechain";
 import { getLogger } from "../utilities";
 
-const logger = getLogger("scripts::deployVesting");
+const logger = getLogger("scripts::deployWILD");
 
 const oneMillion = 10 ** 6;
 const numDecimals = 18;
@@ -13,8 +13,8 @@ const decimals = BigNumber.from(10).pow(numDecimals); // token has 18 decimal pl
 // five-hundred million tokens (w/ 18 decimal points)
 const tokenMintAmount = BigNumber.from(500).mul(oneMillion).mul(decimals);
 
-const treasuryAddress = "0x4A4BcDa21DcB59AB6F3937Df10A027Ae6d48Ca07";
-const ownerAddress = "0xA208e811318376b0615a727c9C34BC0a428f3723";
+const treasuryAddress = "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b";
+const ownerAddress = "0x32eB727B120Acf288306fBD67a60D1b6d8984476";
 
 async function main() {
   await hre.run("compile");
@@ -40,9 +40,9 @@ async function main() {
   const deploymentData = await doDeployToken(
     hre,
     deploymentAccount,
-    "WILDER WORLD",
+    "Wilder",
     "WILD",
-    "wild-prod"
+    "wilder-prod"
   );
 
   const token = deploymentData.instance;
