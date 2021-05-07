@@ -178,7 +178,7 @@ export const doDeployToken = async (
   name: string,
   symbol: string,
   tag?: string
-): Promise<ZeroDAOToken> => {
+): Promise<UpgradableDeployedContract> => {
   const factory = await hre.ethers.getContractFactory("ZeroDAOToken", deployer);
   logger.debug(`Deploying token contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
@@ -198,7 +198,7 @@ export const doDeployToken = async (
     tag
   );
 
-  return deploymentData.instance as ZeroDAOToken;
+  return deploymentData;
 };
 
 export interface MerkleAirdropDeploymentParams {
@@ -212,7 +212,7 @@ export const doDeployAirdrop = async (
   deployer: SignerWithAddress,
   params: MerkleAirdropDeploymentParams,
   tag?: string
-): Promise<MerkleTokenAirdrop> => {
+): Promise<DeployedContract> => {
   const factory = await hre.ethers.getContractFactory(
     "MerkleTokenAirdrop",
     deployer
@@ -238,7 +238,7 @@ export const doDeployAirdrop = async (
     tag
   );
 
-  return deploymentData.instance as MerkleTokenAirdrop;
+  return deploymentData;
 };
 
 export interface MerkleVestingDeploymentParams {
@@ -255,7 +255,7 @@ export const doDeployVesting = async (
   deployer: SignerWithAddress,
   params: MerkleVestingDeploymentParams,
   tag?: string
-): Promise<MerkleTokenVesting> => {
+): Promise<UpgradableDeployedContract> => {
   const factory = await hre.ethers.getContractFactory(
     "MerkleTokenVesting",
     deployer
@@ -287,7 +287,7 @@ export const doDeployVesting = async (
     tag
   );
 
-  return deploymentData.instance as MerkleTokenVesting;
+  return deploymentData;
 };
 
 const killWithError = (error: string) => {

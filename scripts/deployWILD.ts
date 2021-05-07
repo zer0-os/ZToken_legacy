@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
 import { doDeployToken } from "../tasks/deploy";
+import { ZeroDAOToken } from "../typechain";
 import { getLogger } from "../utilities";
 
 const logger = getLogger("scripts::deployVesting");
@@ -36,7 +37,7 @@ async function main() {
   logger.log(`'${treasuryAddress}' will be the treasury`);
   logger.log(`'${ownerAddress}' will be transferred ownership`);
 
-  const token = await doDeployToken(
+  const deploymentData = await doDeployToken(
     hre,
     deploymentAccount,
     "WILDER WORLD",
@@ -44,7 +45,17 @@ async function main() {
     "wild-prod"
   );
 
+  const token = deploymentData.instance;
+
   logger.log(`Deployed contract to ${token.address}`);
+
+  logger.log(
+    `Initializing implementation contract at '${deploymentData.implementationAddress}' for security.`
+  );
+  const impl = (await token.attach(
+    deploymentData.implementationAddress
+  )) as ZeroDAOToken;
+  await impl.initializeImplementation();
 
   logger.log(`Minting tokens...`);
   const tx = await token.mint(treasuryAddress, tokenMintAmount);
