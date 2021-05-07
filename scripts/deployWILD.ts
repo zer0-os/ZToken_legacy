@@ -8,7 +8,9 @@ const logger = getLogger("scripts::deployVesting");
 const oneMillion = 10 ** 6;
 const numDecimals = 18;
 const decimals = BigNumber.from(10).pow(numDecimals); // token has 18 decimal places
-const tokenMintAmount = BigNumber.from(50).mul(oneMillion).mul(decimals);
+
+// five-hundred million tokens (w/ 18 decimal points)
+const tokenMintAmount = BigNumber.from(500).mul(oneMillion).mul(decimals);
 
 const treasuryAddress = "0x4A4BcDa21DcB59AB6F3937Df10A027Ae6d48Ca07";
 const ownerAddress = "0xA208e811318376b0615a727c9C34BC0a428f3723";
