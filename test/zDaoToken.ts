@@ -122,7 +122,7 @@ describe("zDAO Token", () => {
     });
 
     it("reflects new balances in snapshot 4", async () => {
-      let expectedAmount = await token.balanceOf(user1.address);
+      const expectedAmount = await token.balanceOf(user1.address);
       await token.snapshot();
 
       let balanceAtSnapshot = await token.balanceOfAt(user1.address, 4);
@@ -153,7 +153,7 @@ describe("zDAO Token", () => {
     });
 
     it("reflects new balances in snapshot 5", async () => {
-      let expectedAmount = await token.balanceOf(user1.address);
+      const expectedAmount = await token.balanceOf(user1.address);
       await token.snapshot();
 
       let balanceAtSnapshot = await token.balanceOfAt(user1.address, 5);

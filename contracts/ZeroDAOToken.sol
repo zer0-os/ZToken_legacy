@@ -31,6 +31,12 @@ contract ZeroDAOToken is
     __ERC20Pausable_init();
   }
 
+  // Call this on the implementation contract (not the proxy)
+  function initializeImplementation() public initializer {
+    __Ownable_init();
+    _pause();
+  }
+
   /**
    * Mints new tokens.
    * @param account the account to mint the tokens for
