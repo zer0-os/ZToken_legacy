@@ -28,6 +28,14 @@ async function main() {
   const accounts = await hre.ethers.getSigners();
   let senderAccount: SignerWithAddress | Signer = accounts[0];
 
+  // await hre.network.provider.request({
+  //   method: "hardhat_impersonateAccount",
+  //   params: ["0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b"],
+  // });
+  // senderAccount = await ethers.provider.getSigner(
+  //   "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b"
+  // );
+
   const factory = new ZeroDAOToken__factory(senderAccount);
   const token = await factory.attach(tokenAddress);
 
@@ -48,24 +56,18 @@ async function main() {
 
   logger.log(`sending total of ${totalToSend} tokens`);
 
-  let totalGasUsed = BigNumber.from(0);
-
   const entries = Object.entries(allocations);
-  for (let i = 0; i < entries.length; ++i) {
-    const address = entries[i][0];
-    const amount = entries[i][1];
 
-    const actualSend = BigNumber.from(amount).mul(decimals);
+  let totalGasUsed = await token.estimateGas.transfer(
+    entries[0][0],
+    BigNumber.from(entries[0][1]).mul(decimals)
+  );
+  totalGasUsed = totalGasUsed.mul(BigNumber.from(entries.length));
 
-    logger.log(
-      `Will send ${ethers.utils.formatEther(
-        actualSend.toString()
-      )} tokens to ${address}`
-    );
-
-    const gasUsed = await token.estimateGas.transfer(address, actualSend);
-    totalGasUsed = totalGasUsed.add(gasUsed);
-  }
+  // totalGasUsed = await token.estimateGas.transferBulk(
+  //   Object.keys(allocations).slice(30),
+  //   BigNumber.from(100000)
+  // );
 
   const totalGasCost = totalGasUsed.mul(gasPrice);
   logger.log(`Estimated gas usage: ${totalGasUsed.toString()}`);
