@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
 import { doDeployToken } from "../tasks/deploy";
-import { ZeroDAOToken } from "../typechain";
+import { ZeroToken } from "../typechain";
 import { getLogger } from "../utilities";
 
 const logger = getLogger("scripts::deployWILD");
@@ -54,7 +54,7 @@ async function main() {
   );
   const impl = (await token.attach(
     deploymentData.implementationAddress
-  )) as ZeroDAOToken;
+  )) as ZeroToken;
   await impl.initializeImplementation();
 
   logger.log(`Minting tokens...`);

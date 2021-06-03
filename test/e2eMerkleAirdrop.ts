@@ -11,8 +11,8 @@ import * as fs from "fs";
 import {
   MerkleTokenAirdrop,
   MerkleTokenAirdrop__factory,
-  ZeroDAOToken,
-  ZeroDAOToken__factory,
+  ZeroToken,
+  ZeroToken__factory,
 } from "../typechain";
 
 chai.use(solidity);
@@ -33,7 +33,7 @@ describe("End 2 End Tests - Merkle Token Airdrop", () => {
   let user2: SignerWithAddress;
   let user3: SignerWithAddress;
 
-  let token: ZeroDAOToken;
+  let token: ZeroToken;
   let airdrop: MerkleTokenAirdrop;
 
   let merkleTree: MerkleDistributorInfo;
@@ -53,7 +53,7 @@ describe("End 2 End Tests - Merkle Token Airdrop", () => {
 
   describe("setup", () => {
     it("deploys a zDAO token", async () => {
-      const tokenFactory = new ZeroDAOToken__factory(creator);
+      const tokenFactory = new ZeroToken__factory(creator);
 
       // In non-test environments this needs to be done using the oz upgrade library
       token = await tokenFactory.deploy();

@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
 import { doDeployToken } from "../tasks/deploy";
-import { ZeroDAOToken, ZeroDAOToken__factory } from "../typechain";
+import { ZeroToken__factory } from "../typechain";
 import { getLogger } from "../utilities";
 
 import * as fs from "fs";
@@ -36,7 +36,7 @@ async function main() {
   //   "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b"
   // );
 
-  const factory = new ZeroDAOToken__factory(senderAccount);
+  const factory = new ZeroToken__factory(senderAccount);
   const token = await factory.attach(tokenAddress);
 
   const allocations: Allocations = JSON.parse(

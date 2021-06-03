@@ -1,13 +1,13 @@
-# Zer0 DAO Token Contract
+# zToken Contract
 
-The Zer0 DAO Token is an ERC20 token designed for usage in Zer0 DAO's.
+The zToken is both a general purpose ERC20 token and a token designed for usage in Zer0 DAO's.
 
 Many copies of this token may be deployed in the future (one for each DAO) and as such the token contract needs to be safe and easy to use.
 
 ## Intended Usage
 
-A Zer0 DAO Token is used to represent ownership of a DAO inside of Zer0.
-Users who own a Zer0 DAO token have privileges granted by the DAO.
+A zToken is used to represent ownership of a DAO inside of Zer0.
+Users who own a zToken have privileges granted by the DAO.
 One of these privileges may be voting rights on proposals.
 The weight of a users vote is determined by the quantity of tokens they own versus the total supply of tokens.
 
@@ -22,11 +22,11 @@ The token needs to implement the [ERC20 Token Standard](https://eips.ethereum.or
 
 ### Transfer
 
-A user who owns Zer0 DAO tokens should be able to transfer their tokens to another account or wallet.
+A user who owns zTokens should be able to transfer their tokens to another account or wallet.
 
 ### Pauseable
 
-The Zer0 DAO token administrator (owner of the Zer0 DAO token contract) should be able to freeze and unfreeze token transactions.
+The zToken administrator (owner of the zToken contract) should be able to freeze and unfreeze token transactions.
 
 Freezing of token transactions will prevent:
 
@@ -36,8 +36,8 @@ Freezing of token transactions will prevent:
 
 ### Upgradable
 
-It is likely that additional functionality may be required of a Zer0 DAO token in the future. 
-Therefore the Zer0 DAO token contracts should be upgradable to allow for functionality improvements without a token migration.
+It is likely that additional functionality may be required of a zToken in the future. 
+Therefore the zToken contracts should be upgradable to allow for functionality improvements without a token migration.
 
 ### Balance Snapshotting
 

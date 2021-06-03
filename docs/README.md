@@ -1,9 +1,9 @@
-# Zero DAO Token Contracts Documentation
+# Zero Token Contracts Documentation
 
-Here you will find documentation around the Zer0 DAO Token Contract set.
+Here you will find documentation around the Zero Token Contract set.
 
 For information in specific contracts please view these files:
 
-- [Zer0 DAO Token Contract](./zdaotoken.md)
+- [zToken Contract](./ztoken.md)
 - [Merkle Token Vesting Contract](./merklevesting.md)
 - [Merkle Token Airdrop Contract](./merkleairdrop.md)
