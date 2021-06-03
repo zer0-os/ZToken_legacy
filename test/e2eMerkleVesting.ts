@@ -8,8 +8,7 @@ import * as fs from "fs";
 import { MerkleDistributorInfo } from "../utilities/vesting/createMerkle";
 import { MerkleTokenVesting } from "../typechain/MerkleTokenVesting";
 import { MerkleTokenVesting__factory } from "../typechain/factories/MerkleTokenVesting__factory";
-import { ZeroDAOToken } from "../typechain/ZeroDAOToken";
-import { ZeroDAOToken__factory } from "../typechain/factories/ZeroDAOToken__factory";
+import { ZeroToken, ZeroToken__factory } from "../typechain";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ContractTransaction } from "ethers";
 
@@ -31,7 +30,7 @@ describe("End 2 End Tests - Merkle Token Vesting", () => {
   let user2: SignerWithAddress;
   let user3: SignerWithAddress;
 
-  let token: ZeroDAOToken;
+  let token: ZeroToken;
   let merkleVesting: MerkleTokenVesting;
 
   let merkleTree: MerkleDistributorInfo;
@@ -57,7 +56,7 @@ describe("End 2 End Tests - Merkle Token Vesting", () => {
 
   describe("setup", () => {
     it("deploys a zDAO token", async () => {
-      const tokenFactory = new ZeroDAOToken__factory(creator);
+      const tokenFactory = new ZeroToken__factory(creator);
 
       // In non-test environments this needs to be done using the oz upgrade library
       token = await tokenFactory.deploy();

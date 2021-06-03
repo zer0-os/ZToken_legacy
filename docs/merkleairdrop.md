@@ -6,7 +6,7 @@ It utilizes Merkle Trees to distribute tokens to a large quantity of users with 
 
 ## Intended Usage
 
-Zer0 DAO Tokens may need to be given to a large number of users, this contract provides a way to distribute tokens to a large number of users at a minimal gas cost to the sender, and requires the claimer to spend gas to claim the tokens.
+zToken may need to be given to a large number of users, this contract provides a way to distribute tokens to a large number of users at a minimal gas cost to the sender, and requires the claimer to spend gas to claim the tokens.
 
 ## Specifications
 

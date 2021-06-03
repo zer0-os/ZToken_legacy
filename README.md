@@ -1,6 +1,6 @@
-# Zer0 DAO Token
+# Zer0 Token
 
-This repository contains the Zer0 DAO Token and other utility contracts for airdropping and vesting ERC20 tokens.
+This repository contains the Zer0 Token and other utility contracts for airdropping and vesting ERC20 tokens.
 
 Check out the [docs](./docs) folder for more information on what they do.
 

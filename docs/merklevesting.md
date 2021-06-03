@@ -6,7 +6,7 @@ It utilizes Merkle Trees to distribute tokens to a large quantity of users with 
 
 ## Intended Usage
 
-Zer0 DAO Tokens will need to be given to a large number of users, vesting over a period of time.
+zToken will need to be given to a large number of users, vesting over a period of time.
 This contract serves two purposes:
 
 - To give "vesting" tokens to a large number of wallets at once

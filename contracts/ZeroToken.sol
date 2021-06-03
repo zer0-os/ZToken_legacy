@@ -9,7 +9,7 @@ import "./oz/ERC20PausableUpgradeable.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract ZeroDAOToken is
+contract ZeroToken is
   OwnableUpgradeable,
   ERC20Upgradeable,
   ERC20PausableUpgradeable,

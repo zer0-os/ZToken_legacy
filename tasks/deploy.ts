@@ -17,11 +17,6 @@ import {
 import { Contract, ContractFactory } from "ethers";
 import { MerkleInfo } from "../utilities/helpers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import {
-  MerkleTokenAirdrop,
-  MerkleTokenVesting,
-  ZeroDAOToken,
-} from "../typechain";
 
 const logger = getLogger("tasks::deploy");
 
@@ -179,7 +174,7 @@ export const doDeployToken = async (
   symbol: string,
   tag?: string
 ): Promise<UpgradableDeployedContract> => {
-  const factory = await hre.ethers.getContractFactory("ZeroDAOToken", deployer);
+  const factory = await hre.ethers.getContractFactory("ZeroToken", deployer);
   logger.debug(`Deploying token contract...`);
   const deploymentData = await deployUpgradableContract(hre, factory, [
     name,

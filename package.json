@@ -50,7 +50,7 @@
     "lint:contracts": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
     "lint:ts": "eslint . --ext .ts"
   },
-  "name": "zdao-token",
+  "name": "zToken",
   "version": "0.0.0",
   "license": "MIT"
 }

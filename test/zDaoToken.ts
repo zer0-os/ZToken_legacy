@@ -2,9 +2,9 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { ZeroDAOToken, ZeroDAOToken__factory } from "../typechain";
+import { ZeroToken, ZeroToken__factory } from "../typechain";
 
-describe("zDAO Token", () => {
+describe("zToken", () => {
   let accounts: SignerWithAddress[];
 
   let creator: SignerWithAddress;
@@ -13,7 +13,7 @@ describe("zDAO Token", () => {
   let user2: SignerWithAddress;
   let user3: SignerWithAddress;
 
-  let token: ZeroDAOToken;
+  let token: ZeroToken;
 
   before(async () => {
     accounts = await ethers.getSigners();
@@ -25,7 +25,7 @@ describe("zDAO Token", () => {
 
   const reDeployBefore = () => {
     before(async () => {
-      const tokenFactory = new ZeroDAOToken__factory(creator);
+      const tokenFactory = new ZeroToken__factory(creator);
 
       // In non-test environments this needs to be done using the oz upgrade library
       token = await tokenFactory.deploy();
