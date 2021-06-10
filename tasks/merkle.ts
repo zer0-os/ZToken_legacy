@@ -11,6 +11,8 @@ const logger = getLogger("tasks::merkle");
 type generateFunc = (json: any) => any;
 type verifyFunc = (json: any) => boolean;
 
+const ipfsBaseUri = "https://ipfs.io/ipfs/";
+
 const doGenerate = async (inputFile: string, generate: generateFunc) => {
   logger.log(`Generating merkle tree from ${inputFile}`);
 
@@ -33,6 +35,13 @@ const doGenerate = async (inputFile: string, generate: generateFunc) => {
   logger.log(`Saving merkle tree to ${outputFileName}`);
 
   fs.writeFileSync(outputFileName, merkleJson);
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { create: createClient } = require("ipfs-http-client");
+  const client = createClient("https://ipfs.infura.io:5001");
+  const entry = await client.add(merkleJson);
+
+  logger.log(`Merkle Tree uploaded to IPFS at: ${ipfsBaseUri}${entry.cid}`);
 };
 
 const doVerify = async (merkleFile: string, verify: verifyFunc) => {
