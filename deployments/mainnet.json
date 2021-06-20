@@ -13,5 +13,64 @@
       "admin": "0xAaCa00D1000AD76960FD5f0A8B6d15587bFC1ab4",
       "implementation": "0x67AAc030b59d266e754b0b24af9cc77EC2534a37"
     }
+  ],
+  "vesting": [
+    {
+      "tag": "wilder-ido",
+      "address": "0x7100BB1C9a114cD2f8DF67F9c9c2a94E6e5070dd",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-20T21:19:36.331Z",
+      "args": {
+        "start": 12376769,
+        "cliff": 303230,
+        "duration": 1516153,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xfdadc474fad410f5282d4fcdb277b4f515ccac099c0933d09ed67d1ed45142fe"
+      },
+      "isUpgradable": true,
+      "admin": "0xAaCa00D1000AD76960FD5f0A8B6d15587bFC1ab4",
+      "implementation": "0xC6d57d9eDAa69d63950A471f64897f5eC5D84F92",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-ido-merkleTree.json"
+      }
+    },
+    {
+      "tag": "wilder-ido",
+      "address": "0x6E9c63AF66e1F59137214d51ab7716E8dB9D6467",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-20T21:21:47.278Z",
+      "args": {
+        "start": 12376769,
+        "cliff": 303230,
+        "duration": 1516153,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xfdadc474fad410f5282d4fcdb277b4f515ccac099c0933d09ed67d1ed45142fe"
+      },
+      "isUpgradable": true,
+      "admin": "0xd50d09dE74CdEdeA7060A435D8fDdb481752434C",
+      "implementation": "0x6904D0d33f50e507b982FECeBCEc2dc2fCd8C1F9",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-ido-merkleTree.json"
+      }
+    },
+    {
+      "tag": "wilder-influencers",
+      "address": "0xB7dFcb421412F16B25DDd4AD4bdd73D0883136D8",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-20T21:25:46.663Z",
+      "args": {
+        "start": 12350000,
+        "cliff": 0,
+        "duration": 2370000,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0x5655b48bbae21f8cd5167dd204e523de8fb34ee03ce758a8662657017eca2dfc"
+      },
+      "isUpgradable": true,
+      "admin": "0xE48C6A847bC20Fb5008bfecED249AA1403483E03",
+      "implementation": "0x0EDF408dD8cD5bb388E26766d007591ccB802F06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-influencers-merkleTree.json"
+      }
+    }
   ]
 }

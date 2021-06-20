@@ -1,3 +1,8 @@
 # Wilder Token
 
 Wilder token deployed to `0x2a3bFF78B79A009976EeA096a51A948a3dC00e34`
+
+## Vesting Contracts
+
+IDO - `0x6E9c63AF66e1F59137214d51ab7716E8dB9D6467`
+Influencer - `0xB7dFcb421412F16B25DDd4AD4bdd73D0883136D8`
