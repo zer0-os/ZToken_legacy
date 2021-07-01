@@ -1,0 +1,137 @@
+{
+  "vesting": [
+    {
+      "tag": "brett-site",
+      "address": "0x225D8d719d03301bE8247B2Fe3f4E8eBB4440d2e",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-23T04:16:34.779Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0xca20ca12287ec713e0893ba18d3a847e9bf72bbe739c709cccf388fff92397d2"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    },
+    {
+      "tag": "brett-site",
+      "address": "0x1d308f379c94e668Ef90328bF0C11dFFbd5055E9",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-23T06:00:11.329Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0x21f3b1ec449b37cc03ae235ef106b9a05d6552e53b792ca5acff04dac057bf0a"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    },
+    {
+      "tag": "brett-site",
+      "address": "0xa779DBc87366C46A51b87CBB0F8be497FE84C511",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-24T18:02:11.371Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0xda22a47e74304841770d10a9dd1d6c4ea1ce520956eb807fd03871f58ef72dc0"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    },
+    {
+      "tag": "brett-site",
+      "address": "0x1625DB76d379A6D06bd9bcAcC0D3d51078B825aF",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-25T18:42:34.699Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0x21f3b1ec449b37cc03ae235ef106b9a05d6552e53b792ca5acff04dac057bf0a"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    },
+    {
+      "tag": "brett-site",
+      "address": "0x4B1b5A459bbD5c5406562c0839cb2586c1C66aBa",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-25T18:43:50.094Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0x532f6cfa501dc75e1888fb9d25479acce5a1d4ae4d91aa28b2749cc60a427573"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    },
+    {
+      "tag": "brett-site",
+      "address": "0x3a340D9591b31374e55CEb1f95c08d2aaC91Be24",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-25T18:44:34.009Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0x38cd4f23b576f2ab7299a34216932eb5b5904adba51af5b208fdf36e95d1e3d7"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    },
+    {
+      "tag": "brett-site",
+      "address": "0xd90520824daeD187B088D8d14512B611Bfbd5759",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-06-30T21:44:17.343Z",
+      "args": {
+        "start": 25659940,
+        "cliff": 100,
+        "duration": 100000,
+        "token": "0x1cC42Ed33717BA3dd175d18B7aDF7a59c52b2AB3",
+        "_merkleRoot": "0x41fd8420e47dd104bfbae01017a151f9d8c9b94d920956302b433e02d8bd91bd"
+      },
+      "isUpgradable": true,
+      "admin": "0xE2Bd58fe5cc126ef254dEf19B1bAc983D7Af38f6",
+      "implementation": "0xdEbDa3CF6e8316b6Dfe62A391f956031EACb5e06",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\testsite-merkleTree.json"
+      }
+    }
+  ]
+}

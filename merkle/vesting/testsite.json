@@ -1,0 +1,58 @@
+{
+  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8": {
+    "amount": "10000000000000000000000",
+    "revocable": false
+  },
+  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x90F79bf6EB2c4f870365E785982E1f101E93b906": {
+    "amount": "10000000000000000000000",
+    "revocable": false
+  },
+  "0x0DDdA1dd73C063Af0A8D4Df0CDd2a6818685f9CE": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x16E51C8E6A90B68A065423ACCbdbEDE1a9259f30": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x13fc7bcCa25BC0bAB1c9cbEc2Ea2a254F4357f6E": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x98Cc8D4Be6B9ED58cA70801541dDD5d2F5AEA73F": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x18c2E707804E3f1B99B7fbfb8799A25De8e98dc9": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0xeA0C62977d470F0B1a15DF49854B2040682BdF14": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x213bA6E1Ebb90ea9F5696F0d1269120E2B13F404": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x6d615288774f79f37f003a8FC3606EE20cFA0F15": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0x66296E35273c4010fE5C5D8E94dCa108ADbD81fc": {
+    "amount": "10000000000000000000000",
+    "revocable": true
+  },
+  "0xc141e4dC9908341e4aC511155bEB3134D3ed3148": {
+    "amount": "20000000000000000000000",
+    "revocable": true
+  },
+  "0x822D71E46806081FA348aAB60A7b824B91e57825": {
+    "amount": "80000000000000000000000",
+    "revocable": true
+  }
+}
