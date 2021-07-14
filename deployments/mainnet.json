@@ -71,6 +71,44 @@
       "metadata": {
         "merkleFile": ".\\merkle\\vesting\\wilder-influencers-merkleTree.json"
       }
+    },
+    {
+      "tag": "wilder-v4",
+      "address": "0xD393224e6EBbFb46C6a09A6Fd8acc596f6392402",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-07-02T00:11:46.649Z",
+      "args": {
+        "start": 12344976,
+        "cliff": 0,
+        "duration": 2426153,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xf0aa483ab20a1cc397ec6d68d67877acddcf827525b29219bb44a9d271638caa"
+      },
+      "isUpgradable": true,
+      "admin": "0x6cA959fbc8e3df1fBeA5d9791De0047E1B3a57C6",
+      "implementation": "0x8d52c3bac5FA670B8A1e8d370C00a086946C54bB",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-v4-merkleTree.json"
+      }
+    },
+    {
+      "tag": "wilder-v3",
+      "address": "0x441b52f945B6f3E7D2019f2A0a3537DBA1a7ef87",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-07-02T00:23:43.629Z",
+      "args": {
+        "start": 12344976,
+        "cliff": 0,
+        "duration": 2426153,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0x932ef63f8d5251fc998f396a4d3ebdac722d775c690fcdbeb63c4c39c1597ce3"
+      },
+      "isUpgradable": true,
+      "admin": "0x6cA959fbc8e3df1fBeA5d9791De0047E1B3a57C6",
+      "implementation": "0x8d52c3bac5FA670B8A1e8d370C00a086946C54bB",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-v3-merkleTree.json"
+      }
     }
   ]
 }

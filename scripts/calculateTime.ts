@@ -7,7 +7,7 @@ const getCurrentBlock = async () => {
 };
 
 const secondsPerBlock = 13;
-const targetDate = new Date("6/21/2021 12:00:00 PST");
+const targetDate = new Date("5/2/2021 12:00:00 PST");
 console.log(targetDate);
 
 const calculate = async () => {
