@@ -1,0 +1,147 @@
+{
+  "merkleRoot": "0xf0aa483ab20a1cc397ec6d68d67877acddcf827525b29219bb44a9d271638caa",
+  "tokenTotal": "20807290000000000000000000",
+  "claims": {
+    "0x09b2Dd967305ce5A7209243Ae865193401A985e7": {
+      "index": 0,
+      "amount": "1770833000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x46bbd147472f8fd9dcb1c63fd3cd2ff1af3f178628801c2a6341649bf9f2da16",
+        "0xe4c146bfdaca62912fe19a8b3cc0369947a6194900ff8416fc59222fcff8cd0f",
+        "0x0cf9c82059e2f2046391e2dddcee7bb5329de928d6edcdb5099e7b138024295f",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0x13c8817D021BE946D81F46e2289E01a26d3e542a": {
+      "index": 1,
+      "amount": "1328125000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x174ce10522a0eef66a8f0f8b2c4ad6ff4c6b153622bc47391930d4077dfafdd4",
+        "0x8430f5e9ecdbfaefbcfb5583ca53be45ea3fdb819f7ca872d751ea2f1ec2393c"
+      ]
+    },
+    "0x16A909303Aa289c126E5FE821dE739904F0bbAD4": {
+      "index": 2,
+      "amount": "2125000000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x0c96891cc49038b570eb6ab3cc85bc3f951a1419761e9386de73536f56afed02",
+        "0xeef65fda8fbd581c3f0e29dc42d4d617e003e8d14db1fb5e98b1f39d03684422",
+        "0x2c882a67fd3ec2dc99036db460ccb3a5250821613cf8f0994ce3ca14ee00ab8e",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0x33763Fd4A2257A24864c3B268bf8D298be24a936": {
+      "index": 3,
+      "amount": "885417000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x28d2d8f93e3158dda95b20974b7bff7a15902b10d4bd4b33c54183d5e02f2120",
+        "0x8e4bb3284390bc408b82f93ef9a117fc63b3853198c40d87ec9f08d477385fff",
+        "0x2c882a67fd3ec2dc99036db460ccb3a5250821613cf8f0994ce3ca14ee00ab8e",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0x3bEaEc38ee662b0De92FcB0CfDb31C2eb1B8d164": {
+      "index": 4,
+      "amount": "442708000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x92d23e62e9784d6ce8534a3b54b942d8cf3a6f6736371dc74055bd2f83087307",
+        "0xc1c60a8680e90e18ee6f7ffa4517b8e8ea1522061a2f45117847714abb271192",
+        "0xb78581443ef5f88667bebafb95fb4484100f3c6f95d642b21a8b3a3736aa0e5f",
+        "0x8430f5e9ecdbfaefbcfb5583ca53be45ea3fdb819f7ca872d751ea2f1ec2393c"
+      ]
+    },
+    "0x7E3474DFB1f9510Ed314d11aFa6c6F395B2DED61": {
+      "index": 5,
+      "amount": "2656250000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x71b0c0e799354e2085f92ca43165ef0f8ccd62cdf00efabf81651a185c832165",
+        "0x9d2b6a310b7ef2ae984fd84e58f93be6ea7989265206f93b36fca2c60b3b86d1",
+        "0xb78581443ef5f88667bebafb95fb4484100f3c6f95d642b21a8b3a3736aa0e5f",
+        "0x8430f5e9ecdbfaefbcfb5583ca53be45ea3fdb819f7ca872d751ea2f1ec2393c"
+      ]
+    },
+    "0x82D181e9491CF1FfC606769D30A153BCb626f17A": {
+      "index": 6,
+      "amount": "1328125000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x9a05d1580a8aa1902f57110d29021568999ddd06a49a698c18903076fcb0c5e0",
+        "0xc1c60a8680e90e18ee6f7ffa4517b8e8ea1522061a2f45117847714abb271192",
+        "0xb78581443ef5f88667bebafb95fb4484100f3c6f95d642b21a8b3a3736aa0e5f",
+        "0x8430f5e9ecdbfaefbcfb5583ca53be45ea3fdb819f7ca872d751ea2f1ec2393c"
+      ]
+    },
+    "0xA6C0C5ABDB734839da6450b90c1C43E5C2AB0a3C": {
+      "index": 7,
+      "amount": "1770833000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x59a086702090acad07fac3f52afd6006b1e3a59232bedab8b74436ec2e4085f6",
+        "0xd446ce528fc2d8658cdc58d1540b89c8fcf34dd05c363445a9b524ae49bd757a",
+        "0x0cf9c82059e2f2046391e2dddcee7bb5329de928d6edcdb5099e7b138024295f",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0xB6289107a186f9724F04fd8d6d848aDD3C82C7dA": {
+      "index": 8,
+      "amount": "2125000000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x4e72d0b8e486e0dfd63ac61aaeb37f33475bd7a8101e7affc0c948e4bc258cb8",
+        "0xd446ce528fc2d8658cdc58d1540b89c8fcf34dd05c363445a9b524ae49bd757a",
+        "0x0cf9c82059e2f2046391e2dddcee7bb5329de928d6edcdb5099e7b138024295f",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0xC7859967DcB964E6F06feCE32d42357Ab98b1F51": {
+      "index": 9,
+      "amount": "1770833000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x09917213df29eec95e28f78623709781f03c47be28c4a5a30563dcce469305d6",
+        "0xeef65fda8fbd581c3f0e29dc42d4d617e003e8d14db1fb5e98b1f39d03684422",
+        "0x2c882a67fd3ec2dc99036db460ccb3a5250821613cf8f0994ce3ca14ee00ab8e",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0xa47DcC13f7Fd80eCF5F65d8fBeaeb5788CE9496B": {
+      "index": 10,
+      "amount": "1062500000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x712b3f5447e5fef82255c0430838f3213b653251e738bfb4f6cc6617acc61289",
+        "0x9d2b6a310b7ef2ae984fd84e58f93be6ea7989265206f93b36fca2c60b3b86d1",
+        "0xb78581443ef5f88667bebafb95fb4484100f3c6f95d642b21a8b3a3736aa0e5f",
+        "0x8430f5e9ecdbfaefbcfb5583ca53be45ea3fdb819f7ca872d751ea2f1ec2393c"
+      ]
+    },
+    "0xbE8FF5C9d74aFd3F08886256f0B1E9BA18Bf83b9": {
+      "index": 11,
+      "amount": "1770833000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x403ec4bd26f2c320ee9b48cdf38ea22dbb177e08d95c5feb20d7e8cfc057d9ce",
+        "0xe4c146bfdaca62912fe19a8b3cc0369947a6194900ff8416fc59222fcff8cd0f",
+        "0x0cf9c82059e2f2046391e2dddcee7bb5329de928d6edcdb5099e7b138024295f",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    },
+    "0xeF7cFd3A5a1a9ddD3F4582f14B9A98B3e86eDED1": {
+      "index": 12,
+      "amount": "1770833000000000000000000",
+      "revocable": false,
+      "proof": [
+        "0x3e734c5e2e99943153fcc93c46a54801c7fc4c2abfec4ab51f180576aa3398b8",
+        "0x8e4bb3284390bc408b82f93ef9a117fc63b3853198c40d87ec9f08d477385fff",
+        "0x2c882a67fd3ec2dc99036db460ccb3a5250821613cf8f0994ce3ca14ee00ab8e",
+        "0x1aaac50ab0cc3271e3aac3e3ec85585db91375ace8f305455f19a5374d78a6ed"
+      ]
+    }
+  }
+}

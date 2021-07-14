@@ -3,6 +3,8 @@ import { getLogger } from "../utilities";
 import * as fs from "fs";
 import * as vesting from "../utilities/vesting";
 import * as airdrop from "../utilities/airdrop";
+import { BigNumber } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -13,12 +15,23 @@ type verifyFunc = (json: any) => boolean;
 
 const ipfsBaseUri = "https://ipfs.io/ipfs/";
 
-const doGenerate = async (inputFile: string, generate: generateFunc) => {
+const doGenerate = async (inputFile: string, generate: generateFunc, hre: HardhatRuntimeEnvironment) => {
   logger.log(`Generating merkle tree from ${inputFile}`);
 
   const jsonContents = JSON.parse(
     fs.readFileSync(inputFile, { encoding: "utf8" })
   );
+
+  // calculate total amount of tokens
+  {
+    let total = BigNumber.from(0);
+    for (const [key, value] of Object.entries(jsonContents) as [string, any][]) {
+      const amount = BigNumber.from(value.amount);
+      total = total.add(amount);
+    }
+
+    console.log(`Total amount granted is ${total.toString()} (${hre.ethers.utils.formatEther(total)})`);
+  }
 
   if (typeof jsonContents != "object") {
     throw new Error(`Invalid json object`);
@@ -86,7 +99,7 @@ task("merkle", "Generates a merkle tree from a json file.")
     null,
     types.string
   )
-  .setAction(async (taskArguments) => {
+  .setAction(async (taskArguments, hre: HardhatRuntimeEnvironment) => {
     // vesting
     const vestingGenerateFunc = (jsonContents: any) => {
       return vesting.parseBalanceMap(jsonContents);
@@ -120,7 +133,8 @@ task("merkle", "Generates a merkle tree from a json file.")
     if (taskArguments.action === "generate") {
       await doGenerate(
         taskArguments.file,
-        generateFuncs[taskArguments.type as string]
+        generateFuncs[taskArguments.type as string],
+        hre
       );
     } else if (taskArguments.action === "verify") {
       await doVerify(

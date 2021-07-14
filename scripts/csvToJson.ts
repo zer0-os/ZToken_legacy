@@ -2,7 +2,7 @@ import * as fs from "fs";
 import csv from "csv-parser";
 import { ethers } from "ethers";
 
-const filepath = "./input.csv";
+const filepath = "./v3vesting.csv";
 const outputFile = "./merkle-input.json";
 
 interface VestingAward {
