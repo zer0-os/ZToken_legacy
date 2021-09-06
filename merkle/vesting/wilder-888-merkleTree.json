@@ -1,0 +1,12 @@
+{
+  "merkleRoot": "0x02143e22b2b980bb5542be34f8efcc8c7f4fed5b0b5445c360b6667d225166a2",
+  "tokenTotal": "2479166669500000000000000",
+  "claims": {
+    "0x0512637aAa7Ab5aAD63f39c0314900850d12A38d": {
+      "index": 0,
+      "amount": "2479166669500000000000000",
+      "revocable": true,
+      "proof": []
+    }
+  }
+}
