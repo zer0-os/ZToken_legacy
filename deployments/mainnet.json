@@ -109,6 +109,25 @@
       "metadata": {
         "merkleFile": ".\\merkle\\vesting\\wilder-v3-merkleTree.json"
       }
+    },
+    {
+      "tag": "polka",
+      "address": "0x0851076f0F05E008337b368fAbD6328CeFeb358B",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-09-06T17:53:07.355Z",
+      "args": {
+        "start": 12344976,
+        "cliff": 0,
+        "duration": 2426153,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xd084c636372b80855ce1c164aaa051ecfcef54ed4dabd69e9738cbc373cb6ed7"
+      },
+      "isUpgradable": true,
+      "admin": "0x6cA959fbc8e3df1fBeA5d9791De0047E1B3a57C6",
+      "implementation": "0x8d52c3bac5FA670B8A1e8d370C00a086946C54bB",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-polka-merkleTree.json"
+      }
     }
   ]
 }
