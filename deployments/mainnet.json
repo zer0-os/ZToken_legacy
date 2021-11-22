@@ -128,6 +128,25 @@
       "metadata": {
         "merkleFile": ".\\merkle\\vesting\\wilder-polka-merkleTree.json"
       }
+    },
+    {
+      "tag": "wilder-sprio",
+      "address": "0x5521D7E4D9AE2294ecDf505fd138b8924Ea7A8E2",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-10-25T22:04:45.077Z",
+      "args": {
+        "start": 13100000,
+        "cliff": 4706865,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0x787a181432a5a3499f339bba62a65734e706b3ccae22b7b5919931971888e080"
+      },
+      "isUpgradable": true,
+      "admin": "0x6cA959fbc8e3df1fBeA5d9791De0047E1B3a57C6",
+      "implementation": "0x8d52c3bac5FA670B8A1e8d370C00a086946C54bB",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-spiro-merkleTree.json"
+      }
     }
   ]
 }

@@ -1,0 +1,63 @@
+yarn hardhat deploy vesting --tag "wilder-ido" --merkle .\merkle\vesting\wilder-ido-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --network mainnet --start 12376769 --duration 1516153 --cliff 303230
+
+yarn hardhat deploy vesting --tag "wilder-ido" --merkle .\merkle\vesting\wilder-ido-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12376769 --duration 1516153 --cliff 303230
+
+
+yarn hardhat deploy vesting --tag "wilder-influencers" --merkle .\merkle\vesting\wilder-influencers-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12350000 --duration 2370000 --cliff 0
+
+
+// v4
+start: 12344976
+cliff: 0
+duration: 2426153
+
+yarn hardhat deploy vesting --tag "wilder-v4" --merkle .\merkle\vesting\wilder-v4-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12344976 --duration 2426153 --cliff 0
+
+
+
+// v3
+start: 12344976
+cliff: 0
+duration: 2426153
+
+
+yarn hardhat deploy vesting --tag "wilder-v3" --merkle .\merkle\vesting\wilder-v3-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12344976 --duration 2426153 --cliff 0
+
+
+// chainswap hap
+
+start: 12807422
+cliff: 0
+duration: 1
+
+yarn hardhat deploy vesting --tag "wilder-chainswap-hack" --merkle .\merkle\vesting\chainswap-hack-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12807422 --duration 1 --cliff 0
+
+yarn hardhat deploy vesting --tag "alejotest" --merkle .\merkle\vesting\testsite-merkleTree.json --token 0x5D242CC6f169BeF7Bf7620Fc52Be3520c94a0A03 --start 26297218 --duration 1000 --cliff 0
+
+// chainswap post hack
+
+start: 12885534
+cliff: 0
+duration: 1213846 // 6 months
+
+yarn hardhat deploy vesting --tag "wilder-chainswap-posthack" --merkle .\merkle\vesting\chainswap-posthack-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12885534 --duration 1213846 --cliff 0
+
+
+
+// Spiro
+
+blocktime = 13.4s
+1 year = 31536000 seconds
+duration = 3 years = 60 * 60 * 24 * 365 = (31536000 * 3) / 13.4s = 7060298
+cliff = 2 years = (31536000 * 2) / 13.4 = 4706865
+
+13100000 + 7060298 = 3 years from 8/26/21 = 20160298
+
+start: 13100000
+cliff: 4706865
+duration: 7060298
+
+0x787a181432a5a3499f339bba62a65734e706b3ccae22b7b5919931971888e080
+https://ipfs.io/ipfs/QmboKEYYp3rc4q8hC5EZwqGgVJnxPEwiQ3VdAv5qJXz1iE
+
+yarn hardhat deploy vesting --tag "wilder-sprio" --merkle .\merkle\vesting\wilder-spiro-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 13100000 --duration 7060298 --cliff 4706865
