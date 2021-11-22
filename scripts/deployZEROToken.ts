@@ -1,4 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import * as hre from "hardhat";
 import { doDeployToken } from "../tasks/deploy";
@@ -8,10 +7,15 @@ import { getLogger } from "../utilities";
 const logger = getLogger("scripts::deployWILD");
 
 // 10,101,010,101 total tokens (https://www.zine.live/zero-qdo-token-generation-event/)
-const tokenMintAmount = ethers.utils.parseEther("10101010101");
+const tokenMintAmount = ethers.utils.parseEther("10101010101"); // 10101010101 * 10^18 = 10101010101.000000000000000000
 
+// This is what will have all of the tokens once we deploy.
+// We will mint `tokenMintAmount` tokens, and transfer to `treasuryAddress`
 const treasuryAddress = "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b";
-const ownerAddress = "0x32eB727B120Acf288306fBD67a60D1b6d8984476";
+
+// This is what will own the smart contract, having admin access
+// and the ability to upgrade the smart contract
+const ownerAddress = "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b";
 
 async function main() {
   await hre.run("compile");
@@ -22,6 +26,7 @@ async function main() {
     `Will mint ${hre.ethers.utils.formatEther(tokenMintAmount)} tokens`
   );
 
+  // Get the deployment account from our hardhat config
   const accounts = await hre.ethers.getSigners();
   const deploymentAccount = accounts[0];
 
@@ -42,7 +47,7 @@ async function main() {
     "zer0-prod" // Deployment tag
   );
 
-  const token = deploymentData.instance;
+  const token = deploymentData.instance; // Proxy that was deployed
 
   logger.log(`Deployed contract to ${token.address}`);
 
@@ -65,15 +70,15 @@ async function main() {
   await tx.wait();
   logger.log(`finished minting`);
 
-  // Transfer ownership of Token Contract
+  // // Transfer ownership of Token Contract
 
-  logger.log(`transferring token ownership to ${ownerAddress}`);
-  await token.transferOwnership(ownerAddress);
+  // logger.log(`transferring token ownership to ${ownerAddress}`);
+  // await token.transferOwnership(ownerAddress);
 
-  // Transfer ownership of Proxy Admin
+  // // Transfer ownership of Proxy Admin
 
-  logger.log(`transferring proxy admin ownership to ${ownerAddress}`);
-  await hre.upgrades.admin.transferProxyAdminOwnership(ownerAddress);
+  // logger.log(`transferring proxy admin ownership to ${ownerAddress}`);
+  // await hre.upgrades.admin.transferProxyAdminOwnership(ownerAddress);
 }
 
 main();

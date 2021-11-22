@@ -261,9 +261,5 @@
         }
       }
     }
-  },
-  "admin": {
-    "address": "0x6cA959fbc8e3df1fBeA5d9791De0047E1B3a57C6",
-    "txHash": "0xbb7579f7aff11c0280497e385eb42b7aca445b49e34ce178da052a3b485a9aaa"
   }
 }
