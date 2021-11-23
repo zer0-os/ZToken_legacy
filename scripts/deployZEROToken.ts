@@ -11,11 +11,11 @@ const tokenMintAmount = ethers.utils.parseEther("10101010101"); // 10101010101 *
 
 // This is what will have all of the tokens once we deploy.
 // We will mint `tokenMintAmount` tokens, and transfer to `treasuryAddress`
-const treasuryAddress = "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b";
+const treasuryAddress = "0xE0502bBd7b9A21E5Be6FEc0c857C930dbe8C91F1";
 
 // This is what will own the smart contract, having admin access
 // and the ability to upgrade the smart contract
-const ownerAddress = "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b";
+const ownerAddress = "0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d";
 
 async function main() {
   await hre.run("compile");
@@ -42,9 +42,9 @@ async function main() {
   const deploymentData = await doDeployToken(
     hre,
     deploymentAccount,
-    "Zer0", // name of token
-    "ZER0", // Symbol of Token
-    "zer0-prod" // Deployment tag
+    "ZERO", // name of token
+    "ZERO", // Symbol of Token
+    "zero-prod" // Deployment tag
   );
 
   const token = deploymentData.instance; // Proxy that was deployed
@@ -59,7 +59,12 @@ async function main() {
   const impl = (await token.attach(
     deploymentData.implementationAddress
   )) as ZeroToken;
-  await impl.initializeImplementation();
+  try {
+    let tx = await impl.initializeImplementation();
+    await tx.wait(2);
+  } catch (e) {
+    console.log((e as any).message);
+  }
 
   // Mint total supply of tokens into treasury
 
@@ -72,13 +77,21 @@ async function main() {
 
   // // Transfer ownership of Token Contract
 
-  // logger.log(`transferring token ownership to ${ownerAddress}`);
-  // await token.transferOwnership(ownerAddress);
+  logger.log(`transferring token ownership to ${ownerAddress}`);
+  await token.transferOwnership(ownerAddress);
 
   // // Transfer ownership of Proxy Admin
 
-  // logger.log(`transferring proxy admin ownership to ${ownerAddress}`);
-  // await hre.upgrades.admin.transferProxyAdminOwnership(ownerAddress);
+  logger.log(`transferring proxy admin ownership to ${ownerAddress}`);
+  await hre.upgrades.admin.transferProxyAdminOwnership(ownerAddress);
 }
 
-main();
+const tryMain = async () => {
+  try {
+    await main();
+  } catch (e) {
+    console.log((e as any).message);
+  }
+};
+
+tryMain();
