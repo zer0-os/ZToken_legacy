@@ -1,0 +1,11 @@
+# ZERO Token
+
+ZERO token deployed to `0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8`
+
+Proxy admin address: `0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C`
+
+Treasury address: `0xE0502bBd7b9A21E5Be6FEc0c857C930dbe8C91F1`
+
+admin address: `0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d`
+
+total supply: 10101010101 $ZERO

@@ -3,10 +3,10 @@ require("dotenv").config();
 
 import { task, HardhatUserConfig } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
-import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-ethers";
+import "@typechain/hardhat";
+import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
 import "./tasks/merkle";
 import "./tasks/deploy";
@@ -20,6 +20,10 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 });
 
 const config: HardhatUserConfig = {
+  typechain: {
+    outDir: "typechain",
+    target: "ethers-v5",
+  },
   solidity: {
     compilers: [
       {
@@ -45,12 +49,13 @@ const config: HardhatUserConfig = {
       forking: {
         url:
           "https://eth-mainnet.alchemyapi.io/v2/MnO3SuHlzuCydPWE1XhsYZM_pHZP8_ix",
+        blockNumber: 13665280,
       },
     },
     mainnet: {
-      accounts: { mnemonic: process.env.MAINNET_MNEMONIC || "" },
+      accounts: [`0x${process.env.MAINNET_PRIVATE_KEY}`],
       url: `https://mainnet.infura.io/v3/0e6434f252a949719227b5d68caa2657`,
-      gasPrice: 30000000000,
+      gasPrice: 240000000000,
     },
     kovan: {
       accounts: { mnemonic: process.env.TESTNET_MNEMONIC || "" },

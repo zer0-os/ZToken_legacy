@@ -12,6 +12,19 @@
       "isUpgradable": true,
       "admin": "0xAaCa00D1000AD76960FD5f0A8B6d15587bFC1ab4",
       "implementation": "0x67AAc030b59d266e754b0b24af9cc77EC2534a37"
+    },
+    {
+      "tag": "zero-prod",
+      "address": "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8",
+      "version": "ce4272339ef9d2fd9053afea697bed1b1b8c47edaa1726c8e8734df05d3ec518",
+      "date": "2021-11-23T00:34:18.732Z",
+      "args": {
+        "name": "ZERO",
+        "symbol": "ZERO"
+      },
+      "isUpgradable": true,
+      "admin": "0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C",
+      "implementation": "0x8540aE9dc0A373d3EA418e2CfAAEaE09051d4093"
     }
   ],
   "vesting": [

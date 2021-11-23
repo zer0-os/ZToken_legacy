@@ -51,6 +51,32 @@
       "isUpgradable": true,
       "admin": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
       "implementation": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+    },
+    {
+      "tag": "zero-prod",
+      "address": "0xD84379CEae14AA33C123Af12424A37803F885889",
+      "version": "ce4272339ef9d2fd9053afea697bed1b1b8c47edaa1726c8e8734df05d3ec518",
+      "date": "2021-11-23T00:12:58.518Z",
+      "args": {
+        "name": "ZERO",
+        "symbol": "ZERO"
+      },
+      "isUpgradable": true,
+      "admin": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
+      "implementation": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B"
+    },
+    {
+      "tag": "zero-prod",
+      "address": "0xD84379CEae14AA33C123Af12424A37803F885889",
+      "version": "ce4272339ef9d2fd9053afea697bed1b1b8c47edaa1726c8e8734df05d3ec518",
+      "date": "2021-11-23T00:13:43.548Z",
+      "args": {
+        "name": "ZERO",
+        "symbol": "ZERO"
+      },
+      "isUpgradable": true,
+      "admin": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
+      "implementation": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B"
     }
   ],
   "vesting": [
