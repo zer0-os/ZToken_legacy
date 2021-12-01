@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-import {TokenVesting, IERC20} from "./TokenVesting.sol";
+import {TokenVesting} from "./TokenVesting.sol";
 import {MerkleDistributor} from "./MerkleDistributor.sol";
 
 contract MerkleTokenVesting is TokenVesting, MerkleDistributor {
