@@ -160,6 +160,25 @@
       "metadata": {
         "merkleFile": ".\\merkle\\vesting\\wilder-spiro-merkleTree.json"
       }
+    },
+    {
+      "tag": "zer0-qdo",
+      "address": "0x956234670110D154Abb591FB46FC3b5A455A3c97",
+      "version": "6d1712a411d10ccdbb23fbede750c38acdee8129c18e946a95c572077f99ba86",
+      "date": "2021-12-01T19:23:48.842Z",
+      "args": {
+        "start": 13344539,
+        "cliff": 403031,
+        "duration": 2687566,
+        "token": "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8",
+        "_merkleRoot": "0x935a87ceb787c89a10520d039b8d3b66db37fc4ce1f315595278b702759ce4f6"
+      },
+      "isUpgradable": true,
+      "admin": "0x0a9a0C44Af4B26Dcb00C295ec21279373cffa26E",
+      "implementation": "0x8d52c3bac5FA670B8A1e8d370C00a086946C54bB",
+      "metadata": {
+        "merkleFile": "merkle/vesting/zeroQDO-merkleTree.json"
+      }
     }
   ]
 }

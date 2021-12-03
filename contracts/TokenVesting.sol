@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
@@ -12,7 +12,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * Multiple wallets can be vested to using this contract, all using the same vesting schedule.
  */
 abstract contract TokenVesting is OwnableUpgradeable {
-  using SafeERC20 for IERC20;
+  using SafeERC20Upgradeable for IERC20Upgradeable;
 
   /**
    * Emitted when vesting tokens are rewarded to a beneficiary
@@ -44,7 +44,7 @@ abstract contract TokenVesting is OwnableUpgradeable {
   // Tracks the token awards for each user (user => award)
   mapping(address => TokenAward) public awards;
 
-  IERC20 public targetToken;
+  IERC20Upgradeable public targetToken;
 
   function __TokenVesting_init(
     uint256 start,
@@ -59,7 +59,7 @@ abstract contract TokenVesting is OwnableUpgradeable {
     vestingStart = start;
     vestingCliff = start + cliff;
     vestingDuration = duration;
-    targetToken = IERC20(token);
+    targetToken = IERC20Upgradeable(token);
   }
 
   /**
