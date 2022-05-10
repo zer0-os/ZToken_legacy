@@ -10,6 +10,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * Multiple wallets can be vested to using this contract, all using the same vesting schedule.
  */
 abstract contract TokenVesting is OwnableUpgradeable {
+  /*
    * Emitted when vesting tokens are rewarded to a beneficiary
    */
   event Awarded(address indexed beneficiary, uint256 amount, bool revocable);

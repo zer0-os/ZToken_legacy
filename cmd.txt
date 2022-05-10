@@ -61,3 +61,58 @@ duration: 7060298
 https://ipfs.io/ipfs/QmboKEYYp3rc4q8hC5EZwqGgVJnxPEwiQ3VdAv5qJXz1iE
 
 yarn hardhat deploy vesting --tag "wilder-sprio" --merkle .\merkle\vesting\wilder-spiro-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 13100000 --duration 7060298 --cliff 4706865
+
+
+---- remscar sign
+May 11 2021 ~ 3 years ~ 1 year cliff
+
+blocktime = 13.45s
+duration = 3 years = 60 * 60 * 24 * 365 = (31536000 * 3) / 13.4s = 7060298
+cliff = 1 years = (31536000 * 1) / 13.45 = 2344684
+
+start: 12410000
+duration: 7060298
+cliff: 2344684
+0xe6f4f5e50b54fe1b46cee400fca9faf91b7d341506b772205c68fae15b369699
+https://ipfs.io/ipfs/QmbvD5Q9puvPonfjAxdwTuZaKUfCaDyh6eSEpmRopdpnP3
+
+yarn hardhat deploy vesting --tag "remscar-sign" --merkle .\merkle\vesting\wilder-dev-remscar-sign-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12410000 --duration 7060298 --cliff 2344684
+
+Token Total: 520,833
+
+
+---- remscar May 21st bonus
+May 21 2021 ~ 3 years ~ 1 year cliff
+
+blocktime = 13.45s
+duration = 3 years = 60 * 60 * 24 * 365 = (31536000 * 3) / 13.4s = 7060298
+cliff = 1 years = (31536000 * 1) / 13.45 = 2344684
+
+start: 12480000
+duration: 7060298
+cliff: 2344684
+0x505af3ef109adf54ba540abc0d19d52f977da37001d3eef58587e0e71b6528a1
+https://ipfs.io/ipfs/QmStgWqUdmXAn5UfyLjYEcE4TMBmxSkSnvDdJdcCR5t75m
+
+yarn hardhat deploy vesting --tag "remscar-may2020-bonus" --merkle .\merkle\vesting\wilder-dev-remscar-may2020-bonus-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12480000 --duration 7060298 --cliff 2344684
+
+Token Total: 147,727
+
+
+---- dOrg Contract
+
+May 11 2021 ~ 3 years ~ 1 year cliff
+
+blocktime = 13.45s
+duration = 3 years = 60 * 60 * 24 * 365 = (31536000 * 3) / 13.4s = 7060298
+cliff = 1 years = (31536000 * 1) / 13.45 = 2344684
+
+start: 12410000
+duration: 7060298
+cliff: 2344684
+0x2d10c57ceacbfba722c60a1a53d60850ea8705270b0db5b3b575b2155285cac0
+https://ipfs.io/ipfs/Qmf5C8c1dACApsHM4TNQtBoonytkVLNsecg8D82F171YDV
+
+yarn hardhat deploy vesting --tag "dorg-contract" --merkle .\merkle\vesting\wilder-dorg-contract-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12410000 --duration 7060298 --cliff 2344684
+
+Token Total: 299999
