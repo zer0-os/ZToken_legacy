@@ -179,6 +179,25 @@
       "metadata": {
         "merkleFile": "merkle/vesting/zeroQDO-merkleTree.json"
       }
+    },
+    {
+      "tag": "remscar-sign",
+      "address": "0x424D286589b7339867Bb96E7984e2264F2D041bC",
+      "version": "3e48371051e6136809a1de9c869ceecf5fa34b3e96a7600cd5863ac4748dbe57",
+      "date": "2022-05-10T01:37:47.728Z",
+      "args": {
+        "start": 12410000,
+        "cliff": 2353432,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xe6f4f5e50b54fe1b46cee400fca9faf91b7d341506b772205c68fae15b369699"
+      },
+      "isUpgradable": true,
+      "admin": "0x0122a448E395cc9602019A2E2B9B7c841B1D61F4",
+      "implementation": "0x0d15f364A41D9256C8c81CF664ae32fe75BDf6da",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-dev-remscar-sign-merkleTree.json"
+      }
     }
   ]
 }

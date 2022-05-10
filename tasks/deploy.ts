@@ -252,7 +252,7 @@ export const doDeployVesting = async (
   tag?: string
 ): Promise<UpgradableDeployedContract> => {
   const factory = await hre.ethers.getContractFactory(
-    "MerkleTokenVesting",
+    "MerkleTokenVestingV2",
     deployer
   );
   logger.debug(`Deploying Merkle Vesting Contract...`);
@@ -319,7 +319,7 @@ task("deploy", "Deploys contracts")
   )
   .addOptionalParam("tag", "Optional tag for the deployment")
   .setAction(async (taskArguments, hre: HardhatRuntimeEnvironment) => {
-    //await hre.run("compile");
+    await hre.run("compile");
 
     if (
       taskArguments.contract != "token" &&

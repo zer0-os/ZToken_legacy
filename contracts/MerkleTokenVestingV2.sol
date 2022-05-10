@@ -35,9 +35,8 @@ contract MerkleTokenVestingV2 is TokenVesting, MerkleDistributor {
     require(!isClaimed(index), "Award already claimed");
 
     // Verify the merkle proof.
-    bytes32 node = keccak256(
-      abi.encodePacked(index, account, amount, revocable)
-    );
+    bytes32 node =
+      keccak256(abi.encodePacked(index, account, amount, revocable));
     _verifyClaim(merkleProof, node);
 
     _setClaimed(index);
@@ -45,6 +44,15 @@ contract MerkleTokenVestingV2 is TokenVesting, MerkleDistributor {
     _awardTokens(account, amount, revocable);
 
     emit Claimed(index, account, amount, revocable);
+  }
+
+  // Function to award tokens to an account if it was missed in the merkle tree
+  function awardTokens(
+    address account,
+    uint256 amount,
+    bool revocable
+  ) external onlyOwner {
+    _awardTokens(account, amount, revocable);
   }
 
   function empty() external onlyOwner {
