@@ -2,8 +2,6 @@
 pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
@@ -12,9 +10,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * Multiple wallets can be vested to using this contract, all using the same vesting schedule.
  */
 abstract contract TokenVesting is OwnableUpgradeable {
-  using SafeERC20Upgradeable for IERC20Upgradeable;
-
-  /**
+  /*
    * Emitted when vesting tokens are rewarded to a beneficiary
    */
   event Awarded(address indexed beneficiary, uint256 amount, bool revocable);
@@ -62,6 +58,23 @@ abstract contract TokenVesting is OwnableUpgradeable {
     targetToken = IERC20Upgradeable(token);
   }
 
+  function setVestingParams(
+    uint256 start,
+    uint256 cliffBlock,
+    uint256 duration
+  ) external onlyOwner {
+    require(
+      start != vestingStart ||
+        cliffBlock != vestingCliff ||
+        vestingDuration != duration,
+      "no state change"
+    );
+
+    vestingStart = start;
+    vestingCliff = cliffBlock;
+    vestingDuration = duration;
+  }
+
   /**
    * @notice Transfers vested tokens to beneficiary.
    * @param beneficiary Who the tokens are being released to
@@ -73,7 +86,7 @@ abstract contract TokenVesting is OwnableUpgradeable {
     TokenAward storage award = getTokenAwardStorage(beneficiary);
     award.released += unreleased;
 
-    targetToken.safeTransfer(beneficiary, unreleased);
+    targetToken.transfer(beneficiary, unreleased);
 
     emit Released(beneficiary, unreleased);
   }
@@ -100,9 +113,9 @@ abstract contract TokenVesting is OwnableUpgradeable {
     award.amount = award.released;
 
     // Transfer owed vested tokens to beneficiary
-    targetToken.safeTransfer(beneficiary, unreleased);
+    targetToken.transfer(beneficiary, unreleased);
     // Transfer unvested tokens to owner (revoked amount)
-    targetToken.safeTransfer(owner(), refund);
+    targetToken.transfer(owner(), refund);
 
     emit Released(beneficiary, unreleased);
     emit Revoked(beneficiary, refund);

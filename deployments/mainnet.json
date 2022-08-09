@@ -179,6 +179,63 @@
       "metadata": {
         "merkleFile": "merkle/vesting/zeroQDO-merkleTree.json"
       }
+    },
+    {
+      "tag": "remscar-sign",
+      "address": "0x424D286589b7339867Bb96E7984e2264F2D041bC",
+      "version": "3e48371051e6136809a1de9c869ceecf5fa34b3e96a7600cd5863ac4748dbe57",
+      "date": "2022-05-10T01:37:47.728Z",
+      "args": {
+        "start": 12410000,
+        "cliff": 2353432,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xe6f4f5e50b54fe1b46cee400fca9faf91b7d341506b772205c68fae15b369699"
+      },
+      "isUpgradable": true,
+      "admin": "0x0122a448E395cc9602019A2E2B9B7c841B1D61F4",
+      "implementation": "0x0d15f364A41D9256C8c81CF664ae32fe75BDf6da",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-dev-remscar-sign-merkleTree.json"
+      }
+    },
+    {
+      "tag": "remscar-may2020-bonus",
+      "address": "0x52fC9eb1BcCE87dfE70Ca40F612899d1D202A139",
+      "version": "334ca8eb0895fd3c5ad8e4803e7996e6b2536f3f7549fd372d67f5afcf1214ee",
+      "date": "2022-05-10T02:00:53.465Z",
+      "args": {
+        "start": 12480000,
+        "cliff": 2344684,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0x505af3ef109adf54ba540abc0d19d52f977da37001d3eef58587e0e71b6528a1"
+      },
+      "isUpgradable": true,
+      "admin": "0x0122a448E395cc9602019A2E2B9B7c841B1D61F4",
+      "implementation": "0x0240cF5cAE6D6dC38C6182bB69fBB3BC7bb1d813",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-dev-remscar-may2020-bonus-merkleTree.json"
+      }
+    },
+    {
+      "tag": "dorg-contract",
+      "address": "0x621863FD50caD605f832c5f4989adA63B536B180",
+      "version": "334ca8eb0895fd3c5ad8e4803e7996e6b2536f3f7549fd372d67f5afcf1214ee",
+      "date": "2022-05-10T02:04:41.686Z",
+      "args": {
+        "start": 12410000,
+        "cliff": 2344684,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0x2d10c57ceacbfba722c60a1a53d60850ea8705270b0db5b3b575b2155285cac0"
+      },
+      "isUpgradable": true,
+      "admin": "0x0122a448E395cc9602019A2E2B9B7c841B1D61F4",
+      "implementation": "0x0240cF5cAE6D6dC38C6182bB69fBB3BC7bb1d813",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-dorg-contract-merkleTree.json"
+      }
     }
   ]
 }

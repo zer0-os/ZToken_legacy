@@ -136,6 +136,44 @@
       "metadata": {
         "merkleFile": ".\\merkle\\airdrop\\example-merkleTree.json"
       }
+    },
+    {
+      "tag": "remscar-sign",
+      "address": "0xD84379CEae14AA33C123Af12424A37803F885889",
+      "version": "3e48371051e6136809a1de9c869ceecf5fa34b3e96a7600cd5863ac4748dbe57",
+      "date": "2022-05-10T01:35:55.597Z",
+      "args": {
+        "start": 12410000,
+        "cliff": 2353432,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0xe6f4f5e50b54fe1b46cee400fca9faf91b7d341506b772205c68fae15b369699"
+      },
+      "isUpgradable": true,
+      "admin": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
+      "implementation": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-dev-remscar-sign-merkleTree.json"
+      }
+    },
+    {
+      "tag": "remscar-may2020-bonus",
+      "address": "0xD84379CEae14AA33C123Af12424A37803F885889",
+      "version": "334ca8eb0895fd3c5ad8e4803e7996e6b2536f3f7549fd372d67f5afcf1214ee",
+      "date": "2022-05-10T01:52:30.430Z",
+      "args": {
+        "start": 12480000,
+        "cliff": 2344684,
+        "duration": 7060298,
+        "token": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+        "_merkleRoot": "0x505af3ef109adf54ba540abc0d19d52f977da37001d3eef58587e0e71b6528a1"
+      },
+      "isUpgradable": true,
+      "admin": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
+      "implementation": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\wilder-dev-remscar-may2020-bonus-merkleTree.json"
+      }
     }
   ],
   "airdrop": [
