@@ -88,13 +88,17 @@ const main = async () => {
 
   for (const [address, holder] of Object.entries(totalHeldByAccount)) {
     const amountOwed = (holder.amount.mul(totalZEROToGive)).div(totalWILD);
+    if (amountOwed.eq(BigNumber.from(0))) {
+      continue;
+    }
+
     zeroTokensOwed[address] = {
       amount: amountOwed.toString(),
       revocable: false
     }
   }
 
-  fs.writeFileSync("ZEROQDO3.json", JSON.stringify(zeroTokensOwed, undefined, 2));
+  fs.writeFileSync("zeroQDO-sep2022.json", JSON.stringify(zeroTokensOwed, undefined, 2));
 
 
 }

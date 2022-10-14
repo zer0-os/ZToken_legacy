@@ -23,10 +23,6 @@
     "amount": "702388171497700680200564",
     "revocable": false
   },
-  "0x1d6E8BAC6EA3730825bde4B005ed7B2B39A2932d": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x46D6B90aaaAC25cD73EE031eFf75AC4a71957B11": {
     "amount": "142108857061056511072",
     "revocable": false
@@ -113,10 +109,6 @@
   },
   "0x01a5Ade4eB79999a941D887Ace9B2710c2578c5F": {
     "amount": "425715011774421583619",
-    "revocable": false
-  },
-  "0x02023798E0890DDebfa4cc6d4b2B05434E940202": {
-    "amount": "0",
     "revocable": false
   },
   "0x61831fD2Fe5a99Fb22D0352B70eCb7631935070f": {
@@ -445,10 +437,6 @@
   },
   "0x863308f388B130BaDe7ADca25f67E9Ec94dec5F1": {
     "amount": "1232197490044044914236",
-    "revocable": false
-  },
-  "0x49307d775728dAF1d4736ab762DE0ceFd035e323": {
-    "amount": "0",
     "revocable": false
   },
   "0x492ec1becc266412302A38F0EB177c5010B83C3e": {
@@ -1241,10 +1229,6 @@
   },
   "0xf538f00E6Ec7A0CF73f59172BBf3A5765a123246": {
     "amount": "491363715746921725913",
-    "revocable": false
-  },
-  "0x00000000e9d7eeE1C07D3D017CD18C3dAb4C2aC0": {
-    "amount": "0",
     "revocable": false
   },
   "0xAF7E1eaF692535bD7341c6Defc940D0d309c45D2": {
@@ -2143,10 +2127,6 @@
     "amount": "3360107867684553752",
     "revocable": false
   },
-  "0x246931008e1c729858934E8A5E0b62f0E49408fd": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xDB7eD98630846e0dE5EC5189C263026e2762cAea": {
     "amount": "203991942192660318296",
     "revocable": false
@@ -2317,10 +2297,6 @@
   },
   "0x91846fCf9C08771c58A293d759720793855BD908": {
     "amount": "1015146321111840743",
-    "revocable": false
-  },
-  "0x000000000000084e91743124a982076C59f10084": {
-    "amount": "0",
     "revocable": false
   },
   "0x4D4DE733996093d9dC9cF8C527782d780B183a4d": {
@@ -2823,10 +2799,6 @@
     "amount": "55995903978790248155",
     "revocable": false
   },
-  "0x0000000057a888B5DC0A81f02c6F5c3B7d16b183": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x0801cCA9F30EBb2654CD563Bdfc526b824aAba15": {
     "amount": "23469413584224075450",
     "revocable": false
@@ -3123,16 +3095,8 @@
     "amount": "23473369376854041987",
     "revocable": false
   },
-  "0x0000000000003f5e74C1ba8A66b48E6f3d71aE82": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x0000000000d41C96294CCdaC8612Bdfe29C641aF": {
     "amount": "2",
-    "revocable": false
-  },
-  "0xCfF2D6Bf21e6835a144eF668809ADEC4B4e9C395": {
-    "amount": "0",
     "revocable": false
   },
   "0x61fd0D043d519F5A2bD05785000f30Db96809429": {
@@ -3243,10 +3207,6 @@
     "amount": "1419050007743976279805",
     "revocable": false
   },
-  "0x000000000BdbD514Fd0EBb5b5773E006145d5140": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x4a6d345C287E3C315eaFd0E6a4274a74C6Cb9af3": {
     "amount": "997838486336574968676",
     "revocable": false
@@ -3305,10 +3265,6 @@
   },
   "0x999A6F5A922C9A4776869d1f1C7f5fcD4B636A6d": {
     "amount": "1350111130723",
-    "revocable": false
-  },
-  "0x000000000027D2efc283613D0C3e24A8b430C4D8": {
-    "amount": "0",
     "revocable": false
   },
   "0x2919ea595c9006F67E56271537D070Cc4bfc9513": {
@@ -3401,10 +3357,6 @@
   },
   "0xb3808a1968533E826cBF47674C16fEF21F90565a": {
     "amount": "111304510768831540",
-    "revocable": false
-  },
-  "0x000000bdA8396361E87648109C90D368002c4f17": {
-    "amount": "0",
     "revocable": false
   },
   "0x8db74e011655f3e21EC05204d3BdbE8355347Fc4": {
@@ -3851,10 +3803,6 @@
     "amount": "171250054263932807804",
     "revocable": false
   },
-  "0x0000000000007F150Bd6f54c40A34d7C3d5e9f56": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x3DFcb92a710fb93EEe74C4d62614D940559Ac522": {
     "amount": "44384994000760255391",
     "revocable": false
@@ -3905,10 +3853,6 @@
   },
   "0xca9dAA2D3477f5b9316e0635fA37417854A2B409": {
     "amount": "144922426139364186822",
-    "revocable": false
-  },
-  "0xF3A894B565D15E03Ab537525275e87D1c929644A": {
-    "amount": "0",
     "revocable": false
   },
   "0x0FacA1A5Cb35F7259B8F2380466be0A05DD4d3eb": {
@@ -6747,10 +6691,6 @@
     "amount": "700604240624473304585",
     "revocable": false
   },
-  "0xCC0dAb3636Aad5DB9C353761abeB9fd79238bd55": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x4f0652DbC5b7225Ca6b3Feae8cfB50A055ECE4bb": {
     "amount": "6480153547591585722959",
     "revocable": false
@@ -8779,10 +8719,6 @@
     "amount": "967743643",
     "revocable": false
   },
-  "0xAE7861C80D03826837A50b45aecF11eC677f6586": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xbddAECE6c878623C59a425de9048c0b634630D8b": {
     "amount": "141905000774397627",
     "revocable": false
@@ -9139,10 +9075,6 @@
     "amount": "141905000774397627",
     "revocable": false
   },
-  "0x6d1E50E6A6e52E081fdc4Df111741aF532EA0a80": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xF2B23ba6C2C4825943203e98EDd0Dca4feb25755": {
     "amount": "56329147485896906107",
     "revocable": false
@@ -9209,10 +9141,6 @@
   },
   "0x513DCD6b1D85493F15728d9545081dB87Ee85C23": {
     "amount": "74721808692787351408",
-    "revocable": false
-  },
-  "0x499dd900f800FD0A2eD300006000A57f00FA009b": {
-    "amount": "0",
     "revocable": false
   },
   "0x780dd2F8620886E241d574A2Aca0d8fa00B1BE7E": {
@@ -9333,10 +9261,6 @@
   },
   "0xb22D3E99BcFdef193997Af91B8eF17349307B913": {
     "amount": "244218506332738317754",
-    "revocable": false
-  },
-  "0x0000000009A2265B720031d400866266Aa6C87BE": {
-    "amount": "0",
     "revocable": false
   },
   "0x8BA8D9E34724B8e41a5812379c76e558B9D5c959": {
@@ -9527,10 +9451,6 @@
     "amount": "337540113535908821704893",
     "revocable": false
   },
-  "0x42B2C65dB7F9e3b6c26Bc6151CCf30CcE0fb99EA": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x6dC9d4615ED69CCc3ba39E6d274b4840F43a7099": {
     "amount": "80252594979575346923",
     "revocable": false
@@ -9599,16 +9519,8 @@
     "amount": "3441777645156716726630",
     "revocable": false
   },
-  "0x9312B94Dd6b1035D07877057e864A245aCd398B8": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xE8B8D3e4771980911eE8c4f17b9e9B5E20679055": {
     "amount": "34851554227717462928",
-    "revocable": false
-  },
-  "0x0E20DE7B8a72f6AFF5823dE0e695C38186d7C701": {
-    "amount": "0",
     "revocable": false
   },
   "0x5DF86A63C51F0Be2bC24a49fE2C4578717074B3a": {
@@ -10591,10 +10503,6 @@
     "amount": "5758549985953523899",
     "revocable": false
   },
-  "0x7Cf09D7A9A74f746EDcb06949B9d64bCd9D1604f": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x8D065b82f2B9A0B4De2C7FCd55bf5a7B608F88dA": {
     "amount": "104014023440812968",
     "revocable": false
@@ -10967,10 +10875,6 @@
     "amount": "42808499453665462755",
     "revocable": false
   },
-  "0xB7d691867E549C7C54C559B7fc93965403AC65dF": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x316361f260cA02059f56abdeEa20Bc8DEF67848E": {
     "amount": "611610553337653776596",
     "revocable": false
@@ -11113,10 +11017,6 @@
   },
   "0xb131D8B120736B65EE36E9386c8aDD779550b347": {
     "amount": "29034244042578309486",
-    "revocable": false
-  },
-  "0x000000005a776aEb00c1fe837404BF3F6832b600": {
-    "amount": "0",
     "revocable": false
   },
   "0x20e66D6F91Ec7aEF2b0Dc9C58d7A195Cb494D2dd": {
@@ -13407,10 +13307,6 @@
     "amount": "11352400061951810238",
     "revocable": false
   },
-  "0xBf3f6477Dbd514Ef85b7D3eC6ac2205Fd0962039": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xc696dda4bBc18BF91556c1842bA34874b9dD3e2e": {
     "amount": "1153254920809016381",
     "revocable": false
@@ -15223,10 +15119,6 @@
     "amount": "117071625638878043083",
     "revocable": false
   },
-  "0xB5cc8B38317F80360EF2c90AE1D115a831A2DFa2": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xCE62752C3899B35BE68a3685E4b09163Fc3d04aa": {
     "amount": "2268227106063940357122",
     "revocable": false
@@ -16415,10 +16307,6 @@
     "amount": "2956838409095130342",
     "revocable": false
   },
-  "0xF58c02C8aD9D6C436246ca124F43c690368bBdfE": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x03BC5C35a9991F2733A5Ff59916dC931B5969D98": {
     "amount": "21285750116159644197",
     "revocable": false
@@ -16429,10 +16317,6 @@
   },
   "0xb2451BC86f983680f48C77c916B59D779B46fA86": {
     "amount": "168090155306816212406",
-    "revocable": false
-  },
-  "0x46aD7865CbaB5387BD24d8842a1C74c8C12D208a": {
-    "amount": "0",
     "revocable": false
   },
   "0xE00558eBD964A9f6299265796245c57De23dA9d5": {
@@ -17601,10 +17485,6 @@
   },
   "0x344f924524Ab5EABe99D57B2C00Ed042F1403166": {
     "amount": "12633234598941523228",
-    "revocable": false
-  },
-  "0x0000000000b92ac90d898eBa87fa5f2483f32234": {
-    "amount": "0",
     "revocable": false
   },
   "0x13b449D085E02E132F84105855742809561330EC": {
@@ -21441,10 +21321,6 @@
   },
   "0x45f9eb5bF4f780EFf778ec4B382b5E75495D364A": {
     "amount": "77441671416073278104",
-    "revocable": false
-  },
-  "0x46C4128981525aA446e02FFb2FF762F1D6A49170": {
-    "amount": "0",
     "revocable": false
   },
   "0x7F00c618571eE2C09EaaeEAe6BbaCD7054a04eDC": {
@@ -28239,20 +28115,12 @@
     "amount": "100756753870734994283",
     "revocable": false
   },
-  "0xFd859ab378De027c97EC2d1C64e33c0570cB726A": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x50BFF95fbBC9947b1f19F622227C767CE94Fa6C0": {
     "amount": "352851711599674089",
     "revocable": false
   },
   "0xe7F34432a2eD096F2D8271bF21498F0A8ef4c4Ad": {
     "amount": "58993070318417610593",
-    "revocable": false
-  },
-  "0x0D9326f283D8Ca7EEEA4d323d07a0C9c0ab1A192": {
-    "amount": "0",
     "revocable": false
   },
   "0x7d7FeCd869cAc028ab4308312A128B0BA2D944ef": {
@@ -28781,10 +28649,6 @@
   },
   "0x260E907A2db65B52CE1224467FE2f5A5cA7A7BD9": {
     "amount": "50357233742186969662",
-    "revocable": false
-  },
-  "0x28f7d4Ce48490C16b1177CE3a6C31AD8feFaBdCC": {
-    "amount": "0",
     "revocable": false
   },
   "0x290fb65c97eA20C68f26d43B75B6e8daC320DE1D": {
@@ -29425,10 +29289,6 @@
   },
   "0xB023cfb890a3e8D08151eD9eA9E22C88590b48d2": {
     "amount": "40111775481251035020",
-    "revocable": false
-  },
-  "0xf972C7eDD78b945E9e089CA86Ca2f601bc061A53": {
-    "amount": "0",
     "revocable": false
   },
   "0xbDAb35d33c38141d2e48d1aAADb7255289DF2a05": {
@@ -31651,10 +31511,6 @@
     "amount": "6300369891979450505",
     "revocable": false
   },
-  "0x3d74b96f74785D40CE03b99FA578406Da5D4c149": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xda4c24d395aF0eFa7e62D6FB0D30D5AA8cA9f0D2": {
     "amount": "292642772713408015385",
     "revocable": false
@@ -32009,10 +31865,6 @@
   },
   "0xDbe01700010302d2B82d857dC527BA905DC94eC5": {
     "amount": "11020156738465356822",
-    "revocable": false
-  },
-  "0x166A00CF3a0b96541562f841eAc663f8c255e70C": {
-    "amount": "0",
     "revocable": false
   },
   "0xDD2300419d09258c0ea981b9c64528f79A3C11eb": {
@@ -33747,10 +33599,6 @@
     "amount": "18917649680396552337",
     "revocable": false
   },
-  "0x96D4F9d8F23eadee78fc6824fc60b8c1CE578443": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xb502a5cfB426efBD75714218Fa4487Cf648e805D": {
     "amount": "612119978099933786640",
     "revocable": false
@@ -35247,10 +35095,6 @@
     "amount": "135405173417851815985",
     "revocable": false
   },
-  "0xE8c060F8052E07423f71D445277c61AC5138A2e5": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xe94B567286e70CBe12491495A5EbF1f2616688e2": {
     "amount": "31840104555123174181",
     "revocable": false
@@ -35701,10 +35545,6 @@
   },
   "0xD426be0576F6D8E1c805Dcd3Db3e4c1D8147406b": {
     "amount": "15783143927658484",
-    "revocable": false
-  },
-  "0x00000000f6E788341c1acB3C2D49fA9263b8a2F7": {
-    "amount": "0",
     "revocable": false
   },
   "0x2C5c853e1501dd2eb5a8741117260F5eFeD5c4a2": {
@@ -36435,10 +36275,6 @@
     "amount": "16415378436253798086",
     "revocable": false
   },
-  "0x0000000000D9455CC7EB92D06E00582A982f68fe": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x21910DbE289FF202B1990C9B216e0320B6db72a1": {
     "amount": "28381000154879525756",
     "revocable": false
@@ -36993,10 +36829,6 @@
   },
   "0xbcCaB61793D9deedeD30c524425C3f4f863EAF65": {
     "amount": "34692356889011058596",
-    "revocable": false
-  },
-  "0x0417Fb247Af04B9842992EED90F7CeF591E2Be88": {
-    "amount": "0",
     "revocable": false
   },
   "0xFff7Fa47BE778304E27301ec944138926a3b9EEb": {
@@ -38383,10 +38215,6 @@
     "amount": "7095250038719882193",
     "revocable": false
   },
-  "0x2d2f6e3Cd1E0b0415B1539B9ad933CEA8ca6C3d9": {
-    "amount": "0",
-    "revocable": false
-  },
   "0xc14a472874B493FBB4E9e12E50590f3f022FB6B7": {
     "amount": "58433505039074735966",
     "revocable": false
@@ -38719,10 +38547,6 @@
     "amount": "535511907032616131533",
     "revocable": false
   },
-  "0xE2f266D1D65a42728A59131a92ceE4727AB84024": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x95ff03009C97dfc85675e3540441f278CD3491a9": {
     "amount": "117492132727672815574",
     "revocable": false
@@ -38861,10 +38685,6 @@
   },
   "0x68CF4453bA7584a3903ABd977F8AC4275737D632": {
     "amount": "264429707001671623758",
-    "revocable": false
-  },
-  "0x3F214956F6546c8De9951058D4A6cD8840Fc98e0": {
-    "amount": "0",
     "revocable": false
   },
   "0x3900a3247160021529b2A98E987a938Ef5a65cbd": {
@@ -39399,10 +39219,6 @@
     "amount": "141905001011363747142",
     "revocable": false
   },
-  "0x00000000002d383933aa1609F11d0AFA4D5Ea90A": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x8e6BCc51B73E6C8fff847f0E62188dB768158b6d": {
     "amount": "94667449770531525858",
     "revocable": false
@@ -39453,10 +39269,6 @@
   },
   "0x00236d6cd7e5216c891887660f81C362749c943E": {
     "amount": "3175605756794573806",
-    "revocable": false
-  },
-  "0x3aA0F89ff4f1999F42D6c1827FCFFE354A180893": {
-    "amount": "0",
     "revocable": false
   },
   "0xE1E02Ab684318b128E4D3Fc1b4a4556dB0f7f408": {
@@ -40703,10 +40515,6 @@
     "amount": "1169297136102764060",
     "revocable": false
   },
-  "0x04b372c5F465f4D863aA731c5DFa18d7CAbEBb43": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x288AB0FF4893e9b3302beF4F9203bcD8BA3Bf844": {
     "amount": "48904337651288836600",
     "revocable": false
@@ -40737,10 +40545,6 @@
   },
   "0x341bB1dCFcE5153806ef7eE74b373D6FA9338c68": {
     "amount": "6339345088204790687",
-    "revocable": false
-  },
-  "0x000000000042C71E9b847Fb1533270360A7b2Cbf": {
-    "amount": "0",
     "revocable": false
   },
   "0x5372019A450d0aC139E6f277C29B02cd36ed2625": {
@@ -42263,10 +42067,6 @@
     "amount": "222687641391703621243",
     "revocable": false
   },
-  "0x1e8B3271425c8AE85A73674c5f3A08133dFDf076": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x1ef7D375B5325a8AAA3C0DC6667c147F41e63A1d": {
     "amount": "2984207249050282424548",
     "revocable": false
@@ -42895,10 +42695,6 @@
     "amount": "24309260772713921677",
     "revocable": false
   },
-  "0x242510fE96a4Fa2d4aC7dE68cD41944cd71d4099": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x8C5A099E1d6CB286C774A9c86ab85BFEEdeB8942": {
     "amount": "242589069957392856428",
     "revocable": false
@@ -43337,10 +43133,6 @@
   },
   "0xA2C06c2d0E03ed1bf3e4c8B8181c80458e12b5e7": {
     "amount": "51350300946391972001",
-    "revocable": false
-  },
-  "0x1fbb541913549984Cb5EB645F12dCCa7e3D00F72": {
-    "amount": "0",
     "revocable": false
   },
   "0x739f18a0b8E5baed6B37288895e4934A923C8520": {
@@ -43935,10 +43727,6 @@
     "amount": "639323067393599483547",
     "revocable": false
   },
-  "0x8c9e824207Fb6ada6AcF64061Da3771aC70cC40a": {
-    "amount": "0",
-    "revocable": false
-  },
   "0x6855014a24268F6155621c6E31358B3cDA91E5dA": {
     "amount": "1055585692493495063149",
     "revocable": false
@@ -44249,10 +44037,6 @@
   },
   "0x60682f69906c6E14e41d40522cA7dd9Be8e5049F": {
     "amount": "38107168907956739017",
-    "revocable": false
-  },
-  "0xc347d6c4f04777A5A124BDC372A20De11b124e0a": {
-    "amount": "0",
     "revocable": false
   },
   "0xEa503C6f3891098194c13d807d2e4Ec8C2F04644": {
