@@ -148,3 +148,4 @@ CLIFF = 0
 ZERO TOKEN = 0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8
 
 yarn hardhat deploy vesting --tag "zero-qdo-sep2022" --merkle .\merkle\vesting\zeroQDO-sep2022-merkleTree.json --token 0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8 --start 15206756 --duration 2951424 --cliff 0
+Total amount granted is 71774675348651354742680711 (71774675.348651354742680711)
