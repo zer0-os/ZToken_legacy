@@ -116,3 +116,35 @@ https://ipfs.io/ipfs/Qmf5C8c1dACApsHM4TNQtBoonytkVLNsecg8D82F171YDV
 yarn hardhat deploy vesting --tag "dorg-contract" --merkle .\merkle\vesting\wilder-dorg-contract-merkleTree.json --token 0x2a3bFF78B79A009976EeA096a51A948a3dC00e34 --start 12410000 --duration 7060298 --cliff 2344684
 
 Token Total: 299999
+
+
+---------------------- ZERO QDO snapshot 3
+
+Sep 29th 2022 = "15 % vested"
+Sep 29th 2023 = 100% vested
+0% Vested = Sep 29th 2022 - 62 days
+
+Sep 29th 2022 in block number = 15635300
+Average blocktime = 12.5 seconds
+
+62 days in seconds = 62 * 24 * 60 * 60 = 5356800 seconds in 62 days
+
+62 days in blocks = 5356800 / 12.5 = 428544
+(Sep 29th 2022 - 62 days) block number = 15635300 - 428544 = 15206756
+
+0% vested = block # 15206756
+
+START = 15206756
+
+DURATION = (1.17 years) = (1 year + 62 days) = (427 days)
+
+427 days in seconds = 427 * 24 * 60 * 60 = 36,892,800
+427 days in blocks = 36892800 seconds / 12.5 = 2,951,424 blocks
+
+DURATION = 2951424
+
+CLIFF = 0
+
+ZERO TOKEN = 0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8
+
+yarn hardhat deploy vesting --tag "zero-qdo-sep2022" --merkle .\merkle\vesting\zeroQDO-sep2022-merkleTree.json --token 0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8 --start 15206756 --duration 2951424 --cliff 0

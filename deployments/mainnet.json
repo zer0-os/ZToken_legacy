@@ -236,6 +236,25 @@
       "metadata": {
         "merkleFile": ".\\merkle\\vesting\\wilder-dorg-contract-merkleTree.json"
       }
+    },
+    {
+      "tag": "zero-qdo-sep2022",
+      "address": "0xC33f704415384d63765e9200cbCfCcF3536fE137",
+      "version": "334ca8eb0895fd3c5ad8e4803e7996e6b2536f3f7549fd372d67f5afcf1214ee",
+      "date": "2022-10-14T20:26:50.735Z",
+      "args": {
+        "start": 15206756,
+        "cliff": 0,
+        "duration": 2951424,
+        "token": "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8",
+        "_merkleRoot": "0x1e00c6105f251859f60b56e0fa60b2bd7bd7a1d3c3fcbef26304b141e7e81078"
+      },
+      "isUpgradable": true,
+      "admin": "0x0122a448E395cc9602019A2E2B9B7c841B1D61F4",
+      "implementation": "0x0240cF5cAE6D6dC38C6182bB69fBB3BC7bb1d813",
+      "metadata": {
+        "merkleFile": ".\\merkle\\vesting\\zeroQDO-sep2022-merkleTree.json"
+      }
     }
   ]
 }
