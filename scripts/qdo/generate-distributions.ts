@@ -39,7 +39,7 @@ interface Holders {
 const totalZEROToGive = ethers.utils.parseEther("202020202").div(3);
 
 const stakingPoolAddress = "0x3aC551725ac98C5DCdeA197cEaaE7cDb8a71a2B4"
-const rewardsToRemove = ethers.utils.parseEther("10000000");
+const rewardsVault = "0x4Afc79F793fD4445f4fd28E3aa708c1475a43Fc4";
 
 const main = async () => {
   const holders: HolderFile = JSON.parse(fs.readFileSync("WILDHolders.json").toString()) as HolderFile;
@@ -47,12 +47,10 @@ const main = async () => {
 
   const totalHeldByAccount: Holders = {};
   let totalWILD: BigNumber = BigNumber.from(0);
+  let totalAmountRewarded = BigNumber.from(0);
 
   for (const [address, holder] of Object.entries(holders)) {
-    if (address === stakingPoolAddress) {
-      continue;
-    }
-
+    let amountHeld = BigNumber.from(holder.amount);
     let held = totalHeldByAccount[address];
     if (!held) {
       held = {
@@ -60,7 +58,6 @@ const main = async () => {
       }
     }
 
-    const amountHeld = BigNumber.from(holder.amount);
 
     held.amount = held.amount.add(amountHeld);
     totalHeldByAccount[address] = held;
@@ -68,23 +65,36 @@ const main = async () => {
     totalWILD = totalWILD.add(amountHeld);
   }
 
+  let amountStaked = BigNumber.from(0);
+
   for (const [address, holder] of Object.entries(stakers)) {
-    let held = totalHeldByAccount[address];
-    if (!held) {
-      held = {
+    let holder = totalHeldByAccount[address];
+    if (!holder) {
+      holder = {
         amount: BigNumber.from(0)
       }
     }
 
+    // staked amount
     const amountHeld = BigNumber.from(holder.amount);
+    holder.amount = holder.amount.add(amountHeld);
+    amountStaked = amountStaked.add(amountHeld);
+    totalWILD = totalWILD.add(amountHeld);
 
-    held.amount = held.amount.add(amountHeld);
-    totalHeldByAccount[address] = held;
+    // rewards
+    const amountRewarded = BigNumber.from(0); // @TODO
+    holder.amount = holder.amount.add(amountRewarded);
+    totalAmountRewarded = totalAmountRewarded.add(amountRewarded);
+
+    totalHeldByAccount[address] = holder;
   }
 
-  totalWILD = totalWILD.sub(rewardsToRemove);
+  totalHeldByAccount[rewardsVault].amount = totalHeldByAccount[rewardsVault].amount.sub(totalAmountRewarded);
+  totalHeldByAccount[stakingPoolAddress].amount = BigNumber.from(0);
+  totalWILD = totalWILD.sub(amountStaked);
 
   const zeroTokensOwed: HolderFile = {};
+  let totalOwed = BigNumber.from(0);
 
   for (const [address, holder] of Object.entries(totalHeldByAccount)) {
     const amountOwed = (holder.amount.mul(totalZEROToGive)).div(totalWILD);
@@ -92,11 +102,18 @@ const main = async () => {
       continue;
     }
 
+    totalOwed = totalOwed.add(amountOwed);
+
     zeroTokensOwed[address] = {
       amount: amountOwed.toString(),
       revocable: false
     }
   }
+
+  console.log(`total owed: ${ethers.utils.formatEther(totalOwed)}`);
+  console.log(`total wild: ${ethers.utils.formatEther(totalWILD)}`);
+  console.log(`amount staked: ${ethers.utils.formatEther(amountStaked)}`);
+  console.log(`amount rewarded: ${ethers.utils.formatEther(totalAmountRewarded)}`);
 
   fs.writeFileSync("zeroQDO-sep2022.json", JSON.stringify(zeroTokensOwed, undefined, 2));
 
