@@ -5,6 +5,7 @@ import * as vesting from "../utilities/vesting";
 import * as airdrop from "../utilities/airdrop";
 import { BigNumber, ethers } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import * as ipfs from "ipfs-http-client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -60,9 +61,18 @@ const doGenerate = async (
 
   fs.writeFileSync(outputFileName, merkleJson);
 
+  const auth =
+    'Basic ' + Buffer.from(process.env.INFURA_PROJECT_ID + ':' + process.env.INFURA_SECRET_KEY).toString('base64');
+
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { create: createClient } = require("ipfs-http-client");
-  const client = createClient("https://ipfs.infura.io:5001");
+  const client = ipfs.create({
+    protocol: 'https',
+    host: "ipfs.infura.io",
+    port: 5001,
+    headers: {
+      authorization: auth
+    }
+  });
   const entry = await client.add(merkleJson);
 
   logger.log(`Merkle Tree uploaded to IPFS at: ${ipfsBaseUri}${entry.cid}`);
