@@ -4,7 +4,38 @@
     "address": "0xAaCa00D1000AD76960FD5f0A8B6d15587bFC1ab4",
     "txHash": "0x0bb469d15010f1208a646619fb7f7aac9dc1fa2a5cdf4f2194f157382ccf2bda"
   },
-  "proxies": [],
+  "proxies": [
+    {
+      "address": "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8",
+      "txHash": "0x7e297e8b730b70670c6c5133f2e54363bfe1982d467920fd62e2f6122ba00380",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x956234670110D154Abb591FB46FC3b5A455A3c97",
+      "txHash": "0x64ce57ef95894de1f24a8cf485a7aba1e856ffb182cc18e6c65822156957ac58",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x424D286589b7339867Bb96E7984e2264F2D041bC",
+      "txHash": "0x2d98c1a188fee362117063153f1335c86cfd8111baab43af95ebee6ad0f755e6",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x52fC9eb1BcCE87dfE70Ca40F612899d1D202A139",
+      "txHash": "0xca83d07e1d0f9a1df034a741d9a5610801e6ce4ec5de393432c4be7491b265b9",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x621863FD50caD605f832c5f4989adA63B536B180",
+      "txHash": "0x9b9b7247b7d57dd882686abcf9d845eab95700dc1a63cf4cf5a080f474910582",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xC33f704415384d63765e9200cbCfCcF3536fE137",
+      "txHash": "0x98af08f8d50cf86e74086891db14ea864f43e55295707ec47c737f6448bd4064",
+      "kind": "transparent"
+    }
+  ],
   "impls": {
     "ce4272339ef9d2fd9053afea697bed1b1b8c47edaa1726c8e8734df05d3ec518": {
       "address": "0x67AAc030b59d266e754b0b24af9cc77EC2534a37",
@@ -372,6 +403,136 @@
           },
           "t_array(t_uint256)45_storage": {
             "label": "uint256[45]"
+          }
+        }
+      }
+    },
+    "8c161d157870069c73826b5d193f9d01c68a363bc3d498ad3cf8c075d4475e12": {
+      "address": "0xD23e1cF860d4C4CD5446C6087F202be042157faD",
+      "txHash": "0x36b5740db9f3c2e20ed0fc14093f543ab1a7260b99dce0048a5fe0fa31b62341",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:25"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:30"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "TokenVesting",
+            "label": "vestingStart",
+            "type": "t_uint256",
+            "src": "contracts\\TokenVesting.sol:29"
+          },
+          {
+            "contract": "TokenVesting",
+            "label": "vestingCliff",
+            "type": "t_uint256",
+            "src": "contracts\\TokenVesting.sol:30"
+          },
+          {
+            "contract": "TokenVesting",
+            "label": "vestingDuration",
+            "type": "t_uint256",
+            "src": "contracts\\TokenVesting.sol:31"
+          },
+          {
+            "contract": "TokenVesting",
+            "label": "awards",
+            "type": "t_mapping(t_address,t_struct(TokenAward)2075_storage)",
+            "src": "contracts\\TokenVesting.sol:41"
+          },
+          {
+            "contract": "TokenVesting",
+            "label": "targetToken",
+            "type": "t_contract(IERC20Upgradeable)368",
+            "src": "contracts\\TokenVesting.sol:43"
+          },
+          {
+            "contract": "MerkleDistributor",
+            "label": "merkleRoot",
+            "type": "t_bytes32",
+            "src": "contracts\\MerkleDistributor.sol:7"
+          },
+          {
+            "contract": "MerkleDistributor",
+            "label": "claimedBitMap",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "src": "contracts\\MerkleDistributor.sol:10"
+          }
+        ],
+        "types": {
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_struct(TokenAward)2075_storage)": {
+            "label": "mapping(address => struct TokenVesting.TokenAward)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_struct(TokenAward)2075_storage": {
+            "label": "struct TokenVesting.TokenAward",
+            "members": [
+              {
+                "label": "amount",
+                "type": "t_uint256"
+              },
+              {
+                "label": "released",
+                "type": "t_uint256"
+              },
+              {
+                "label": "revocable",
+                "type": "t_bool"
+              },
+              {
+                "label": "revoked",
+                "type": "t_bool"
+              }
+            ]
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_contract(IERC20Upgradeable)368": {
+            "label": "contract IERC20Upgradeable"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
           }
         }
       }
