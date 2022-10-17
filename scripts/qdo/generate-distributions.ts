@@ -13,6 +13,13 @@ interface HolderFile {
   }
 }
 
+interface StakerFile {
+  [address: string]: {
+    amount: string;
+    rewards: string;
+  }
+}
+
 interface Holders {
   [address: string]: {
     amount: BigNumber;
@@ -43,7 +50,7 @@ const rewardsVault = "0x4Afc79F793fD4445f4fd28E3aa708c1475a43Fc4";
 
 const main = async () => {
   const holders: HolderFile = JSON.parse(fs.readFileSync("WILDHolders.json").toString()) as HolderFile;
-  const stakers: HolderFile = JSON.parse(fs.readFileSync("WILDstakers.json").toString()) as HolderFile;
+  const stakers: StakerFile = JSON.parse(fs.readFileSync("WILDstakers.json").toString()) as StakerFile;
 
   const totalHeldByAccount: Holders = {};
   let totalWILD: BigNumber = BigNumber.from(0);
@@ -67,7 +74,7 @@ const main = async () => {
 
   let amountStaked = BigNumber.from(0);
 
-  for (const [address, holder] of Object.entries(stakers)) {
+  for (const [address, staker] of Object.entries(stakers)) {
     let holder = totalHeldByAccount[address];
     if (!holder) {
       holder = {
@@ -76,13 +83,13 @@ const main = async () => {
     }
 
     // staked amount
-    const amountHeld = BigNumber.from(holder.amount);
+    const amountHeld = BigNumber.from(staker.amount);
     holder.amount = holder.amount.add(amountHeld);
     amountStaked = amountStaked.add(amountHeld);
     totalWILD = totalWILD.add(amountHeld);
 
     // rewards
-    const amountRewarded = BigNumber.from(0); // @TODO
+    const amountRewarded = BigNumber.from(staker.rewards);
     holder.amount = holder.amount.add(amountRewarded);
     totalAmountRewarded = totalAmountRewarded.add(amountRewarded);
 
@@ -116,8 +123,6 @@ const main = async () => {
   console.log(`amount rewarded: ${ethers.utils.formatEther(totalAmountRewarded)}`);
 
   fs.writeFileSync("zeroQDO-sep2022.json", JSON.stringify(zeroTokensOwed, undefined, 2));
-
-
 }
 
 main().catch(console.error);
