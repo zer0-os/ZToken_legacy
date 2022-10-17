@@ -58,4 +58,9 @@ contract MerkleTokenVestingV2 is TokenVesting, MerkleDistributor {
   function empty() external onlyOwner {
     targetToken.transfer(owner(), targetToken.balanceOf(address(this)));
   }
+
+  function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+    require(_merkleRoot != merkleRoot, "Same root");
+    merkleRoot = _merkleRoot;
+  }
 }
