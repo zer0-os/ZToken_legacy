@@ -3,6 +3,7 @@ import * as hre from "hardhat";
 import { doDeployToken } from "../tasks/deploy";
 import { ZeroToken } from "../typechain";
 import { getLogger } from "../utilities";
+import { confirmContinue } from "./shared/utilities";
 
 const logger = getLogger("scripts::deployDEGEN");
 
@@ -38,30 +39,47 @@ async function main() {
     return;
   }
 
-  logger.log(
-    `Will mint ${hre.ethers.utils.formatEther(tokenMintAmount)} tokens`
-  );
-
   const accounts = await hre.ethers.getSigners();
   const deploymentAccount = accounts[0];
 
-  logger.log(
-    `'${deploymentAccount.address}' will be used as the deployment account`
-  );
-
   const networkAddresses = addresses[network];
 
-  logger.log(`'${networkAddresses.treasuryAddress}' will be the treasury`);
+  const deployMetadata = {
+    Network: network,
+    DeployerAddress: deploymentAccount.address,
+    TokenName: "DEGEN",
+    TokenSymbol: "DGEN",
+    Decimals: 18,
+    DeploymentTag: "degen-prod",
+    TotalSupply: hre.ethers.utils.formatEther(tokenMintAmount),
+    TreasuryAddress: networkAddresses.treasuryAddress,
+    OwnerAddress: networkAddresses.ownerAddress,
+  };
+
+  console.table([
+    ...Object.keys(deployMetadata).map((key) => ({
+      Label: key,
+      Info: (deployMetadata as any)[key],
+    })),
+  ]);
+
+  confirmContinue();
+
+  logger.log(`Will mint ${deployMetadata.TotalSupply} tokens`);
+
   logger.log(
-    `'${networkAddresses.ownerAddress}' will be transferred ownership`
+    `'${deployMetadata.DeployerAddress}' will be used as the deployment account`
   );
+
+  logger.log(`'${deployMetadata.TreasuryAddress}' will be the treasury`);
+  logger.log(`'${deployMetadata.OwnerAddress}' will be transferred ownership`);
 
   const deploymentData = await doDeployToken(
     hre,
     deploymentAccount,
-    "DEGEN",
-    "DGEN",
-    "degen-prod"
+    deployMetadata.TokenName,
+    deployMetadata.TokenSymbol,
+    deployMetadata.DeploymentTag
   );
 
   const token = deploymentData.instance;
@@ -77,25 +95,20 @@ async function main() {
   await impl.initializeImplementation();
 
   logger.log(`Minting tokens...`);
-  const tx = await token.mint(
-    networkAddresses.treasuryAddress,
-    tokenMintAmount
-  );
+  const tx = await token.mint(deployMetadata.TreasuryAddress, tokenMintAmount);
 
   logger.log(`waiting to finish`);
   await tx.wait();
   logger.log(`finished minting`);
 
-  logger.log(
-    `transferring token ownership to ${networkAddresses.ownerAddress}`
-  );
-  await token.transferOwnership(networkAddresses.ownerAddress);
+  logger.log(`transferring token ownership to ${deployMetadata.OwnerAddress}`);
+  await token.transferOwnership(deployMetadata.OwnerAddress);
 
   logger.log(
-    `transferring proxy admin ownership to ${networkAddresses.ownerAddress}`
+    `transferring proxy admin ownership to ${deployMetadata.OwnerAddress}`
   );
   await hre.upgrades.admin.transferProxyAdminOwnership(
-    networkAddresses.ownerAddress
+    deployMetadata.OwnerAddress
   );
 }
 
