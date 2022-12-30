@@ -89,10 +89,11 @@ async function main() {
   logger.log(
     `Initializing implementation contract at '${deploymentData.implementationAddress}' for security.`
   );
-  const impl = (await token.attach(
-    deploymentData.implementationAddress
-  )) as ZeroToken;
-  await impl.initializeImplementation();
+  // Sharing implementation with ZERO
+  // const impl = (await token.attach(
+  //   deploymentData.implementationAddress
+  // )) as ZeroToken;
+  // await impl.initializeImplementation();
 
   logger.log(`Minting tokens...`);
   const tx = await token.mint(deployMetadata.TreasuryAddress, tokenMintAmount);
@@ -104,12 +105,13 @@ async function main() {
   logger.log(`transferring token ownership to ${deployMetadata.OwnerAddress}`);
   await token.transferOwnership(deployMetadata.OwnerAddress);
 
-  logger.log(
-    `transferring proxy admin ownership to ${deployMetadata.OwnerAddress}`
-  );
-  await hre.upgrades.admin.transferProxyAdminOwnership(
-    deployMetadata.OwnerAddress
-  );
+  // Sharing proxy admin
+  // logger.log(
+  //   `transferring proxy admin ownership to ${deployMetadata.OwnerAddress}`
+  // );
+  // await hre.upgrades.admin.transferProxyAdminOwnership(
+  //   deployMetadata.OwnerAddress
+  // );
 }
 
 main();
