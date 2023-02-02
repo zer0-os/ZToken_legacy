@@ -7,6 +7,8 @@ import "./oz/ERC20Upgradeable.sol";
 import "./oz/ERC20SnapshotUpgradeable.sol";
 import "./oz/ERC20PausableUpgradeable.sol";
 
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract ZeroToken is
@@ -194,6 +196,21 @@ contract ZeroToken is
     }
 
     return true;
+  }
+
+  /**
+   * Recovers tokens that may have been transferred to this contract in error.
+   * Transfers all of a specific ERC20 token from this contract to a given address.
+   * @param token The ERC20 token to target
+   * @param sendTo The address to send tokens to
+   */
+  function recoverTokensFromContract(IERC20Upgradeable token, address sendTo)
+    external
+    onlyOwner
+  {
+    uint256 balance = token.balanceOf(address(this));
+    require(balance > 0, "no balance");
+    SafeERC20Upgradeable.safeTransfer(token, sendTo, balance);
   }
 
   function _beforeTokenTransfer(

@@ -60,5 +60,8 @@
   },
   "name": "zToken",
   "version": "0.0.0",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/hardhat-defender": "^1.7.1"
+  }
 }

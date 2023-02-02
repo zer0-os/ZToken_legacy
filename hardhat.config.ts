@@ -5,6 +5,7 @@ import { task, HardhatUserConfig } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-ethers";
+import "@openzeppelin/hardhat-defender";
 import "@typechain/hardhat";
 import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
@@ -88,6 +89,10 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: "FZ1ANB251FC8ISFDXFGFCUDCANSJNWPF9Q",
+  },
+  defender: {
+    apiKey: process.env.DEFENDER_TEAM_API_KEY || "",
+    apiSecret: process.env.DEFENDER_TEAM_API_SECRET || "",
   },
 };
 export default config;
