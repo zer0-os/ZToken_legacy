@@ -5,8 +5,6 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    // TODO tok: remove if needed
-//    "outDir": "./dist",
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "resolveJsonModule": true
