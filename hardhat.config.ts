@@ -8,8 +8,8 @@ import "@nomiclabs/hardhat-ethers";
 import "@typechain/hardhat";
 import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
-import "./tasks/merkle";
-import "./tasks/deploy";
+import "./src/tasks/merkle";
+import "./src/tasks/deploy";
 
 task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
