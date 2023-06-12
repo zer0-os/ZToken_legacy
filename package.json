@@ -1,6 +1,6 @@
 {
-  "name": "@zero-tech/zToken",
-  "version": "1.0.0",
+  "name": "@zero-tech/ztoken",
+  "version": "1.0.1",
   "license": "MIT",
   "files": [
     "contracts",
