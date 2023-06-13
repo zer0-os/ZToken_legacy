@@ -5,7 +5,6 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "./dist",
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "resolveJsonModule": true
