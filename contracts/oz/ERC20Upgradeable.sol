@@ -35,6 +35,8 @@ contract ERC20Upgradeable is
   ContextUpgradeable,
   IERC20Upgradeable
 {
+  event NewTokenName(string oldName, string newName);
+  event NewTokenSymbol(string oldName, string newName);
   // Diff from Open Zeppelin Standard
   mapping(address => uint256) internal _balances;
 
@@ -353,6 +355,22 @@ contract ERC20Upgradeable is
     _allowances[owner][spender] = amount;
     emit Approval(owner, spender, amount);
   }
+
+  /**
+   * @dev This method allows calls from the super contract to change the name of the ERC20 token name and symbol
+   * Emits a {NewTokenName} event with `oldName` and `newName`
+   * Emits a {NewTokenSymbol} event with `oldName` and `newName`
+  */
+  function _setTokenNameAndSymbol(string calldata _newTokenName, string calldata _newTokenSymbol) internal  {
+    string memory oldName = _name;
+    _name = _newTokenName;
+    string memory oldTokenSymbol = _symbol;
+    _symbol = _newTokenSymbol;
+    emit NewTokenName(oldName, _newTokenName);
+    emit NewTokenSymbol(oldTokenSymbol, _newTokenSymbol);
+  }
+
+
 
   /**
    * @dev Hook that is called before any transfer of tokens. This includes
