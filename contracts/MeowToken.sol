@@ -57,8 +57,6 @@ contract MeowToken is
       "ERC20: transfer amount exceeds balance"
     );
 
-    require(!paused(), "ERC20Pausable: token transfer while paused");
-
     _balances[sender] -= total;
 
     for (uint256 i = 0; i < recipients.length; ++i) {
@@ -85,8 +83,6 @@ contract MeowToken is
     address[] calldata recipients,
     uint256 amount
   ) external returns (bool) {
-    require(!paused(), "ERC20Pausable: token transfer while paused");
-
     uint256 total = amount * recipients.length;
     require(
       _balances[sender] >= total,
