@@ -14,9 +14,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  * event of a large bug.
  */
 abstract contract ERC20PausableUpgradeable is
-  Initializable,
-  ERC20Upgradeable,
-  PausableUpgradeable
+Initializable,
+ERC20Upgradeable,
+PausableUpgradeable
 {
   function __ERC20Pausable_init() internal initializer {
     __Context_init_unchained();

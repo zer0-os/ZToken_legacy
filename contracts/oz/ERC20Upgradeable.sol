@@ -31,12 +31,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  * allowances. See {IERC20-approve}.
  */
 contract ERC20Upgradeable is
-  Initializable,
-  ContextUpgradeable,
-  IERC20Upgradeable
+Initializable,
+ContextUpgradeable,
+IERC20Upgradeable
 {
-  event NewTokenName(string oldName, string newName);
-  event NewTokenSymbol(string oldName, string newName);
   // Diff from Open Zeppelin Standard
   mapping(address => uint256) internal _balances;
 
@@ -57,16 +55,16 @@ contract ERC20Upgradeable is
    * construction.
    */
   function __ERC20_init(string memory name_, string memory symbol_)
-    internal
-    initializer
+  internal
+  initializer
   {
     __Context_init_unchained();
     __ERC20_init_unchained(name_, symbol_);
   }
 
   function __ERC20_init_unchained(string memory name_, string memory symbol_)
-    internal
-    initializer
+  internal
+  initializer
   {
     _name = name_;
     _symbol = symbol_;
@@ -115,11 +113,11 @@ contract ERC20Upgradeable is
    * @dev See {IERC20-balanceOf}.
    */
   function balanceOf(address account)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
+  public
+  view
+  virtual
+  override
+  returns (uint256)
   {
     return _balances[account];
   }
@@ -133,10 +131,10 @@ contract ERC20Upgradeable is
    * - the caller must have a balance of at least `amount`.
    */
   function transfer(address recipient, uint256 amount)
-    public
-    virtual
-    override
-    returns (bool)
+  public
+  virtual
+  override
+  returns (bool)
   {
     _transfer(_msgSender(), recipient, amount);
     return true;
@@ -146,11 +144,11 @@ contract ERC20Upgradeable is
    * @dev See {IERC20-allowance}.
    */
   function allowance(address owner, address spender)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
+  public
+  view
+  virtual
+  override
+  returns (uint256)
   {
     return _allowances[owner][spender];
   }
@@ -163,10 +161,10 @@ contract ERC20Upgradeable is
    * - `spender` cannot be the zero address.
    */
   function approve(address spender, uint256 amount)
-    public
-    virtual
-    override
-    returns (bool)
+  public
+  virtual
+  override
+  returns (bool)
   {
     _approve(_msgSender(), spender, amount);
     return true;
@@ -215,9 +213,9 @@ contract ERC20Upgradeable is
    * - `spender` cannot be the zero address.
    */
   function increaseAllowance(address spender, uint256 addedValue)
-    public
-    virtual
-    returns (bool)
+  public
+  virtual
+  returns (bool)
   {
     _approve(
       _msgSender(),
@@ -242,9 +240,9 @@ contract ERC20Upgradeable is
    * `subtractedValue`.
    */
   function decreaseAllowance(address spender, uint256 subtractedValue)
-    public
-    virtual
-    returns (bool)
+  public
+  virtual
+  returns (bool)
   {
     uint256 currentAllowance = _allowances[_msgSender()][spender];
     require(
@@ -354,20 +352,6 @@ contract ERC20Upgradeable is
 
     _allowances[owner][spender] = amount;
     emit Approval(owner, spender, amount);
-  }
-
-  /**
-   * @dev This method allows calls from the super contract to change the name of the ERC20 token name and symbol
-   * Emits a {NewTokenName} event with `oldName` and `newName`
-   * Emits a {NewTokenSymbol} event with `oldName` and `newName`
-  */
-  function _setTokenNameAndSymbol(string calldata _newTokenName, string calldata _newTokenSymbol) internal  {
-    string memory oldName = _name;
-    _name = _newTokenName;
-    string memory oldTokenSymbol = _symbol;
-    _symbol = _newTokenSymbol;
-    emit NewTokenName(oldName, _newTokenName);
-    emit NewTokenSymbol(oldTokenSymbol, _newTokenSymbol);
   }
 
 
