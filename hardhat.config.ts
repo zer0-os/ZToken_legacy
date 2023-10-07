@@ -50,6 +50,11 @@ const config: HardhatUserConfig = {
   },
   defaultNetwork: "goerli",
   networks: {
+    hardhat: {
+      forking: {
+        url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
+      },
+    },
     mainnet: {
       url: process.env.RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       gasPrice: 80000000000,

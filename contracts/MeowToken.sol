@@ -9,11 +9,7 @@ import "./oz/ERC20PausableUpgradeable.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract MeowToken is
-OwnableUpgradeable,
-ERC20Upgradeable,
-ERC20PausableUpgradeable,
-ERC20SnapshotUpgradeable
+contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgradeable, ERC20SnapshotUpgradeable
 {
   event AuthorizedSnapshotter(address account);
   event DeauthorizedSnapshotter(address account);
@@ -50,24 +46,10 @@ ERC20SnapshotUpgradeable
   returns (bool)
   {
     address sender = _msgSender();
-
-    uint256 total = amount * recipients.length;
-    require(
-      _balances[sender] >= total,
-      "ERC20: transfer amount exceeds balance"
-    );
-
-    _balances[sender] -= total;
-
     for (uint256 i = 0; i < recipients.length; ++i) {
       address recipient = recipients[i];
-      require(recipient != address(0), "ERC20: transfer to the zero address");
-
-      _balances[recipient] += amount;
-
-      emit Transfer(sender, recipient, amount);
+      _transfer(sender, recipient, amount);
     }
-
     return true;
   }
 
@@ -83,31 +65,10 @@ ERC20SnapshotUpgradeable
     address[] calldata recipients,
     uint256 amount
   ) external returns (bool) {
-    uint256 total = amount * recipients.length;
-    require(
-      _balances[sender] >= total,
-      "ERC20: transfer amount exceeds balance"
-    );
-
-    // Ensure enough allowance
-    uint256 currentAllowance = _allowances[sender][_msgSender()];
-    require(
-      currentAllowance >= total,
-      "ERC20: transfer total exceeds allowance"
-    );
-    _approve(sender, _msgSender(), currentAllowance - total);
-
-    _balances[sender] -= total;
-
     for (uint256 i = 0; i < recipients.length; ++i) {
       address recipient = recipients[i];
-      require(recipient != address(0), "ERC20: transfer to the zero address");
-
-      _balances[recipient] += amount;
-
-      emit Transfer(sender, recipient, amount);
+      transferFrom(sender, recipient, amount);
     }
-
     return true;
   }
 
