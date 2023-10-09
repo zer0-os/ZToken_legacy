@@ -28,13 +28,6 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     _mint(msg.sender, amount*10**decimals());
   }
 
-  // Call this on the implementation contract (not the proxy)
-  function initializeImplementation() public initializer {
-    __Ownable_init();
-    _pause();
-  }
-
-
   /**
    * Utility function to transfer tokens to many addresses at once.
    * @param recipients The addresses to send tokens to
