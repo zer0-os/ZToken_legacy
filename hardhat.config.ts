@@ -1,4 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+import { ethers } from "ethers";
+
 require("dotenv").config();
 
 import { task, HardhatUserConfig } from "hardhat/config";
@@ -8,8 +10,8 @@ import "@nomiclabs/hardhat-ethers";
 import "@typechain/hardhat";
 import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
-import "./src/tasks/merkle";
-import "./src/tasks/deploy";
+import "./tasks/merkle";
+import "./tasks/deploy";
 
 task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -18,6 +20,8 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
     console.log(account.address);
   }
 });
+
+const privateKey = (process.env.PRIVATE_KEY || ethers.Wallet.createRandom()) as string;
 
 const config: HardhatUserConfig = {
   typechain: {
@@ -44,14 +48,22 @@ const config: HardhatUserConfig = {
   mocha: {
     timeout: 50000,
   },
+  defaultNetwork: "goerli",
   networks: {
+    hardhat: {
+      forking: {
+        url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
+      },
+    },
     mainnet: {
-      url: "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
+      url: process.env.RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       gasPrice: 80000000000,
+      accounts: [privateKey],
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/77c3d733140f4c12a77699e24cb30c27",
+      url: process.env.RPC_URL || "https://goerli.infura.io/v3/77c3d733140f4c12a77699e24cb30c27",
       timeout: 10000000,
+      accounts: [privateKey],
     },
   },
   etherscan: {
