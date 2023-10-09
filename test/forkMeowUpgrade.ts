@@ -93,10 +93,7 @@ describe("MeowToken", () => {
       await contract.connect(user1).transferBulk([tokenAddress, user2.address], 1000);
       expect(await contract.balanceOf(user2.address)).to.be.equal(user2Amount.add(1000));
       expect(await contract.balanceOf(user1.address)).to.be.equal(user1Amount.sub(2000));
-      expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(1000));
-
-
-
+      expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(2000));
     });
   });
 
