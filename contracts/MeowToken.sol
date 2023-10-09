@@ -3,9 +3,9 @@ pragma solidity ^0.8.3;
 
 // Slight modifiations from base Open Zeppelin Contracts
 // Consult /oz/README.md for more information
-import "./oz/ERC20Upgradeable.sol";
-import "./oz/ERC20SnapshotUpgradeable.sol";
-import "./oz/ERC20PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20SnapshotUpgradeable.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
@@ -27,13 +27,6 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     __ERC20Pausable_init();
     _mint(msg.sender, amount*10**decimals());
   }
-
-  // Call this on the implementation contract (not the proxy)
-  function initializeImplementation() public initializer {
-    __Ownable_init();
-    _pause();
-  }
-
 
   /**
    * Utility function to transfer tokens to many addresses at once.
@@ -85,10 +78,15 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   ERC20SnapshotUpgradeable,
   ERC20Upgradeable
   )
-  {
-    if (to == address(this)) {
-      _burn(from, amount);
+  {}
+
+  function _afterTokenTransfer(
+    address from,
+    address to,
+    uint256 amount
+  ) internal virtual override {
+    if (to == address(this)) { //token were sent to this address, we need to burn them
+      _burn (to, amount); // burn from the contract itself.
     }
-    super._beforeTokenTransfer(from, to, amount);
   }
 }
