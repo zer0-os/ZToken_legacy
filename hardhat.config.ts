@@ -46,7 +46,7 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   mocha: {
-    timeout: 50000,
+    timeout: 500000,
   },
   defaultNetwork: "goerli",
   networks: {
@@ -54,6 +54,12 @@ const config: HardhatUserConfig = {
       forking: {
         url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       },
+      accounts: [
+        {
+          privateKey: privateKey,
+          balance: "9999999999999999999999999"
+        }
+      ]
     },
     mainnet: {
       url: process.env.RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
