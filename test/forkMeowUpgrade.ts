@@ -95,6 +95,31 @@ describe("MeowToken", () => {
       expect(await contract.balanceOf(user1.address)).to.be.equal(user1Amount.sub(2000));
       expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(2000));
     });
+
+
+    it("Test transferFromBulk", async () => {
+      const contract = await hre.ethers.getContractAt("MeowToken", tokenAddress);
+
+      const initialBalance = await contract.totalSupply();
+      const initialUser1Balance = await contract.balanceOf(user1.address);
+      const initialUser2Balance = await contract.balanceOf(user2.address);
+
+      await expect(contract.connect(user2).transferFromBulk(user1.address, [user3.address], 1000)).
+        to.be.revertedWith("ERC20: insufficient allowance");
+      await contract.connect(user1).approve(user2.address, 2000);
+      await expect(contract.connect(user2).transferFromBulk(user1.address,[tokenAddress, user2.address], 1000))
+        .to.emit(contract, "Transfer")
+        .withArgs(user1.address, tokenAddress, 1000)
+        .to.emit(contract, "Transfer")
+        .withArgs(tokenAddress, hre.ethers.constants.AddressZero, 1000)
+        .to.emit(contract, "Transfer")
+        .withArgs(user1.address, user2.address, 1000);
+
+      expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(1000));
+      expect(await contract.balanceOf(user2.address)).to.be.equal(initialUser2Balance.add(1000));
+      expect(await contract.balanceOf(user1.address)).to.be.equal(initialUser1Balance.sub(2000));
+
+    });
   });
 
 });

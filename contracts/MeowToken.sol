@@ -17,6 +17,11 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   // Mapping which stores all addresses allowed to snapshot
   mapping(address => bool) authorizedToSnapshot;
 
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
   function initialize(string memory name, string memory symbol, uint amount)
   public
   initializer
