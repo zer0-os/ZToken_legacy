@@ -3,9 +3,9 @@ pragma solidity ^0.8.3;
 
 // Slight modifiations from base Open Zeppelin Contracts
 // Consult /oz/README.md for more information
-import "./oz/ERC20UpgradeableOld.sol";
-import "./oz/ERC20SnapshotOld.sol";
-import "./oz/ERC20PausableOld.sol";
+import "./upgrade-mocks/ERC20UpgradeableOld.sol";
+import "./upgrade-mocks/ERC20SnapshotOld.sol";
+import "./upgrade-mocks/ERC20PausableOld.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 

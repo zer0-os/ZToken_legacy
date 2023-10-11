@@ -3,9 +3,9 @@ pragma solidity ^0.8.3;
 
 // Slight modifiations from base Open Zeppelin Contracts
 // Consult /oz/README.md for more information
-import "./oz/ERC20UpgradeableOld.sol";
-import "./oz/ERC20SnapshotOld.sol";
-import "./oz/ERC20PausableOld.sol";
+import "./ERC20UpgradeableOld.sol";
+import "./ERC20SnapshotOld.sol";
+import "./ERC20PausableOld.sol";
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
@@ -205,6 +205,7 @@ contract LiveZeroToken is
         return true;
     }
 
+    // TODO This is the only function missing from ZeroToken in this repo
     function setTokenNameAndSymbol(
         string calldata _newTokenName,
         string calldata _newTokenSymbol
