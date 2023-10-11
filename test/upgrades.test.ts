@@ -79,6 +79,8 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
   });
 
   it("Confirms the validation by failing with an invalid contract", async () => {
+    // By making use of the built in `selfdestruct` function for Solidity, the 
+    // upgradability is invalid and so we expect this check to throw an error
     const failTokenFactory = await hre.ethers.getContractFactory("FailToken", deployer);
 
     try {
