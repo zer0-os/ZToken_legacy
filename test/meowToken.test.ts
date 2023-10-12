@@ -1,11 +1,6 @@
 import {
-  LiveZeroToken,
-  LiveZeroToken__factory,
   MeowToken,
   MeowToken__factory,
-  ProxyAdmin__factory,
-  TransparentUpgradeableProxy__factory,
-  ZeroToken__factory,
 } from "../typechain";
 
 import * as hre from "hardhat";
@@ -13,21 +8,26 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-wit
 import chai from "chai";
 import { solidity } from "ethereum-waffle";
 
-import { ALLOWANCE_ERROR, BALANCE_ERROR, ZERO_ERROR, ZERO_FROM_ADDRESS_ERROR, ZERO_TO_ADDRESS_ERROR, impersonate } from "./helpers";
+import { 
+  ALLOWANCE_ERROR, 
+  BALANCE_ERROR, 
+  ZERO_ERROR, 
+  ZERO_TO_ADDRESS_ERROR, 
+} from "./helpers";
 
 chai.use(solidity);
 const { expect } = chai;
 
 describe("MeowToken", () => {
-  let deployer: SignerWithAddress;
-  let mockContract: SignerWithAddress;
-  let userA: SignerWithAddress;
-  let userB: SignerWithAddress;
-  let userC: SignerWithAddress;
-  let userD: SignerWithAddress;
+  let deployer : SignerWithAddress;
+  let mockContract : SignerWithAddress;
+  let userA : SignerWithAddress;
+  let userB : SignerWithAddress;
+  let userC : SignerWithAddress;
+  let userD : SignerWithAddress;
 
-  let meowToken: MeowToken;
-  let meowFactory: MeowToken__factory;
+  let meowToken : MeowToken;
+  let meowFactory : MeowToken__factory;
 
   const name = "MeowToken";
   const symbol = "MEOW";
@@ -58,35 +58,35 @@ describe("MeowToken", () => {
       const name = await meowToken.name();
       expect(name).to.eq("MeowToken");
     });
-  
+
     it("should have the correct symbol", async () => {
       const symbol = await meowToken.symbol();
       expect(symbol).to.eq("MEOW");
     });
-  
+
     it("should have the correct decimals", async () => {
       // Expect the default number of decimals
       const decimals = await meowToken.decimals();
       expect(decimals).to.eq(18);
     });
-  
+
     it("should have the correct total supply", async () => {
       const totalSupply = await meowToken.totalSupply();
       expect(totalSupply).to.eq(amount);
     });
-  
+
     it("should have the correct balance for the deployer", async () => {
       const balance = await meowToken.balanceOf(deployer.address);
       expect(balance).to.eq(amount);
     });
-  
+
     it("deployer should have the total supply as balance", async () => {
       const balance = await meowToken.balanceOf(deployer.address);
       const totalSupply = await meowToken.totalSupply();
       expect(balance).to.eq(totalSupply);
     });
   });
-  
+
   describe("#transferBulk", () => {
     it("Sends the expected amount to each address", async () => {
       const amount = hre.ethers.utils.parseEther("1");
@@ -150,17 +150,17 @@ describe("MeowToken", () => {
       const tx = meowToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
       await expect(tx).to.be.revertedWith(ALLOWANCE_ERROR);
     });
-    
+
     it("Fails when the sender does not have enough balance for all transfers", async () => {
       const amount = hre.ethers.utils.parseEther("1");
 
       const recipients = [userB.address, userC.address, userD.address];
-      
+
       // Sender has no balance after transferring it all to D
       const balance = await meowToken.balanceOf(deployer.address);
       await meowToken.connect(deployer).transfer(userD.address, balance);
       await meowToken.connect(deployer).approve(mockContract.address, amount.mul(recipients.length));
-      
+
       const tx = meowToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
       await expect(tx).to.be.revertedWith(BALANCE_ERROR);
     });
