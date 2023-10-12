@@ -25,7 +25,6 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     __ERC20_init(name, symbol);
     __ERC20Snapshot_init();
     __ERC20Pausable_init();
-    _mint(msg.sender, amount*10**decimals());
   }
 
   /**
@@ -38,8 +37,11 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   external
   returns (bool)
   {
+    require(amount > 0, "MeowToken: amount must be greater than 0");
     address sender = _msgSender();
-    for (uint256 i = 0; i < recipients.length; ++i) {
+    uint256 length = recipients.length;
+
+    for (uint256 i = 0; i < length; ++i) {
       address recipient = recipients[i];
       _transfer(sender, recipient, amount);
     }
@@ -58,7 +60,10 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     address[] calldata recipients,
     uint256 amount
   ) external returns (bool) {
-    for (uint256 i = 0; i < recipients.length; ++i) {
+    require(amount > 0, "MeowToken: amount must be greater than 0");
+
+    uint256 length = recipients.length;
+    for (uint256 i = 0; i < length; ++i) {
       address recipient = recipients[i];
       transferFrom(sender, recipient, amount);
     }
