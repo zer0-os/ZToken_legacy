@@ -25,6 +25,11 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     __ERC20_init(name, symbol);
     __ERC20Snapshot_init();
     __ERC20Pausable_init();
+
+    // TODO delete this and the `amount` arg before deployment
+    // This mint is temporary for testing but the mainnet token
+    // already has a total supply minted
+    _mint(_msgSender(), amount);
   }
 
   /**

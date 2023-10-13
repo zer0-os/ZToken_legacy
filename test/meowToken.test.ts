@@ -18,7 +18,7 @@ import {
 chai.use(solidity);
 const { expect } = chai;
 
-describe("MeowToken", () => {
+describe("MeowTokenV2", () => {
   let deployer : SignerWithAddress;
   let mockContract : SignerWithAddress;
   let userA : SignerWithAddress;

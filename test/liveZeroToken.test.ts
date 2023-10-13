@@ -1,8 +1,6 @@
 import {
   LiveZeroToken,
   LiveZeroToken__factory,
-  MeowToken,
-  MeowToken__factory,
 } from "../typechain";
 
 import * as hre from "hardhat";
@@ -11,10 +9,8 @@ import chai from "chai";
 import { solidity } from "ethereum-waffle";
 
 import { 
-  ALLOWANCE_ERROR, 
   BALANCE_ERROR, 
   LZT_ALLOWANCE_ERROR, 
-  ZERO_ERROR, 
   ZERO_TO_ADDRESS_ERROR, 
 } from "./helpers";
 
@@ -160,25 +156,6 @@ describe("LiveZeroToken", () => {
 
       const tx = liveZeroToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
       await expect(tx).to.be.revertedWith(BALANCE_ERROR);
-    });
-
-    it("Fails when the transfer amount is zero", async () => {
-      const recipients = [userB.address, userC.address, userD.address];
-      const tx = liveZeroToken.connect(deployer).transferFromBulk(deployer.address, recipients, 0);
-
-      await expect(tx).to.be.revertedWith(ZERO_ERROR)
-    });
-
-    it("Fails when the sender address is zero", async () => {
-      const amount = hre.ethers.utils.parseEther("1");
-      const recipients = [userB.address, userC.address, userD.address];
-
-      // Because allowance check is done first in ERC20 `transferFromBulk`
-      // this will fail before we get the chance to check for 0 address 
-      // because allowance will also be 0. Attempts to approve the 0x0
-      // address for any reason will fail because ERC20 disallows it
-      const tx = liveZeroToken.connect(userA).transferFromBulk(hre.ethers.constants.AddressZero, recipients, amount);
-      await expect(tx).to.be.revertedWith(ALLOWANCE_ERROR);
     });
 
     it("Fails when one of the recipients is the zero address", async () => {

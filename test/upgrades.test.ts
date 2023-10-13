@@ -1,16 +1,15 @@
+import * as hre from "hardhat";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
+import chai from "chai";
+import { solidity } from "ethereum-waffle";
+
 import {
-  LiveZeroToken,
   LiveZeroToken__factory,
   MeowToken__factory,
   ProxyAdmin__factory,
   TransparentUpgradeableProxy__factory,
   ZeroToken__factory,
 } from "../typechain";
-
-import * as hre from "hardhat";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import chai from "chai";
-import { solidity } from "ethereum-waffle";
 
 import { impersonate } from "./helpers";
 
@@ -20,19 +19,16 @@ const { expect } = chai;
 describe("Test upgradability for Zero -> Meow ERC20", () => {
   let deployer : SignerWithAddress;
   let mainnetMultisig : SignerWithAddress
-  let mainnetOwner : SignerWithAddress;
   let mockProxyAdmin : SignerWithAddress;
 
-  let zeroFactory : ZeroToken__factory; // the contract at commit efb6bc46
-  let liveZeroFactory : LiveZeroToken__factory; // whats on mainnet
+  let zeroFactory : ZeroToken__factory; // contract at commit efb6bc46
+  let liveZeroFactory : LiveZeroToken__factory; // contract on mainnet
   let meowFactory : MeowToken__factory;
-
-  let liveZeroToken : LiveZeroToken;
 
   const implAdddress = "0xB8a9c7b782056edFC9E4585B14f078B5dd63994b";
   const proxyAddress = "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8";
   const ownerAddress = "0xeB3c46986aA0717f5C19f9AAEEBAAB5Fd751DaA6";
-  const multisigAddress = "0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d"; // owner of proxy admin and proxy
+  const multisigAddress = "0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d"; // owner of proxy admin and token proxy
 
   const proxyAdminAddress = "0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C"; // is contract
 
@@ -43,16 +39,12 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
     liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
     meowFactory = await hre.ethers.getContractFactory("MeowToken");
 
-    await hre.upgrades.forceImport(implAdddress, zeroFactory)
-    liveZeroToken = liveZeroFactory.attach(implAdddress);
-
-    // Get owner of token
-    mainnetOwner = await impersonate(ownerAddress);
+    await hre.upgrades.forceImport(implAdddress, liveZeroFactory)
 
     // Get owner of proxy admin (multisig)
     mainnetMultisig = await impersonate(multisigAddress);
 
-    // Get proxy admin as though it were an EOA not a contract
+    // Get proxy admin as though it were an EOA
     mockProxyAdmin = await impersonate(proxyAdminAddress);
   });
 
@@ -67,10 +59,10 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
     );
   });
 
-  it("Connects to live zero, then checks the validation", async () => {
+  it("Passes validation against mainnet zero contract", async () => {
     // Will throw if not upgrade safe
     const call = hre.upgrades.validateUpgrade(
-      liveZeroToken.address,
+      liveZeroFactory,
       meowFactory,
       {
         kind : "transparent"
@@ -85,7 +77,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
 
     try {
       await hre.upgrades.validateUpgrade(
-        liveZeroToken.address,
+        liveZeroFactory,
         failTokenFactory,
         {
           kind : "transparent"

@@ -10,6 +10,7 @@
     "build-hh": "yarn run clean-hh && yarn run compile",
     "clean-hh": "hardhat clean",
     "compile": "hardhat compile",
+    "typechain": "hardhat typechain",
     "hardhat": "hardhat",
     "merkle": "hardhat merkle",
     "test": "hardhat test --show-stack-traces",
