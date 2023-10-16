@@ -100,6 +100,30 @@ describe("MeowTokenV2", () => {
       }
     });
 
+    it("Burns the amount from total supply after transfer to token contract", async () => {
+      const amount = hre.ethers.utils.parseEther("4");
+      const recipients = [meowToken.address];
+      
+      const totalSupplyBefore = await meowToken.totalSupply();
+
+      await meowToken.connect(deployer).transferBulk(recipients, amount);
+
+      const totalSupplyAfter = await meowToken.totalSupply();
+
+      expect(totalSupplyAfter).to.eq(totalSupplyBefore.sub(amount));
+    });
+
+    it("Burns tokens correctly after bulk transfer to both users and the token contract", async () => {
+      const amount = hre.ethers.utils.parseEther("1");
+      const recipients = [userB.address, userC.address, userD.address, meowToken.address];
+
+      const totalSupplyBefore = await meowToken.totalSupply();
+      await meowToken.connect(deployer).transferBulk(recipients, amount);
+
+      const totalSupplyAfter = await meowToken.totalSupply();
+      expect(totalSupplyAfter).to.eq(totalSupplyBefore.sub(amount));
+    });
+
     it("Fails when the sender does not have enough balance for all transfers", async () => {
       const amount = hre.ethers.utils.parseEther("1");
 
@@ -140,6 +164,33 @@ describe("MeowTokenV2", () => {
         expect(balance).to.eq(amount);
       }
     });
+
+    it("Burns the amount from total supply after transfer to token contract", async () => {
+      const amount = hre.ethers.utils.parseEther("4");
+      const recipients = [meowToken.address];
+      
+      const totalSupplyBefore = await meowToken.totalSupply();
+
+      await meowToken.connect(deployer).approve(userA.address, amount.mul(recipients.length));
+      await meowToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
+
+      const totalSupplyAfter = await meowToken.totalSupply();
+
+      expect(totalSupplyAfter).to.eq(totalSupplyBefore.sub(amount));
+    });
+
+    it("Burns tokens correctly after bulk transfer to both users and the token contract", async () => {
+      const amount = hre.ethers.utils.parseEther("1");
+      const recipients = [userB.address, userC.address, userD.address, meowToken.address];
+
+      await meowToken.connect(deployer).approve(userA.address, amount.mul(recipients.length));
+
+      const totalSupplyBefore = await meowToken.totalSupply();
+      await meowToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
+
+      const totalSupplyAfter = await meowToken.totalSupply();
+      expect(totalSupplyAfter).to.eq(totalSupplyBefore.sub(amount));
+    })
 
     it("Fails when the sender does not have enough allowance for all transfers", async () => {
       const amount = hre.ethers.utils.parseEther("1");

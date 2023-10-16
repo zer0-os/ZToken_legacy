@@ -17,9 +17,11 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   // Mapping which stores all addresses allowed to snapshot
   mapping(address => bool) authorizedToSnapshot;
 
-  // We add this to disallow initializing the implementation contract
-  // when deployed as recommended by OpenZeppelin
-  // https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#initializing_the_implementation_contract
+  /**
+   * @dev We add this to disallow initializing the implementation contract
+   * when deployed as recommended by OpenZeppelin
+   * https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#initializing_the_implementation_contract
+   */
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
