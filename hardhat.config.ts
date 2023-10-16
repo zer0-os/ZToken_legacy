@@ -10,6 +10,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@typechain/hardhat";
 import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
+import "hardhat-ignore-warnings";
 import "./tasks/merkle";
 import "./tasks/deploy";
 
@@ -45,6 +46,11 @@ const config: HardhatUserConfig = {
     sources: "./contracts",
     tests: "./test",
   },
+  warnings: {
+    "test/**/*.ts": { 
+      default: "off"
+    }
+  },
   mocha: {
     timeout: 500000,
   },
@@ -54,12 +60,6 @@ const config: HardhatUserConfig = {
       forking: {
         url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       },
-      // accounts: [
-      //   {
-      //     privateKey: privateKey,
-      //     balance: "9999999999999999999999999"
-      //   }
-      // ]
     },
     mainnet: {
       url: process.env.RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",

@@ -55,6 +55,7 @@
     "ethereum-waffle": "3.3.0",
     "ethereumjs-util": "7.0.10",
     "hardhat": "2.13.0",
+    "hardhat-ignore-warnings": "^0.2.9",
     "ipfs-http-client": "50.1.1",
     "lodash": "4.17.15",
     "logdown": "3.3.1",
