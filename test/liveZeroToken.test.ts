@@ -1,6 +1,9 @@
 import {
   LiveZeroToken,
   LiveZeroToken__factory,
+  MeowToken,
+  MeowToken__factory,
+  ProxyAdmin__factory,
 } from "../typechain";
 
 import * as hre from "hardhat";
@@ -11,7 +14,11 @@ import { solidity } from "ethereum-waffle";
 import { 
   BALANCE_ERROR, 
   LZT_ALLOWANCE_ERROR, 
-  ZERO_TO_ADDRESS_ERROR, 
+  MULTISIG_ADDRESS, 
+  PROXY_ADDRESS, 
+  PROXY_ADMIN_ADDRESS, 
+  ZERO_TO_ADDRESS_ERROR,
+  impersonate, 
 } from "./helpers";
 
 chai.use(solidity);
@@ -25,9 +32,16 @@ describe("LiveZeroToken", () => {
   let userC : SignerWithAddress;
   let userD : SignerWithAddress;
 
+  let mainnetMultisig : SignerWithAddress;
+
   let liveZeroToken : LiveZeroToken;
   let liveZeroFactory : LiveZeroToken__factory;
 
+  let meowToken : MeowToken;
+  let meowFactory : MeowToken__factory;
+
+  let proxyAdminFactory : ProxyAdmin__factory;
+  
   const name = "Zero";
   const symbol = "ZERO";
 
@@ -44,19 +58,44 @@ describe("LiveZeroToken", () => {
       userD
     ] = await hre.ethers.getSigners();
 
+    mainnetMultisig = await impersonate(MULTISIG_ADDRESS)
+
     liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
+    meowFactory = await hre.ethers.getContractFactory("MeowToken");
+    proxyAdminFactory = await hre.ethers.getContractFactory("ProxyAdmin");
   });
 
   beforeEach(async () => {
+    // heavy to do in before each... switch to before
     // To reset balances between tests we redeploy each time
-    liveZeroToken = await hre.upgrades.deployProxy(liveZeroFactory, [name, symbol]) as LiveZeroToken;
-    await liveZeroToken.mint(deployer.address, amount)
+    // liveZeroToken = await hre.upgrades.deployProxy(liveZeroFactory, [name, symbol]) as LiveZeroToken;
+    // await liveZeroToken.mint(deployer.address, amount);
+
+    await hre.upgrades.forceImport(PROXY_ADDRESS, liveZeroFactory);
+
+    liveZeroToken = liveZeroFactory.attach(PROXY_ADDRESS);
+
+    const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
+    const proxyAdmin = proxyAdminFactory.attach(PROXY_ADMIN_ADDRESS);
+    // const proxyAdmin = ProxyAdmin__factory(PROXY_ADMIN_ADDRESS, multiSigAddress)
+    // proxyAdmin.connect(zeroLiveToken);
+    // this allows you to connect to the real contact address but state is not the same
+    // as what is actually on mainnet, the `attach` above is accurate
+
+    await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString());
+
+    meowToken = meowFactory.attach(PROXY_ADDRESS);
+
+    // TODO On etherscan the name is already changed, if we're forking and
+    // attaching to the real contract, shouldn't it also be changed?
+    // await liveZeroToken.setTokenNameAndSymbol("MEOW", "MEOW");
+
   });
 
-  describe("Validation", async () => {
-    it("should have the correct name", async () => {
+  describe("Validation - LiveZeroToken", async () => {
+    it.only("should have the correct name", async () => {
       const name = await liveZeroToken.name();
-      expect(name).to.eq("Zero");
+      expect(name).to.eq("Zero"); // shouldn't this fail?
     });
 
     it("should have the correct symbol", async () => {
@@ -87,7 +126,41 @@ describe("LiveZeroToken", () => {
     });
   });
 
-  describe("#transferBulk", () => {
+  describe("Validation - MeowToken", async () => {
+    it.only("should have the correct name", async () => {
+      const name = await meowToken.name();
+      expect(name).to.eq("MEOW");
+    });
+
+    it("should have the correct symbol", async () => {
+      const symbol = await meowToken.symbol();
+      expect(symbol).to.eq("MEOW");
+    });
+
+    it("should have the correct decimals", async () => {
+      // Expect the default number of decimals
+      const decimals = await meowToken.decimals();
+      expect(decimals).to.eq(18);
+    });
+
+    it("should have the correct total supply", async () => {
+      const totalSupply = await meowToken.totalSupply();
+      expect(totalSupply).to.eq(amount);
+    });
+
+    it("should have the correct balance for the deployer", async () => {
+      const balance = await meowToken.balanceOf(deployer.address);
+      expect(balance).to.eq(amount);
+    });
+
+    it("deployer should have the total supply as balance", async () => {
+      const balance = await meowToken.balanceOf(deployer.address);
+      const totalSupply = await meowToken.totalSupply();
+      expect(balance).to.eq(totalSupply);
+    });
+  });
+
+  describe("#transferBulk - LiveZeroToken", () => {
     it("Sends the expected amount to each address", async () => {
       const amount = hre.ethers.utils.parseEther("1");
       const recipients = [userA.address, userB.address, userC.address, userD.address];
@@ -120,7 +193,7 @@ describe("LiveZeroToken", () => {
     });
   });
 
-  describe("#transferFromBulk", () => {
+  describe("#transferFromBulk - LiveZeroToken", () => {
     it("Sends the expected amount to each address", async () => {
       const amount = hre.ethers.utils.parseEther("1");
       const recipients = [userB.address, userC.address, userD.address];

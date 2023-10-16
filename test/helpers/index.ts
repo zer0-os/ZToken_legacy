@@ -2,7 +2,8 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Contract, ContractTransaction, ethers, providers } from "ethers";
 import * as hre from "hardhat";
 
-export * from "./errors"
+export * from "./constants";
+export * from "./errors";
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any */
 export function filterLogsWithTopics(

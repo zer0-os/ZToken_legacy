@@ -12,7 +12,13 @@ import {
   ZeroToken__factory,
 } from "../typechain";
 
-import { impersonate } from "./helpers";
+import { 
+  impersonate,
+  PROXY_ADDRESS,
+  PROXY_ADMIN_ADDRESS,
+  IMPL_ADDRESS,
+  MULTISIG_ADDRESS
+} from "./helpers";
 
 chai.use(chaiAsPromised);
 // Initialize should API
@@ -30,12 +36,9 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
   let liveZeroFactory : LiveZeroToken__factory; // contract on mainnet
   let meowFactory : MeowToken__factory;
 
-  const implAdddress = "0xB8a9c7b782056edFC9E4585B14f078B5dd63994b";
-  const proxyAddress = "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8"; // token
   const ownerAddress = "0xeB3c46986aA0717f5C19f9AAEEBAAB5Fd751DaA6"; // ???
-  const multisigAddress = "0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d"; // owner of proxy admin and token proxy
 
-  const proxyAdminAddress = "0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C"; // is contract
+  // const PROXY_ADMIN_ADDRESS = "0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C"; // is contract
 
   before(async () => {
     [deployer] = await hre.ethers.getSigners();
@@ -44,13 +47,13 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
     liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
     meowFactory = await hre.ethers.getContractFactory("MeowToken");
 
-    await hre.upgrades.forceImport(implAdddress, liveZeroFactory)
+    await hre.upgrades.forceImport(IMPL_ADDRESS, liveZeroFactory)
 
     // Get owner of proxy admin (multisig)
-    mainnetMultisig = await impersonate(multisigAddress);
+    mainnetMultisig = await impersonate(MULTISIG_ADDRESS);
 
     // Get proxy admin as though it were an EOA, not a contract
-    mockProxyAdmin = await impersonate(proxyAdminAddress);
+    mockProxyAdmin = await impersonate(PROXY_ADMIN_ADDRESS);
   });
 
   it("Passes validation against local zero contract", async () => {
@@ -93,29 +96,29 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
     }
   });
 
-  it("Does upgrade from live zero token", async () => {
+  it("Does upgrade from live zero token proxy admin", async () => {
     // Must register in manifest
-    await hre.upgrades.forceImport(proxyAddress, zeroFactory)
+    await hre.upgrades.forceImport(PROXY_ADDRESS, zeroFactory)
 
     const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
 
     // Because the mainnet proxy admin is different from the forked hardhat admin,
     // we cannot use it to upgrade directly through hardhat. Instead we must use
     // the factory
-    const proxyAdmin = ProxyAdmin__factory.connect(proxyAdminAddress, mainnetMultisig);
-    const tx = proxyAdmin.connect(mainnetMultisig).upgrade(proxyAddress, meowTokenImpl.toString());
+    const proxyAdmin = ProxyAdmin__factory.connect(PROXY_ADMIN_ADDRESS, mainnetMultisig);
+    const tx = proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString());
     await expect(tx).to.not.be.reverted;
   });
 
   it("Does upgrade from live token through the proxy", async () => {
     // Must register in manifest
-    await hre.upgrades.forceImport(proxyAddress, zeroFactory)
+    await hre.upgrades.forceImport(PROXY_ADDRESS, zeroFactory)
 
     const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
 
     // Only the ProxyAdmin can call `upgradeTo` on the proxy directly, so we
     // spoof that address when we call it here
-    const proxy = TransparentUpgradeableProxy__factory.connect(proxyAddress, mockProxyAdmin);
+    const proxy = TransparentUpgradeableProxy__factory.connect(PROXY_ADDRESS, mockProxyAdmin);
     const tx = proxy.connect(mockProxyAdmin).upgradeTo(meowTokenImpl.toString());
 
     await expect(tx).to.not.be.reverted;
@@ -131,7 +134,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
       "0xf50E36F77d041d3b842B102579356e1d297D9ae7"
     ]
 
-    const liveZeroToken = LiveZeroToken__factory.connect(proxyAddress, mainnetMultisig);
+    const liveZeroToken = LiveZeroToken__factory.connect(PROXY_ADDRESS, mainnetMultisig);
     const props = [
       liveZeroToken.name(),
       liveZeroToken.symbol(),
@@ -145,15 +148,15 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
     const beforeProps = await Promise.all(props);
 
     // Now we perform the upgrade to MEOW token
-    await hre.upgrades.forceImport(proxyAddress, zeroFactory)
+    await hre.upgrades.forceImport(PROXY_ADDRESS, zeroFactory)
 
     const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
 
     // Because the mainnet proxy admin is different from the forked hardhat admin,
     // we cannot use it to upgrade directly through hardhat. Instead we must use
     // the factort
-    const proxyAdmin = ProxyAdmin__factory.connect(proxyAdminAddress, mainnetMultisig);
-    await proxyAdmin.connect(mainnetMultisig).upgrade(proxyAddress, meowTokenImpl.toString());
+    const proxyAdmin = ProxyAdmin__factory.connect(PROXY_ADMIN_ADDRESS, mainnetMultisig);
+    await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString());
 
     const afterProps = await Promise.all(props);
 
@@ -166,19 +169,19 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
   // TODO how else can this be done? Transfers to 0x0 address are not allowed
   // it("Disallows further upgrades after an initial upgrade is done", async () => {
   //   // Must register in manifest
-  //   await hre.upgrades.forceImport(proxyAddress, zeroFactory)
+  //   await hre.upgrades.forceImport(PROXY_ADDRESS, zeroFactory)
 
   //   const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
 
   //   // Only the ProxyAdmin can call `upgradeTo` on the proxy directly, so we
   //   // spoof that address when we call it here
-  //   const proxy = TransparentUpgradeableProxy__factory.connect(proxyAddress, mockProxyAdmin);
+  //   const proxy = TransparentUpgradeableProxy__factory.connect(PROXY_ADDRESS, mockProxyAdmin);
   //   const tx = proxy.connect(mockProxyAdmin).upgradeTo(meowTokenImpl.toString());
 
   //   // await expect(tx).to.not.be.reverted;
 
   //   // Transfer the owner of admin
-  //   const proxyAdmin = ProxyAdmin__factory.connect(proxyAdminAddress, mainnetMultisig);
+  //   const proxyAdmin = ProxyAdmin__factory.connect(PROXY_ADMIN_ADDRESS, mainnetMultisig);
 
   //   // By transferring ownership of the proxy admin we're disabling the ability to upgrade in the future
   //   const transferTx = await proxyAdmin.connect(mainnetMultisig).transferOwnership(hre.ethers.constants.AddressZero);
