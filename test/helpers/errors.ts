@@ -10,3 +10,4 @@ export const BALANCE_ERROR = "ERC20: transfer amount exceeds balance";
 
 // Earlier ERC20 version, used in LiveZeroToken instead
 export const LZT_ALLOWANCE_ERROR = "ERC20: transfer total exceeds allowance";
+export const MEOW_ALLOWANCE_ERROR = "ERC20: insufficient allowance"
