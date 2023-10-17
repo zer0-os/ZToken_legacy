@@ -17,6 +17,7 @@ describe("MeowToken", () => {
   const tokenAddress = "0x0ec78ed49c2d27b315d462d43b5bab94d2c79bf8";
   const multisigAddress = "0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d";
   const proxyAdmin = "0x5dc79cf30bdc7ead0afd107f3ab3494fb666b86c";
+  let implementation;
   let contract;
   let snapshotIdBeforeUpgrade;
   let snapshotIdAfterUpgrade;
@@ -41,6 +42,7 @@ describe("MeowToken", () => {
       owner
     );
     const newImplementation = await (await tokenArtefact.deploy()).deployed();
+    implementation = newImplementation;
     const proxyAdminContract = await hre.ethers.getContractAt("ProxyAdmin", proxyAdmin, owner);
     await proxyAdminContract.upgrade(tokenAddress, newImplementation.address);
     // await proxy.
@@ -100,6 +102,8 @@ describe("MeowToken", () => {
       expect(await contract.balanceOf(user2.address)).to.be.equal(user2Amount.add(1000));
       expect(await contract.balanceOf(user1.address)).to.be.equal(user1Amount.sub(2000));
       expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(2000));
+      await expect(contract.balanceOfAt(user1.address, 1)).to.be.revertedWith("function removed");
+      await expect(contract.totalSupplyAt(1)).to.be.revertedWith("function removed");
     });
 
 
@@ -125,6 +129,25 @@ describe("MeowToken", () => {
       expect(await contract.balanceOf(user1.address)).to.be.equal(initialUser1Balance.sub(2000));
 
     });
+
+    it("test init", async () => {
+      await expect(contract.initialize("test", "test", 1)).to.be.reverted;
+      // deploy empty proxy
+      const proxyContractArtefact = await hre.ethers.getContractFactory(
+        "TransparentUpgradeableProxy",
+        owner
+      );
+      const proxy = await proxyContractArtefact.deploy(implementation.address, owner.address, "0x");
+      await proxy.deployed();
+      const proxyWithImplArt = await hre.ethers.getContractAt("MeowToken", proxy.address, user1);
+      await proxyWithImplArt.initialize("NameTest", "SymbolTest", 100);
+      const amount = hre.ethers.utils.parseEther("100");
+      expect (await proxyWithImplArt.totalSupply()).to.be.equal(amount);
+      expect (await proxyWithImplArt.name()).to.be.equal("NameTest");
+      expect (await proxyWithImplArt.symbol()).to.be.equal("SymbolTest");
+      expect (await proxyWithImplArt.balanceOf(user1.address)).to.be.equal(amount);
+    });
+
     it("check storage variables after upgrade", async () => {
       const randomHolders = [
         "0xEf147697d948D609F712397Db270234CF155A925",
@@ -158,9 +181,9 @@ describe("MeowToken", () => {
       expect(await contract.symbol()).to.be.equal(symbol);
       expect(await contract.owner()).to.be.equal(owner);
       expect(randomHolderAmounts).to.deep.equal(randomHoldersAfterUpgrade);
-
-
     });
+
+
   });
 
 });
