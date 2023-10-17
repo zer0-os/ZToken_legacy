@@ -18,8 +18,8 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
 
   /**
    * @dev Initializer for the proxy with token name, symbol and amount
-   * @param name is the Token Name
-   * @param symbol is the Token Symbol
+   * @param name_ is the Token Name
+   * @param symbol_ is the Token Symbol
    * @param amount is the value that will be minted to the initializer
    */
   function initialize(string memory name_, string memory symbol_, uint amount)
@@ -35,17 +35,19 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
 
   /**
    * @dev Retrieves the balance of `account` at the time `snapshotId` was created.
-   * @reverts implementation disabled because snapshot not used anymore, only to preserve state variables
+   * @return uint 256
+   * @notice  implementation disabled because snapshot not used anymore, only to preserve state variables
    */
-  function balanceOfAt(address account, uint256 snapshotId) public view virtual override returns (uint256) {
+  function balanceOfAt(address, uint256) public view virtual override returns (uint256) {
     revert("function removed");
   }
 
   /**
    * @dev Retrieves the total supply at the time `snapshotId` was created.
-   * @reverts implementation disabled because snapshot not used anymore, only to preserve state variables
+   * @return uint256
+   * @notice  implementation disabled because snapshot not used anymore, only to preserve state variables
    */
-  function totalSupplyAt(uint256 snapshotId) public view virtual override returns(uint256) {
+  function totalSupplyAt(uint256) public view virtual override returns(uint256) {
     revert("function removed");
   }
 
@@ -90,9 +92,9 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
 
 
   function _beforeTokenTransfer(
-    address from,
-    address to,
-    uint256 amount
+    address,
+    address,
+    uint256
   )
   internal
   virtual
@@ -104,7 +106,7 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   {}
 
   function _afterTokenTransfer(
-    address from,
+    address,
     address to,
     uint256 amount
   ) internal virtual override {
