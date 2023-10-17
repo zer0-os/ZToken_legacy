@@ -169,6 +169,10 @@ describe("LiveZeroToken -> MeowToken", () => {
 
         const tx = liveZeroToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
         await expect(tx).to.be.revertedWith(BALANCE_ERROR);
+
+        // Send back after error is confirmed
+        await liveZeroToken.connect(userD).transfer(deployer.address, balance);
+
       });
 
       it("Fails when one of the recipients is the zero address", async () => {
@@ -188,36 +192,37 @@ describe("LiveZeroToken -> MeowToken", () => {
       await hre.upgrades.forceImport(PROXY_ADDRESS, liveZeroFactory);
       liveZeroToken = liveZeroFactory.attach(PROXY_ADDRESS);
 
+      // When running multiple test files, HH will maintain some state on
+      // its local between them. This causes overlap in some cases where we don't
+      // manually reset state ourselves. As a result, we redeploy the proxy here to
+      // be the original zero token to be able to call to `mint` to give the deployer
+      // funds for these tests. We then upgrade to back MeowToken.
+      const proxyAdmin = proxyAdminFactory.attach(PROXY_ADMIN_ADDRESS);
+
+      const zeroTokenImpl = await hre.upgrades.deployImplementation(liveZeroFactory);
+      await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, zeroTokenImpl.toString());
+
       // Give deployer funds for tests
       await liveZeroToken.connect(mainnetMultisig).mint(deployer.address, amount);
 
+      // Then upgrade to MeowToken
       const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
-
-      const proxyAdmin = proxyAdminFactory.attach(PROXY_ADMIN_ADDRESS);
-
-      await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString()); 
+      await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString());
 
       // Effectively the same as calling zeroLiveToken but use new variable
       // to show that we are referencing the upgraded contract now
       meowToken = meowFactory.attach(PROXY_ADDRESS);
-
-      // Clear balance from prior group of tests
-      const recipients = [userA, userB, userC, userD];
-      for(const recipient of recipients) { // not necessary loop
-        const balance = await meowToken.balanceOf(recipient.address);
-        await meowToken.connect(recipient).transfer(deployer.address, balance);
-      }
     });
 
     describe("Validation", async () => {
       it("should have the correct name", async () => {
         const name = await meowToken.name();
-        expect(name).to.eq("MEOW");
+        expect(name).to.eq(newName);
       });
 
       it("should have the correct symbol", async () => {
         const symbol = await meowToken.symbol();
-        expect(symbol).to.eq("MEOW");
+        expect(symbol).to.eq(newSymbol);
       });
 
       it("should have the correct decimals", async () => {
@@ -228,12 +233,13 @@ describe("LiveZeroToken -> MeowToken", () => {
 
       it("should have the correct total supply", async () => {
         const totalSupply = await meowToken.totalSupply();
+        const amounts = hre.ethers.utils.parseEther("1");
 
-        // Already have a total supply, but also have to mint for tests
-        // by giving deployer funds
-        // TODO resolve another way?
-        const balance = await meowToken.balanceOf(deployer.address);
-        expect(totalSupply).to.eq(amount.add(balance));
+        // Because ZERO is already on mainnet it has a total supply
+        // We require an account with funds for these tests, so minting
+        // changes the existing total supply here, but doesn't actually
+        // modify anything on mainnet.
+        expect(totalSupply).to.eq(amount.mul(2));
       });
     });
 
@@ -265,7 +271,7 @@ describe("LiveZeroToken -> MeowToken", () => {
         const tx = meowToken.connect(deployer).transferBulk([userA.address, userB.address, userC.address], amount);
         await expect(tx).to.be.revertedWith(BALANCE_ERROR);
 
-        // Transfer balance back after tests confirms we failed correctly.
+        // Transfer balance back after tests confirm we failed correctly.
         await meowToken.connect(userD).transfer(deployer.address, balance);
       });
 
