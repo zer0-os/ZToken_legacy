@@ -1,8 +1,8 @@
 import {
   LiveZeroToken,
   LiveZeroToken__factory,
-  MeowToken,
-  MeowToken__factory,
+  MeowTokenTest,
+  MeowTokenTest__factory,
   ProxyAdmin__factory,
 } from "../typechain";
 
@@ -38,8 +38,8 @@ describe("LiveZeroToken -> MeowToken", () => {
   let liveZeroToken : LiveZeroToken;
   let liveZeroFactory : LiveZeroToken__factory;
 
-  let meowToken : MeowToken;
-  let meowFactory : MeowToken__factory;
+  let meowToken : MeowTokenTest;
+  let meowFactory : MeowTokenTest__factory;
 
   let proxyAdminFactory : ProxyAdmin__factory;
 
@@ -64,7 +64,7 @@ describe("LiveZeroToken -> MeowToken", () => {
     mainnetMultisig = await impersonate(MULTISIG_ADDRESS)
 
     liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
-    meowFactory = await hre.ethers.getContractFactory("MeowToken");
+    meowFactory = await hre.ethers.getContractFactory("MeowTokenTest");
     proxyAdminFactory = await hre.ethers.getContractFactory("ProxyAdmin");
   });
 
@@ -250,7 +250,6 @@ describe("LiveZeroToken -> MeowToken", () => {
 
         await meowToken.connect(deployer).transferBulk(recipients, amount);
 
-        // TODO fix this
         const recipientsSigners = [userA, userB, userC, userD];
 
         for (const recipient of recipientsSigners) {

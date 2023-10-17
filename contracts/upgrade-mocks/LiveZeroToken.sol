@@ -205,7 +205,6 @@ contract LiveZeroToken is
         return true;
     }
 
-    // TODO This is the only function missing from ZeroToken in this repo
     function setTokenNameAndSymbol(
         string calldata _newTokenName,
         string calldata _newTokenSymbol

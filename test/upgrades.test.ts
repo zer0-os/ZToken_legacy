@@ -6,7 +6,7 @@ import { solidity } from "ethereum-waffle";
 
 import {
   LiveZeroToken__factory,
-  MeowToken__factory,
+  MeowTokenTest__factory,
   ProxyAdmin__factory,
   TransparentUpgradeableProxy__factory,
   ZeroToken__factory,
@@ -34,10 +34,10 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
 
   let zeroFactory : ZeroToken__factory; // contract at commit efb6bc46
   let liveZeroFactory : LiveZeroToken__factory; // contract on mainnet
-  let meowFactory : MeowToken__factory;
+  let meowFactory : MeowTokenTest__factory;
 
-  const ownerAddress = "0xeB3c46986aA0717f5C19f9AAEEBAAB5Fd751DaA6"; // ???
-
+  // Replace with agreed upon dead address from leadership
+  const deadAddress = "0x123123123123123123"
   // const PROXY_ADMIN_ADDRESS = "0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C"; // is contract
 
   before(async () => {
@@ -45,7 +45,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
 
     zeroFactory = await hre.ethers.getContractFactory("ZeroToken");
     liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
-    meowFactory = await hre.ethers.getContractFactory("MeowToken");
+    meowFactory = await hre.ethers.getContractFactory("MeowTokenTest");
 
     await hre.upgrades.forceImport(IMPL_ADDRESS, liveZeroFactory)
 
@@ -163,28 +163,26 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
     expect(beforeProps).to.deep.eq(afterProps);
   });
 
-  // TODO add tests to run same token tests we already have but for before and after the upgrade
-  // TODO add tests for a testnet fork
+  it("Disallows further upgrades after an initial upgrade is done", async () => {
+    // Must register in manifest
+    await hre.upgrades.forceImport(PROXY_ADDRESS, zeroFactory)
 
-  // TODO how else can this be done? Transfers to 0x0 address are not allowed
-  // it("Disallows further upgrades after an initial upgrade is done", async () => {
-  //   // Must register in manifest
-  //   await hre.upgrades.forceImport(PROXY_ADDRESS, zeroFactory)
+    const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
 
-  //   const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);
+    // Only the ProxyAdmin can call `upgradeTo` on the proxy directly, so we
+    // spoof that address when we call it here
+    // const proxy = TransparentUpgradeableProxy__factory.connect(PROXY_ADDRESS, mockProxyAdmin);
+    // await proxy.connect(mockProxyAdmin).upgradeTo(meowTokenImpl.toString());
 
-  //   // Only the ProxyAdmin can call `upgradeTo` on the proxy directly, so we
-  //   // spoof that address when we call it here
-  //   const proxy = TransparentUpgradeableProxy__factory.connect(PROXY_ADDRESS, mockProxyAdmin);
-  //   const tx = proxy.connect(mockProxyAdmin).upgradeTo(meowTokenImpl.toString());
+    // Transfer the owner of admin
+    const proxyAdmin = ProxyAdmin__factory.connect(PROXY_ADMIN_ADDRESS, mainnetMultisig);
+    await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString());
 
-  //   // await expect(tx).to.not.be.reverted;
+    // By renouncing ownership we're disabling the ability to upgrade in the future
+    await proxyAdmin.connect(mainnetMultisig).renounceOwnership();
 
-  //   // Transfer the owner of admin
-  //   const proxyAdmin = ProxyAdmin__factory.connect(PROXY_ADMIN_ADDRESS, mainnetMultisig);
-
-  //   // By transferring ownership of the proxy admin we're disabling the ability to upgrade in the future
-  //   const transferTx = await proxyAdmin.connect(mainnetMultisig).transferOwnership(hre.ethers.constants.AddressZero);
-  //   await expect(transferTx).to.not.be.reverted;
-  // });
+    // Attempt to upgrade again
+    const tx = proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, meowTokenImpl.toString());
+    await expect(tx).to.be.revertedWith("Ownable: caller is not the owner");
+  });
 });

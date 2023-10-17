@@ -1,6 +1,6 @@
 import {
-  MeowToken,
-  MeowToken__factory,
+  MeowTokenTest,
+  MeowTokenTest__factory,
 } from "../typechain";
 
 import * as hre from "hardhat";
@@ -26,8 +26,8 @@ describe("MeowToken", () => {
   let userC : SignerWithAddress;
   let userD : SignerWithAddress;
 
-  let meowToken : MeowToken;
-  let meowFactory : MeowToken__factory;
+  let meowToken : MeowTokenTest;
+  let meowFactory : MeowTokenTest__factory;
 
   const name = "MeowToken";
   const symbol = "MEOW";
@@ -45,12 +45,12 @@ describe("MeowToken", () => {
       userD
     ] = await hre.ethers.getSigners();
 
-    meowFactory = await hre.ethers.getContractFactory("MeowToken");
+    meowFactory = await hre.ethers.getContractFactory("MeowTokenTest");
   });
 
   beforeEach(async () => {
     // To reset balances between tests we redeploy each time
-    meowToken = await hre.upgrades.deployProxy(meowFactory, [name, symbol, amount]) as MeowToken;
+    meowToken = await hre.upgrades.deployProxy(meowFactory, [name, symbol, amount]) as MeowTokenTest;
   });
 
   describe("Validation", async () => {
