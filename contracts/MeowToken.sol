@@ -34,6 +34,20 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   }
 
   /**
+   * @dev Retrieves the balance of `account` at the time `snapshotId` was created.
+     */
+  function balanceOfAt(address account, uint256 snapshotId) public view virtual override returns (uint256) {
+    revert("function removed");
+  }
+
+  /**
+   * @dev Retrieves the total supply at the time `snapshotId` was created.
+     */
+  function totalSupplyAt(uint256 snapshotId) public view virtual override returns(uint256) {
+    revert("function removed");
+  }
+
+  /**
    * Utility function to transfer tokens to many addresses at once.
    * @param recipients The addresses to send tokens to
    * @param amount The amount of tokens to send
