@@ -22,9 +22,7 @@
     "lint:contracts": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
     "lint:ts": "eslint . --ext .ts",
     "clean": "rm -rf ./lib",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p ./tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
-    "build:cjs": "tsc -p ./tsconfig.cjs.json"
+    "build": "npm run clean && npm run tsc -p ./tsconfig.json",
   },
   "devDependencies": {
     "@ethersproject/abi": "5.5.0",
