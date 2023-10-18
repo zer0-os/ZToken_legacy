@@ -22,7 +22,7 @@
     "lint:contracts": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
     "lint:ts": "eslint . --ext .ts",
     "clean": "rm -rf ./lib",
-    "build": "npm run clean && npm run tsc -p ./tsconfig.json"
+    "build": "yarn run clean && yarn run compile"
   },
   "devDependencies": {
     "@ethersproject/abi": "5.5.0",
