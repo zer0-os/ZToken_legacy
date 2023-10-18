@@ -6,8 +6,8 @@ pragma solidity ^0.8.3;
 import "./upgrade-mocks/ERC20UpgradeableOld.sol";
 import "./upgrade-mocks/ERC20SnapshotOld.sol";
 import "./upgrade-mocks/ERC20PausableOld.sol";
+import "@openzeppelin/contracts-upgradeable-400/access/OwnableUpgradeable.sol";
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract ZeroToken is
     OwnableUpgradeable,

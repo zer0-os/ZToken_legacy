@@ -2,8 +2,8 @@
 pragma solidity ^0.8.3;
 
 import "./ERC20UpgradeableOld.sol";
+import "@openzeppelin/contracts-upgradeable-400/access/OwnableUpgradeable.sol";
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 // To show that the OZ validation fails appropriately we create a fake contract
 // that will intentionally have a different storage layout than ZERO's contract.
