@@ -4,7 +4,7 @@ import { expect } from "chai";
 import * as hre from "hardhat";
 import { MeowToken, MeowToken__factory } from "../typechain";
 
-describe("MeowToken", () => {
+describe("MeowToken-DMOB", () => {
 
   let owner: SignerWithAddress;
 

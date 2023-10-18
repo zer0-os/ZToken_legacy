@@ -6,8 +6,8 @@ import { solidity } from "ethereum-waffle";
 
 import * as fs from "fs";
 import { MerkleDistributorInfo } from "../utilities/vesting/createMerkle";
-import { MerkleTokenVesting } from "../typechain/MerkleTokenVesting";
-import { MerkleTokenVesting__factory } from "../typechain/factories/MerkleTokenVesting__factory";
+import { MerkleTokenVesting } from "../typechain/contracts/MerkleTokenVesting";
+import { MerkleTokenVesting__factory } from "../typechain/factories/contracts/MerkleTokenVesting__factory";
 import { ZeroToken, ZeroToken__factory } from "../typechain";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ContractTransaction } from "ethers";

@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import * as hre from "hardhat";
-import { doDeployToken } from "../tasks/deploy";
-import { ZeroToken } from "../typechain";
-import { getLogger } from "../utilities";
+import { doDeployToken } from "../../tasks/deploy";
+import { ZeroToken } from "../../typechain";
+import { getLogger } from "../../utilities";
 
 const logger = getLogger("scripts::deployWILD");
 

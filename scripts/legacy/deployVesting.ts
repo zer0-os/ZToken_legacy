@@ -2,8 +2,8 @@ import * as hre from "hardhat";
 import {
   MerkleVestingDeploymentParams,
   doDeployVesting,
-} from "../tasks/deploy";
-import { getLogger } from "../utilities";
+} from "../../tasks/deploy";
+import { getLogger } from "../../utilities";
 
 const logger = getLogger("scripts::deployVesting");
 

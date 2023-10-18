@@ -1,0 +1,57 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7.0
+  codecov: codecov/codecov@3.2.4
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: cimg/node:18.15.0
+
+jobs:
+  test and coverage:
+    <<: *defaults
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run: yarn build
+      - run: yarn lint
+      - run:
+          name: Code Coverage Report
+          command: yarn coverage
+      - codecov/upload
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Execute Semantic Release - Development
+          command: yarn semantic-release # Create a new Development Tag
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test and coverage:
+          filters:
+            branches:
+              ignore:
+                - master
+  development:
+    jobs:
+      - test and coverage:
+          filters:
+            &filters-development # this yaml anchor is setting these values to "filters-production"
+            branches:
+              only: development
+      - publish:
+          context: CPT
+          requires:
+            - test and coverage
+          filters:
+            <<: *filters-development # this is calling the previously set yaml anchor

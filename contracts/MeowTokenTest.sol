@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20Snapshot
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgradeable, ERC20SnapshotUpgradeable
+contract MeowTokenTest is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgradeable, ERC20SnapshotUpgradeable
 {
   event AuthorizedSnapshotter(address account);
   event DeauthorizedSnapshotter(address account);
@@ -27,7 +27,7 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     _disableInitializers();
   }
 
-  function initialize(string memory name, string memory symbol)
+  function initialize(string memory name, string memory symbol, uint amount)
   public
   initializer
   {
@@ -35,6 +35,11 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     __ERC20_init(name, symbol);
     __ERC20Snapshot_init();
     __ERC20Pausable_init();
+
+    // TODO delete this and the `amount` arg before deployment
+    // This mint is temporary for testing but the mainnet token
+    // already has a total supply minted
+    _mint(_msgSender(), amount);
   }
 
   /**

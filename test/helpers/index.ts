@@ -1,4 +1,9 @@
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Contract, ContractTransaction, ethers, providers } from "ethers";
+import * as hre from "hardhat";
+
+export * from "./constants";
+export * from "./errors";
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any */
 export function filterLogsWithTopics(
@@ -37,4 +42,21 @@ export async function getEvent(
   const events = await getEvents(tx, event, contract);
   const firstEvent = events[0];
   return firstEvent;
+}
+
+export async function impersonate(
+  address: string
+): Promise<SignerWithAddress> {
+  await hre.network.provider.request({
+    method: "hardhat_impersonateAccount",
+    params: [address],
+  });
+
+  await hre.network.provider.send("hardhat_setBalance", [
+    address,
+    "0x1000000000000000000000",
+  ]);
+
+  const signer = await hre.ethers.getSigner(address);
+  return signer as SignerWithAddress;
 }
