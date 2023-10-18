@@ -1,6 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import { ethers } from "ethers";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 
 import { task, HardhatUserConfig } from "hardhat/config";

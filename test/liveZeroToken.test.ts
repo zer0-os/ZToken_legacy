@@ -233,7 +233,6 @@ describe("LiveZeroToken -> MeowToken", () => {
 
       it("should have the correct total supply", async () => {
         const totalSupply = await meowToken.totalSupply();
-        const amounts = hre.ethers.utils.parseEther("1");
 
         // Because ZERO is already on mainnet it has a total supply
         // We require an account with funds for these tests, so minting

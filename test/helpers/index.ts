@@ -44,7 +44,9 @@ export async function getEvent(
   return firstEvent;
 }
 
-export async function impersonate(address: string) {
+export async function impersonate(
+  address: string
+): Promise<SignerWithAddress> {
   await hre.network.provider.request({
     method: "hardhat_impersonateAccount",
     params: [address],

@@ -36,10 +36,6 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
   let liveZeroFactory : LiveZeroToken__factory; // contract on mainnet
   let meowFactory : MeowTokenTest__factory;
 
-  // Replace with agreed upon dead address from leadership
-  const deadAddress = "0x123123123123123123"
-  // const PROXY_ADMIN_ADDRESS = "0x5DC79cF30BDc7eAD0AfD107f3ab3494fB666b86C"; // is contract
-
   before(async () => {
     [deployer] = await hre.ethers.getSigners();
 
@@ -91,6 +87,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
           kind : "transparent"
         }
       );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err : any) {
       expect(err.message).contains("is not upgrade safe");
     }

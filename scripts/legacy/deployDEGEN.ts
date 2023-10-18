@@ -1,8 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
-import { doDeployToken } from "../tasks/deploy";
-import { ZeroToken } from "../typechain";
-import { getLogger } from "../utilities";
+import { doDeployToken } from "../../tasks/deploy";
+import { ZeroToken } from "../../typechain";
+import { getLogger } from "../../utilities";
 import { confirmContinue } from "./shared/utilities";
 
 const logger = getLogger("scripts::deployDEGEN");
