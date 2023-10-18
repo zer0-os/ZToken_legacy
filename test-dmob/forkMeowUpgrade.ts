@@ -1,9 +1,7 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import * as hre from "hardhat";
-import { MeowToken, MeowToken__factory } from "../typechain";
-import {ethers} from "ethers";
+
 
 describe("MeowToken-DMOB", () => {
 
@@ -13,7 +11,6 @@ describe("MeowToken-DMOB", () => {
   let user2: SignerWithAddress;
   let user3: SignerWithAddress;
 
-  let token: MeowToken;
   const tokenAddress = "0x0ec78ed49c2d27b315d462d43b5bab94d2c79bf8";
   const multisigAddress = "0x5eA627ba4cA4e043D38DE4Ad34b73BB4354daf8d";
   const proxyAdmin = "0x5dc79cf30bdc7ead0afd107f3ab3494fb666b86c";
