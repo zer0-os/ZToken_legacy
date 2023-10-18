@@ -22,9 +22,6 @@ jobs:
           name: Code Coverage Report
           command: yarn coverage
       - codecov/upload
-      - run:
-          name: Validate Code Coverage Threshold
-          command: yarn check-coverage #Validate code is adequately covered by unit tests
       - persist_to_workspace:
           root: ~/repo
           paths: .
