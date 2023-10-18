@@ -7,8 +7,11 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20Snapshot
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 
-contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgradeable, ERC20SnapshotUpgradeable
-{
+contract MeowToken is
+  OwnableUpgradeable,
+  ERC20Upgradeable,
+  ERC20PausableUpgradeable,
+  ERC20SnapshotUpgradeable {
   // Mapping which stores all addresses allowed to snapshot
   mapping(address => bool) authorizedToSnapshot;
 
