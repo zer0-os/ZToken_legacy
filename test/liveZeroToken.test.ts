@@ -1,6 +1,6 @@
 import {
-  LiveZeroToken,
-  LiveZeroToken__factory,
+  ZeroToken,
+  ZeroToken__factory,
   MeowTokenTest,
   MeowTokenTest__factory,
   ProxyAdmin__factory,
@@ -25,7 +25,7 @@ import {
 chai.use(solidity);
 const { expect } = chai;
 
-describe("LiveZeroToken -> MeowToken", () => {
+describe("ZeroToken -> MeowToken", () => {
   let deployer : SignerWithAddress;
   let mockContract : SignerWithAddress;
   let userA : SignerWithAddress;
@@ -35,8 +35,8 @@ describe("LiveZeroToken -> MeowToken", () => {
 
   let mainnetMultisig : SignerWithAddress;
 
-  let liveZeroToken : LiveZeroToken;
-  let liveZeroFactory : LiveZeroToken__factory;
+  let zeroToken : ZeroToken;
+  let liveZeroFactory : ZeroToken__factory;
 
   let meowToken : MeowTokenTest;
   let meowFactory : MeowTokenTest__factory;
@@ -63,39 +63,39 @@ describe("LiveZeroToken -> MeowToken", () => {
 
     mainnetMultisig = await impersonate(MULTISIG_ADDRESS)
 
-    liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
+    liveZeroFactory = await hre.ethers.getContractFactory("ZeroToken");
     meowFactory = await hre.ethers.getContractFactory("MeowTokenTest");
     proxyAdminFactory = await hre.ethers.getContractFactory("ProxyAdmin");
   });
 
   // Spoofed portion of tests, don't need live contract yet to validate behavior
   // of shared functions with MeowToken
-  describe("LiveZeroToken", async () => {
+  describe("ZeroToken", async () => {
     beforeEach(async () => {
       // To reset balances between tests we redeploy each time
-      liveZeroToken = await hre.upgrades.deployProxy(liveZeroFactory, [name, symbol]) as LiveZeroToken;
-      await liveZeroToken.mint(deployer.address, amount);
+      zeroToken = await hre.upgrades.deployProxy(liveZeroFactory, [name, symbol]) as ZeroToken;
+      await zeroToken.mint(deployer.address, amount);
     });
 
     describe("Validation", async () => {
       it("should have the correct name", async () => {
-        const name = await liveZeroToken.name();
+        const name = await zeroToken.name();
         expect(name).to.eq(name);
       });
 
       it("should have the correct symbol", async () => {
-        const symbol = await liveZeroToken.symbol();
+        const symbol = await zeroToken.symbol();
         expect(symbol).to.eq(symbol);
       });
 
       it("should have the correct decimals", async () => {
         // Expect the default number of decimals
-        const decimals = await liveZeroToken.decimals();
+        const decimals = await zeroToken.decimals();
         expect(decimals).to.eq(18);
       });
 
       it("should have the correct total supply", async () => {
-        const totalSupply = await liveZeroToken.totalSupply();
+        const totalSupply = await zeroToken.totalSupply();
         expect(totalSupply).to.eq(amount);
       });
     });
@@ -105,10 +105,10 @@ describe("LiveZeroToken -> MeowToken", () => {
         const amount = hre.ethers.utils.parseEther("1");
         const recipients = [userA.address, userB.address, userC.address, userD.address];
 
-        await liveZeroToken.connect(deployer).transferBulk(recipients, amount);
+        await zeroToken.connect(deployer).transferBulk(recipients, amount);
 
         for (const recipient of recipients) {
-          const balance = await liveZeroToken.balanceOf(recipient);
+          const balance = await zeroToken.balanceOf(recipient);
           expect(balance).to.eq(amount);
         }
       });
@@ -116,11 +116,11 @@ describe("LiveZeroToken -> MeowToken", () => {
       it("Fails when the sender does not have enough balance for all transfers", async () => {
         const amount = hre.ethers.utils.parseEther("1");
 
-        const balance = await liveZeroToken.balanceOf(deployer.address);
+        const balance = await zeroToken.balanceOf(deployer.address);
         // Sender has no balance after transferring it all to D
-        await liveZeroToken.connect(deployer).transfer(userD.address, balance);
+        await zeroToken.connect(deployer).transfer(userD.address, balance);
 
-        const tx = liveZeroToken.connect(deployer).transferBulk([userA.address, userB.address, userC.address], amount);
+        const tx = zeroToken.connect(deployer).transferBulk([userA.address, userB.address, userC.address], amount);
         await expect(tx).to.be.revertedWith(BALANCE_ERROR);
       });
 
@@ -128,7 +128,7 @@ describe("LiveZeroToken -> MeowToken", () => {
         const amount = hre.ethers.utils.parseEther("1");
         const recipients = [userA.address, userB.address, userC.address, hre.ethers.constants.AddressZero];
 
-        const tx = liveZeroToken.connect(deployer).transferBulk(recipients, amount);
+        const tx = zeroToken.connect(deployer).transferBulk(recipients, amount);
         await expect(tx).to.be.revertedWith(ZERO_TO_ADDRESS_ERROR);
       });
     });
@@ -138,11 +138,11 @@ describe("LiveZeroToken -> MeowToken", () => {
         const amount = hre.ethers.utils.parseEther("1");
         const recipients = [userB.address, userC.address, userD.address];
 
-        await liveZeroToken.connect(deployer).approve(userA.address, amount.mul(recipients.length));
-        await liveZeroToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
+        await zeroToken.connect(deployer).approve(userA.address, amount.mul(recipients.length));
+        await zeroToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
 
         for (const recipient of recipients) {
-          const balance = await liveZeroToken.balanceOf(recipient);
+          const balance = await zeroToken.balanceOf(recipient);
           expect(balance).to.eq(amount);
         }
       });
@@ -151,9 +151,9 @@ describe("LiveZeroToken -> MeowToken", () => {
         const amount = hre.ethers.utils.parseEther("1");
         const recipients = [userB.address, userC.address, userD.address];
 
-        await liveZeroToken.connect(deployer).approve(userA.address, amount.mul(recipients.length - 1));
+        await zeroToken.connect(deployer).approve(userA.address, amount.mul(recipients.length - 1));
 
-        const tx = liveZeroToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
+        const tx = zeroToken.connect(userA).transferFromBulk(deployer.address, recipients, amount);
         await expect(tx).to.be.revertedWith(LZT_ALLOWANCE_ERROR);
       });
 
@@ -163,15 +163,15 @@ describe("LiveZeroToken -> MeowToken", () => {
         const recipients = [userB.address, userC.address, userD.address];
 
         // Sender has no balance after transferring it all to D
-        const balance = await liveZeroToken.balanceOf(deployer.address);
-        await liveZeroToken.connect(deployer).transfer(userD.address, balance);
-        await liveZeroToken.connect(deployer).approve(mockContract.address, amount.mul(recipients.length));
+        const balance = await zeroToken.balanceOf(deployer.address);
+        await zeroToken.connect(deployer).transfer(userD.address, balance);
+        await zeroToken.connect(deployer).approve(mockContract.address, amount.mul(recipients.length));
 
-        const tx = liveZeroToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
+        const tx = zeroToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
         await expect(tx).to.be.revertedWith(BALANCE_ERROR);
 
         // Send back after error is confirmed
-        await liveZeroToken.connect(userD).transfer(deployer.address, balance);
+        await zeroToken.connect(userD).transfer(deployer.address, balance);
 
       });
 
@@ -179,9 +179,9 @@ describe("LiveZeroToken -> MeowToken", () => {
         const amount = hre.ethers.utils.parseEther("1");
         const recipients = [userB.address, userC.address, hre.ethers.constants.AddressZero];
 
-        await liveZeroToken.connect(deployer).approve(mockContract.address, amount.mul(recipients.length));
+        await zeroToken.connect(deployer).approve(mockContract.address, amount.mul(recipients.length));
 
-        const tx = liveZeroToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
+        const tx = zeroToken.connect(mockContract).transferFromBulk(deployer.address, recipients, amount);
         await expect(tx).to.be.revertedWith(ZERO_TO_ADDRESS_ERROR);
       });
     });
@@ -190,7 +190,7 @@ describe("LiveZeroToken -> MeowToken", () => {
   describe("MeowToken", async () => {
     before(async () => {
       await hre.upgrades.forceImport(PROXY_ADDRESS, liveZeroFactory);
-      liveZeroToken = liveZeroFactory.attach(PROXY_ADDRESS);
+      zeroToken = liveZeroFactory.attach(PROXY_ADDRESS);
 
       // When running multiple test files, HH will maintain some state on
       // its local between them. This causes overlap in some cases where we don't
@@ -203,7 +203,7 @@ describe("LiveZeroToken -> MeowToken", () => {
       await proxyAdmin.connect(mainnetMultisig).upgrade(PROXY_ADDRESS, zeroTokenImpl.toString());
 
       // Give deployer funds for tests
-      await liveZeroToken.connect(mainnetMultisig).mint(deployer.address, amount);
+      await zeroToken.connect(mainnetMultisig).mint(deployer.address, amount);
 
       // Then upgrade to MeowToken
       const meowTokenImpl = await hre.upgrades.deployImplementation(meowFactory);

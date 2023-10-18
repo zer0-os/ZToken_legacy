@@ -5,11 +5,10 @@ import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
 
 import {
-  LiveZeroToken__factory,
+  ZeroToken__factory,
   MeowTokenTest__factory,
   ProxyAdmin__factory,
   TransparentUpgradeableProxy__factory,
-  ZeroToken__factory,
 } from "../typechain";
 
 import { 
@@ -32,18 +31,16 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
   let mainnetMultisig : SignerWithAddress
   let mockProxyAdmin : SignerWithAddress;
 
-  let zeroFactory : ZeroToken__factory; // contract at commit efb6bc46
-  let liveZeroFactory : LiveZeroToken__factory; // contract on mainnet
+  let zeroFactory : ZeroToken__factory;
   let meowFactory : MeowTokenTest__factory;
 
   before(async () => {
     [deployer] = await hre.ethers.getSigners();
 
     zeroFactory = await hre.ethers.getContractFactory("ZeroToken");
-    liveZeroFactory = await hre.ethers.getContractFactory("LiveZeroToken");
     meowFactory = await hre.ethers.getContractFactory("MeowTokenTest");
 
-    await hre.upgrades.forceImport(IMPL_ADDRESS, liveZeroFactory)
+    await hre.upgrades.forceImport(IMPL_ADDRESS, zeroFactory)
 
     // Get owner of proxy admin (multisig)
     mainnetMultisig = await impersonate(MULTISIG_ADDRESS);
@@ -66,7 +63,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
   it("Passes validation against mainnet zero contract", async () => {
     // Will throw if not upgrade safe
     await expect(hre.upgrades.validateUpgrade(
-      liveZeroFactory,
+      zeroFactory,
       meowFactory,
       {
         kind: "transparent"
@@ -81,7 +78,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
 
     try {
       await hre.upgrades.validateUpgrade(
-        liveZeroFactory,
+        zeroFactory,
         failTokenFactory,
         {
           kind : "transparent"
@@ -131,7 +128,7 @@ describe("Test upgradability for Zero -> Meow ERC20", () => {
       "0xf50E36F77d041d3b842B102579356e1d297D9ae7"
     ]
 
-    const liveZeroToken = LiveZeroToken__factory.connect(PROXY_ADDRESS, mainnetMultisig);
+    const liveZeroToken = ZeroToken__factory.connect(PROXY_ADDRESS, mainnetMultisig);
     const props = [
       liveZeroToken.name(),
       liveZeroToken.symbol(),

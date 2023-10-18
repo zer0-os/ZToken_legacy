@@ -205,6 +205,13 @@ contract ZeroToken is
         return true;
     }
 
+    function setTokenNameAndSymbol(
+        string calldata _newTokenName,
+        string calldata _newTokenSymbol
+    ) external onlyOwner {
+        _setTokenNameAndSymbol(_newTokenName, _newTokenSymbol);
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
