@@ -84,7 +84,7 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
   ) external returns (bool) {
     for (uint256 i; i < recipients.length;) {
       address recipient = recipients[i];
-      require(transferFrom(sender, recipient, amount));
+      transferFrom(sender, recipient, amount);
       unchecked {++i;}
     }
     return true;

@@ -88,12 +88,18 @@ describe("MeowToken", () => {
 
 
   describe("new implementation tests", async () => {
-    it("set of tests", async () => {
+    it("Test burn", async () => {
 
       const initialBalance = await contract.totalSupply();
 
       await contract.connect(user1).transfer(tokenAddress, 1000); // burn 1000 tokens
       expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(1000));
+    });
+
+
+    it("test transferBulk burn", async () => {
+
+      const initialBalance = await contract.totalSupply();
 
       const user2Amount = await contract.balanceOf(user2.address);
       const user1Amount = await contract.balanceOf(user1.address);
@@ -101,7 +107,10 @@ describe("MeowToken", () => {
       await contract.connect(user1).transferBulk([tokenAddress, user2.address], 1000);
       expect(await contract.balanceOf(user2.address)).to.be.equal(user2Amount.add(1000));
       expect(await contract.balanceOf(user1.address)).to.be.equal(user1Amount.sub(2000));
-      expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(2000));
+      expect(await contract.totalSupply()).to.be.equal(initialBalance.sub(1000));
+    });
+
+    it("test methods balanceOfAt and totalSupplyAt are disabled", async () => {
       await expect(contract.balanceOfAt(user1.address, 1)).to.be.revertedWith("function removed");
       await expect(contract.totalSupplyAt(1)).to.be.revertedWith("function removed");
     });
