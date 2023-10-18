@@ -5,7 +5,7 @@ import * as hre from "hardhat";
 import { MeowToken, MeowToken__factory } from "../typechain";
 import {ethers} from "ethers";
 
-describe("MeowToken", () => {
+describe("MeowToken-DMOB", () => {
 
   let owner: SignerWithAddress;
 

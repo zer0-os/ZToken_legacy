@@ -7,8 +7,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "lib"
   },
-  "include": ["./scripts", "./tasks", "./test", "./typechain", "./utilities"],
+  "include": ["./scripts", "./tasks", "./test", "./typechain", "./utilities", "test-dmob"],
   "files": ["./hardhat.config.ts"]
 }

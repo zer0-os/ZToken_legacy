@@ -1,6 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import { ethers } from "ethers";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 
 import { task, HardhatUserConfig } from "hardhat/config";
@@ -10,6 +10,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@typechain/hardhat";
 import "@openzeppelin/hardhat-upgrades";
 import "solidity-coverage";
+import "hardhat-ignore-warnings";
 import "./tasks/merkle";
 import "./tasks/deploy";
 
@@ -45,10 +46,15 @@ const config: HardhatUserConfig = {
     sources: "./contracts",
     tests: "./test",
   },
-  mocha: {
-    timeout: 50000,
+  warnings: {
+    "test/**/*.ts": { 
+      default: "off"
+    }
   },
-  defaultNetwork: "goerli",
+  mocha: {
+    timeout: 500000,
+  },
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {
       forking: {

@@ -1,8 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
-import { doDeployToken } from "../tasks/deploy";
-import { ZeroToken__factory } from "../typechain";
-import { getLogger } from "../utilities";
+import { doDeployToken } from "../../tasks/deploy";
+import { ZeroToken__factory } from "../../typechain";
+import { getLogger } from "../../utilities";
 
 import * as fs from "fs";
 import { ethers } from "hardhat";

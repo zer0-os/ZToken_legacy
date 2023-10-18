@@ -1,14 +1,19 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.3;
+pragma solidity ^0.8.3;
 
+// Slight modifiations from base Open Zeppelin Contracts
+// Consult /oz/README.md for more information
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20SnapshotUpgradeable.sol";
+
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-
-contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgradeable, ERC20SnapshotUpgradeable
+contract MeowTokenTest is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgradeable, ERC20SnapshotUpgradeable
 {
+  event AuthorizedSnapshotter(address account);
+  event DeauthorizedSnapshotter(address account);
+
   // Mapping which stores all addresses allowed to snapshot
   mapping(address => bool) authorizedToSnapshot;
 
@@ -22,37 +27,19 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     _disableInitializers();
   }
 
-  /**
-   * @dev Initializer for the proxy with token name, symbol and amount
-   * @param name_ is the Token Name
-   * @param symbol_ is the Token Symbol
-   */
-  function initialize(string memory name_, string memory symbol_)
+  function initialize(string memory name, string memory symbol, uint amount)
   public
   initializer
   {
     __Ownable_init();
-    __ERC20_init(name_, symbol_);
+    __ERC20_init(name, symbol);
     __ERC20Snapshot_init();
     __ERC20Pausable_init();
-  }
 
-  /**
-   * @dev Retrieves the balance of `account` at the time `snapshotId` was created.
-   * @return uint 256
-   * @notice  implementation disabled because snapshot not used anymore, only to preserve state variables
-   */
-  function balanceOfAt(address, uint256) public view virtual override returns (uint256) {
-    revert("Snapshot functionality removed");
-  }
-
-  /**
-   * @dev Retrieves the total supply at the time `snapshotId` was created.
-   * @return uint256
-   * @notice  implementation disabled because snapshot not used anymore, only to preserve state variables
-   */
-  function totalSupplyAt(uint256) public view virtual override returns(uint256) {
-      revert("Snapshot functionality removed");
+    // TODO delete this and the `amount` arg before deployment
+    // This mint is temporary for testing but the mainnet token
+    // already has a total supply minted
+    _mint(_msgSender(), amount);
   }
 
   /**
@@ -69,10 +56,9 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     address sender = _msgSender();
     uint256 length = recipients.length;
 
-    for (uint256 i; i < length;) {
+    for (uint256 i = 0; i < length; ++i) {
       address recipient = recipients[i];
       _transfer(sender, recipient, amount);
-      unchecked {++i;}
     }
     return true;
   }
@@ -92,10 +78,9 @@ contract MeowToken is OwnableUpgradeable, ERC20Upgradeable, ERC20PausableUpgrade
     require(amount > 0, "MeowToken: amount must be greater than 0");
 
     uint256 length = recipients.length;
-    for (uint256 i; i < length;) {
+    for (uint256 i = 0; i < length; ++i) {
       address recipient = recipients[i];
       transferFrom(sender, recipient, amount);
-      unchecked {++i;}
     }
     return true;
   }
