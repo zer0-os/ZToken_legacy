@@ -49,6 +49,16 @@ async function main() {
   const implAddr = await hre.upgrades.erc1967.getImplementationAddress(zeroTokenAddress);
   logger.log(`With implementation contract address at: ${implAddr}`);
 
+  // compare this object and the contract object above
+  // can use node default assert
+  // make this one big connected thing with deploy and upgrade together
+  // skip deployment if mainnet, go straight to upgrade
+  // last step of renounceOwnership doesn't need code, just propose in defender
+  // make sure we also check approvals
+  // also verify burn mechanism
+  // "approval, transfers, burn"
+  // deploy the implementation, then the verify it and then upgrade is through defender
+  // one for deploy, one for deploy impl, the run upgrade (doesn't get added on mainnet)
   const meowtoken = meowTokenFactory.attach(zeroTokenAddress)
 
   logger.log(`Postupgrade checking balances of test accounts`);
