@@ -1,5 +1,3 @@
-import { ethers } from "ethers";
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 
@@ -21,8 +19,6 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
     console.log(account.address);
   }
 });
-
-const privateKey = process.env.PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
   typechain: {

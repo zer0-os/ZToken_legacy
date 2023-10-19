@@ -52,11 +52,7 @@ async function main() {
 }
 
 const tryMain = async () => {
-  try {
-    await main();
-  } catch (e : any) {
-    throw (e);
-  }
+  await main()
 }
 
 tryMain();
