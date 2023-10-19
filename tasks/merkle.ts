@@ -18,8 +18,7 @@ const ipfsBaseUri = "https://ipfs.io/ipfs/";
 
 const doGenerate = async (
   inputFile: string,
-  generate: generateFunc,
-  hre: HardhatRuntimeEnvironment
+  generate: generateFunc
 ) => {
   logger.log(`Generating merkle tree from ${inputFile}`);
 
@@ -30,7 +29,7 @@ const doGenerate = async (
   // calculate total amount of tokens
   {
     let total = BigNumber.from(0);
-    for (const [key, value] of Object.entries(jsonContents) as [
+    for (const [, value] of Object.entries(jsonContents) as [
       string,
       any
     ][]) {

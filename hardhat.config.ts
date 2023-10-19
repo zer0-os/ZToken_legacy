@@ -47,7 +47,7 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   warnings: {
-    "test/**/*.ts": { 
+    "test/**/*.ts": {
       default: "off"
     }
   },

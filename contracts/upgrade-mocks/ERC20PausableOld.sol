@@ -3,8 +3,8 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20UpgradeableOld.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable-400/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable-400/proxy/utils/Initializable.sol";
 
 /**
  * @dev ERC20 token with pausable token transfers, minting and burning.

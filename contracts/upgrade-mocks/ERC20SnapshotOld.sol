@@ -3,9 +3,9 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20UpgradeableOld.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ArraysUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable-400/utils/ArraysUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable-400/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable-400/proxy/utils/Initializable.sol";
 
 /**
  * @dev This contract extends an ERC20 token with a snapshot mechanism. When a snapshot is created, the balances and

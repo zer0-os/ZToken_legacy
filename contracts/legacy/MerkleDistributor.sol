@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
+// TODO: in all legacy files, update imports to the proper version of OZ contracts used at the time of deployment
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 
 abstract contract MerkleDistributor {
