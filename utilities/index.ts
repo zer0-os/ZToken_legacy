@@ -22,7 +22,7 @@ export interface DeploymentOutput {
   [type: string]: DeploymentData[];
 }
 
-const root = "zdao-tokens";
+const root = "ztoken";
 
 export const getLogger = (title: string): logdown.Logger => {
   const logger = logdown(`${root}::${title}`);

@@ -22,7 +22,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
   }
 });
 
-const privateKey = (process.env.PRIVATE_KEY || ethers.Wallet.createRandom()) as string;
+const privateKey = process.env.PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
   typechain: {
@@ -60,17 +60,29 @@ const config: HardhatUserConfig = {
       forking: {
         url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       },
+      accounts: [
+        {
+          privateKey: `${process.env.PRIVATE_KEY}`,
+          balance: "999999999999999999999"
+        }
+      ],
     },
     mainnet: {
       url: process.env.RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       gasPrice: 80000000000,
-      accounts: [privateKey],
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
     },
     goerli: {
       url: process.env.RPC_URL || "https://goerli.infura.io/v3/77c3d733140f4c12a77699e24cb30c27",
       timeout: 10000000,
-      accounts: [privateKey],
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+
     },
+    sepolia: {
+      url: process.env.RPC_URL || "https://sepolia.infura.io/v3/fc014702aa244f2ea194515e4cbeb77e",
+      timeout: 10000000,
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    }
   },
   etherscan: {
     apiKey: "FZ1ANB251FC8ISFDXFGFCUDCANSJNWPF9Q",
