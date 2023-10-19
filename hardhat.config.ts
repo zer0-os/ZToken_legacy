@@ -56,12 +56,12 @@ const config: HardhatUserConfig = {
       forking: {
         url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
       },
-      accounts: [
-        {
-          privateKey: `${process.env.PRIVATE_KEY}`,
-          balance: "999999999999999999999"
-        }
-      ],
+      // accounts: [
+      //   {
+      //     privateKey: `${process.env.PRIVATE_KEY}`,
+      //     balance: "999999999999999999999"
+      //   }
+      // ],
     },
     mainnet: {
       url: process.env.RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
