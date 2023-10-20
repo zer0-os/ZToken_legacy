@@ -77,7 +77,12 @@ const config: HardhatUserConfig = {
     sepolia: {
       url: process.env.RPC_URL || "https://sepolia.infura.io/v3/fc014702aa244f2ea194515e4cbeb77e",
       timeout: 10000000,
-      accounts: [`0x${process.env.PRIVATE_KEY}`],
+      accounts: [
+        `0x${process.env.PRIVATE_KEY_A}`,
+        `0x${process.env.PRIVATE_KEY_B}`,
+        `0x${process.env.PRIVATE_KEY_C}`,
+        `0x${process.env.PRIVATE_KEY_D}`,
+      ],
     }
   },
   etherscan: {
