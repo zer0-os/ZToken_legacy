@@ -1,6 +1,8 @@
 import * as hre from "hardhat";
 import { MeowToken, ZeroToken } from "../typechain";
 import { getLogger } from "../utilities";
+import assert from "assert";
+
 
 const logger = getLogger("scripts::deployZERO");
 
@@ -14,7 +16,7 @@ const testAccounts = [
   "0x0f3b88095e750bdD54A25B2109c7b166A34B6dDb"
 ];
 
-async function main() {
+export async function upgradeToken(tokenAddress ?: string) {
   await hre.run("compile");
 
   logger.log("Upgrading ZERO token to MEOW");
@@ -28,7 +30,10 @@ async function main() {
   );
 
   const zeroTokenFactory = await hre.ethers.getContractFactory("ZeroToken", deployer);
-  const token = zeroTokenFactory.attach(zeroTokenAddress) as ZeroToken;
+
+  const zeroAddress = tokenAddress ? tokenAddress : zeroTokenAddress;
+
+  const token = zeroTokenFactory.attach(zeroAddress) as ZeroToken;
 
   logger.log(`Preupgrade checking balances of test accounts`);
   for (const user of testAccounts) {
@@ -39,14 +44,14 @@ async function main() {
   const meowTokenFactory = await hre.ethers.getContractFactory("MeowToken", deployer);
 
   const contract = await hre.upgrades.upgradeProxy(
-    zeroTokenAddress,
+    zeroAddress,
     meowTokenFactory
   ) as MeowToken;
 
   await contract.deployed();
 
-  logger.log(`Upgraded contract at address: ${zeroTokenAddress}`);
-  const implAddr = await hre.upgrades.erc1967.getImplementationAddress(zeroTokenAddress);
+  logger.log(`Upgraded contract at address: ${zeroAddress}`);
+  const implAddr = await hre.upgrades.erc1967.getImplementationAddress(zeroAddress);
   logger.log(`With implementation contract address at: ${implAddr}`);
 
   // compare this object and the contract object above
@@ -59,17 +64,21 @@ async function main() {
   // "approval, transfers, burn"
   // deploy the implementation, then the verify it and then upgrade is through defender
   // one for deploy, one for deploy impl, the run upgrade (doesn't get added on mainnet)
-  const meowtoken = meowTokenFactory.attach(zeroTokenAddress)
+  const meowtoken = meowTokenFactory.attach(zeroAddress);
+
+  assert.equal(contract.address, zeroAddress, "Addresses should be equal");
 
   logger.log(`Postupgrade checking balances of test accounts`);
   for (const user of testAccounts) {
     const balance = await meowtoken.balanceOf(user);
     logger.log(`Balance of ${user} is ${balance.toString()}`);
   }
+
+  return contract;
 }
 
-const tryMain = async () => {
-  await main();
+const tryUpgradeToken = async () => {
+  await upgradeToken();
 }
 
-tryMain();
+tryUpgradeToken();

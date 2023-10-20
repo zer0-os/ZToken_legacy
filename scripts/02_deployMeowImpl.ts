@@ -3,7 +3,7 @@ import { getLogger } from "../utilities";
 
 const logger = getLogger("scripts::deployZERO");
 
-async function main() {
+export async function deployMeowImpl() {
   logger.log(`Deploying the MEOW token implementation contract`);
   logger.log(`Using network: ${hre.network.name}`);
 
@@ -14,14 +14,16 @@ async function main() {
   );
 
   const factory = await hre.ethers.getContractFactory("MeowToken", deployer);
-  
+
   const contract = await hre.upgrades.deployImplementation(factory);
 
   logger.log(`Deployed implementation contract at address: ${contract}`);
+
+  return contract;
 }
 
-const tryMain = async () => {
-  await main()
+const tryDeployMeow = async () => {
+  await deployMeowImpl()
 }
 
-tryMain();
+tryDeployMeow();

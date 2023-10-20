@@ -1,12 +1,20 @@
 import * as hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { MeowToken, ZeroToken } from "../../typechain";
+import { BigNumber } from "ethers";
+
+export const TransferType = {
+  transfer: "transfer",
+  transferFrom: "transferFrom",
+};
+
 
 export async function transfer (
   writeObject : any,
   signers: Array<SignerWithAddress>,
+  amount: BigNumber,
   token : ZeroToken | MeowToken,
-  transferType : boolean
+  transferType : string
 ) {
   const [
     deployer,
@@ -22,16 +30,16 @@ export async function transfer (
     await token.balanceOf(userC.address),
   ];
 
-  if(transferType) {
+  if (transferType === TransferType.transfer) {
     await token.connect(deployer).transferBulk(
       [
         userA.address,
         userB.address,
         userC.address
       ],
-      hre.ethers.utils.parseEther("1").toString()
+      amount
     );
-  } else {
+  } else if (transferType === TransferType.transferFrom) {
     await token.connect(deployer).approve(userA.address, hre.ethers.utils.parseEther("2"));
     await token.connect(userA).transferFromBulk(
       deployer.address,
@@ -39,8 +47,10 @@ export async function transfer (
         userB.address,
         userC.address
       ],
-      hre.ethers.utils.parseEther("1").toString()
+      amount
     );
+  } else {
+    throw new Error("Invalid transfer type");
   }
 
   const balancesAfter = [
@@ -52,9 +62,10 @@ export async function transfer (
 
   const type = transferType ? "transferBulk" : "transferFromBulk";
   Object.assign(writeObject, {method: type});
+
   for (let i = 0; i < balancesBefore.length; i++) {
     Object.assign(writeObject, {
-        [`user${i}`]: {
+        [`user${i}-${transferType}`]: {
           address: signers[i].address,
           balanceBeforeTransferBulk: balancesBefore[i].toString(),
           balancesAfterTransferBulk: balancesAfter[i].toString(),

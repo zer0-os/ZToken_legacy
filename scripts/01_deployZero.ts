@@ -6,7 +6,7 @@ const logger = getLogger("scripts::deployZERO");
 
 // For validating the upgrade of ZERO we must first deploy ZERO to a testnet
 // and perform some transactions
-async function main() {
+export async function deployZero() {
   await hre.run("compile");
 
   const amount = hre.ethers.utils.parseEther("10101010101");
@@ -18,14 +18,14 @@ async function main() {
   logger.log(
     `Will mint ${amount.toString()} tokens`
   );
-  
+
   const [deployer] = await hre.ethers.getSigners();
 
   logger.log(
     `'${deployer.address}' will be used as the deployment account`
   );
   const factory = await hre.ethers.getContractFactory("ZeroToken", deployer);
-  
+
   const contract = await hre.upgrades.deployProxy(
     factory,
     [
@@ -49,10 +49,12 @@ async function main() {
   await tx.wait();
 
   logger.log(`Balance of deployer is now ${await contract.balanceOf(deployer.address)}`);
+
+  return contract;
 }
 
-const tryMain = async () => {
-  await main()
+const tryDeployZero = async () => {
+  await deployZero()
 }
 
-tryMain();
+tryDeployZero();
