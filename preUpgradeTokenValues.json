@@ -1,0 +1,47 @@
+{
+  "network": "hardhat",
+  "tokenAddress": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+  "method": "transferBulk",
+  "totalSupplyBefore": "10101010101000000000000000000",
+  "totalSupplyAfter": "10101010101000000000000000000",
+  "user0-transfer": {
+    "address": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "balanceBeforeTransferBulk": "10101010101000000000000000000",
+    "balancesAfterTransferBulk": "10101010097000000000000000000"
+  },
+  "user1-transfer": {
+    "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "balanceBeforeTransferBulk": "0",
+    "balancesAfterTransferBulk": "1000000000000000000"
+  },
+  "user2-transfer": {
+    "address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    "balanceBeforeTransferBulk": "0",
+    "balancesAfterTransferBulk": "1000000000000000000"
+  },
+  "user3-transfer": {
+    "address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+    "balanceBeforeTransferBulk": "0",
+    "balancesAfterTransferBulk": "1000000000000000000"
+  },
+  "user0-transferFrom": {
+    "address": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "balanceBeforeTransferBulk": "10101010097000000000000000000",
+    "balancesAfterTransferBulk": "10101010094000000000000000000"
+  },
+  "user1-transferFrom": {
+    "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "balanceBeforeTransferBulk": "1000000000000000000",
+    "balancesAfterTransferBulk": "1000000000000000000"
+  },
+  "user2-transferFrom": {
+    "address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    "balanceBeforeTransferBulk": "1000000000000000000",
+    "balancesAfterTransferBulk": "2000000000000000000"
+  },
+  "user3-transferFrom": {
+    "address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+    "balanceBeforeTransferBulk": "1000000000000000000",
+    "balancesAfterTransferBulk": "2000000000000000000"
+  }
+}

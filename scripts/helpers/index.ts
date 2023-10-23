@@ -8,6 +8,8 @@ export const TransferType = {
   transferFrom: "transferFrom",
 };
 
+export const preUpgradeFilename = "preUpgradeTokenValues.json";
+export const postUpgradeFilename = "postUpgradeTokenValues.json";
 
 export async function transfer (
   writeObject : any,
@@ -23,6 +25,7 @@ export async function transfer (
     userC
   ] = signers;
 
+  const totalSupplyBefore = await token.totalSupply();
   const balancesBefore = [
     await token.balanceOf(deployer.address),
     await token.balanceOf(userA.address),
@@ -35,17 +38,19 @@ export async function transfer (
       [
         userA.address,
         userB.address,
-        userC.address
+        userC.address,
+        token.address
       ],
       amount
     );
   } else if (transferType === TransferType.transferFrom) {
-    await token.connect(deployer).approve(userA.address, hre.ethers.utils.parseEther("2"));
+    await token.connect(deployer).approve(userA.address, hre.ethers.utils.parseEther("3"));
     await token.connect(userA).transferFromBulk(
       deployer.address,
       [
         userB.address,
-        userC.address
+        userC.address,
+        token.address
       ],
       amount
     );
@@ -59,9 +64,15 @@ export async function transfer (
     await token.balanceOf(userB.address),
     await token.balanceOf(userC.address),
   ];
+  const totalSupplyAfter = await token.totalSupply();
 
+  
   const type = transferType ? "transferBulk" : "transferFromBulk";
-  Object.assign(writeObject, {method: type});
+  Object.assign(writeObject, {
+    method: type,
+    totalSupplyBefore: totalSupplyBefore.toString(),
+    totalSupplyAfter: totalSupplyAfter.toString(),
+  });
 
   for (let i = 0; i < balancesBefore.length; i++) {
     Object.assign(writeObject, {
