@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as hre from "hardhat";
 import { MeowToken, ZeroToken } from "../typechain";
 import { getLogger } from "../utilities";

@@ -12,6 +12,7 @@ export const preUpgradeFilename = "preUpgradeTokenValues.json";
 export const postUpgradeFilename = "postUpgradeTokenValues.json";
 
 export async function transfer (
+  // eslint-disable-next-line
   writeObject : any,
   signers: Array<SignerWithAddress>,
   amount: BigNumber,

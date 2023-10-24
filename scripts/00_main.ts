@@ -1,6 +1,5 @@
 import * as hre from "hardhat";
 import { deployZero } from "./01_deployZero";
-import { deployMeowImpl } from "./02_deployMeowImpl";
 import { contractTest } from "./03_confirmValues";
 import { upgradeToken } from "./04_upgradeZero";
 import {
