@@ -34,7 +34,7 @@ export async function transfer (
   ];
 
   if (transferType === TransferType.transfer) {
-    await token.connect(deployer).transferBulk(
+    const tx = await token.connect(deployer).transferBulk(
       [
         userA.address,
         userB.address,
@@ -43,9 +43,12 @@ export async function transfer (
       ],
       amount
     );
+    await tx.wait(); // comment if hardhat network
   } else if (transferType === TransferType.transferFrom) {
-    await token.connect(deployer).approve(userA.address, hre.ethers.utils.parseEther("3"));
-    await token.connect(userA).transferFromBulk(
+    const approveTx = await token.connect(deployer).approve(userA.address, hre.ethers.utils.parseEther("3"));
+    await approveTx.wait();
+
+    const tx = await token.connect(userA).transferFromBulk(
       deployer.address,
       [
         userB.address,
@@ -54,6 +57,7 @@ export async function transfer (
       ],
       amount
     );
+    await tx.wait(); // comment if hardhat network
   } else {
     throw new Error("Invalid transfer type");
   }
@@ -78,8 +82,8 @@ export async function transfer (
     Object.assign(writeObject, {
         [`user${i}-${transferType}`]: {
           address: signers[i].address,
-          balanceBeforeTransferBulk: balancesBefore[i].toString(),
-          balancesAfterTransferBulk: balancesAfter[i].toString(),
+          [`BalancesBefore-${type}`]: balancesBefore[i].toString(),
+          [`BalancesAfter-${type}`]: balancesAfter[i].toString(),
         },
       }
     );

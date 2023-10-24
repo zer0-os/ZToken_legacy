@@ -9,6 +9,16 @@
       "address": "0x1A9A8894bc8611a39c7Ed690AED71b7918995F14",
       "txHash": "0xa028b70fb55804a340f3e88eb866e5f99cf01e39320e807c612761b72de10a26",
       "kind": "transparent"
+    },
+    {
+      "address": "0x0Ab90E0aBca23FdB5e7f447628C6f2BFDB4dE0D0",
+      "txHash": "0x71b1ba3bc841f59ad108e0be3f2fb18acb74c64470aced703ffb8ad744af6958",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xF98c2b0aD20bA9d121d4112466c81D586Ca2CFB8",
+      "txHash": "0x6bb1b79ae6ab1a541aef422c71890d29ea2fa9e8779e2bee9dadaf2a27d69eb6",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -381,7 +391,7 @@
             "label": "_accountBalanceSnapshots",
             "offset": 0,
             "slot": "251",
-            "type": "t_mapping(t_address,t_struct(Snapshots)2963_storage)",
+            "type": "t_mapping(t_address,t_struct(Snapshots)1215_storage)",
             "contract": "ERC20SnapshotUpgradeable",
             "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\extensions\\ERC20SnapshotUpgradeable.sol:62"
           },
@@ -389,7 +399,7 @@
             "label": "_totalSupplySnapshots",
             "offset": 0,
             "slot": "252",
-            "type": "t_struct(Snapshots)2963_storage",
+            "type": "t_struct(Snapshots)1215_storage",
             "contract": "ERC20SnapshotUpgradeable",
             "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\extensions\\ERC20SnapshotUpgradeable.sol:63"
           },
@@ -397,7 +407,7 @@
             "label": "_currentSnapshotId",
             "offset": 0,
             "slot": "254",
-            "type": "t_struct(Counter)3832_storage",
+            "type": "t_struct(Counter)2084_storage",
             "contract": "ERC20SnapshotUpgradeable",
             "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\extensions\\ERC20SnapshotUpgradeable.sol:66"
           },
@@ -455,7 +465,7 @@
             "label": "mapping(address => mapping(address => uint256))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(Snapshots)2963_storage)": {
+          "t_mapping(t_address,t_struct(Snapshots)1215_storage)": {
             "label": "mapping(address => struct ERC20SnapshotUpgradeable.Snapshots)",
             "numberOfBytes": "32"
           },
@@ -467,7 +477,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(Counter)3832_storage": {
+          "t_struct(Counter)2084_storage": {
             "label": "struct CountersUpgradeable.Counter",
             "members": [
               {
@@ -479,7 +489,7 @@
             ],
             "numberOfBytes": "32"
           },
-          "t_struct(Snapshots)2963_storage": {
+          "t_struct(Snapshots)1215_storage": {
             "label": "struct ERC20SnapshotUpgradeable.Snapshots",
             "members": [
               {

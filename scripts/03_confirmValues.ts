@@ -9,8 +9,7 @@ import { deployZero } from "./01_deployZero";
 
 const logger = getLogger("scripts::confirmValues");
 
-// move to helpers
-const sepoliaTokenAddress = "0x1A9A8894bc8611a39c7Ed690AED71b7918995F14";
+const sepoliaTokenAddress = "0x0Ab90E0aBca23FdB5e7f447628C6f2BFDB4dE0D0"; // 10/23/2023
 const mainnetTokenAddress = "0x0eC78ED49C2D27b315D462d43B5BAB94d2C79bf8";
 
 // Change if post upgrade
@@ -98,8 +97,8 @@ const executeContractTest = async () => {
   const amount = hre.ethers.utils.parseEther("1");
   let tokenAddress;
   if(hre.network.name === "hardhat") {
-    const token = await deployZero();
-    tokenAddress = token.address;
+    // const token = await deployZero();
+    // tokenAddress = token.address;
   } else {
     tokenAddress = hre.network.name === "sepolia" ? sepoliaTokenAddress : mainnetTokenAddress;
   }
@@ -108,9 +107,9 @@ const executeContractTest = async () => {
 
   await contractTest(
     amount,
-    preUpgradeFilename,
-    preUpgradeTokenName,
-    tokenAddress
+    preUpgradeFilename, // change to `postUpgradeFileName` when using for after the upgrade
+    preUpgradeTokenName, // change to `postUpgradeTokenName` when using for after the upgrade
+    tokenAddress!
   );
   // Uncomment and run the below instead when using for aftter the upgrades
   // await contractTest(amount, postUpgradeFilename, tokenAddress);
