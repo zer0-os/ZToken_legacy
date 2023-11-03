@@ -55,6 +55,8 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: process.env.FORK_RPC_URL || "https://mainnet.infura.io/v3/97e75e0bbc6a4419a5dd7fe4a518b917",
+        blockNumber: 18192079
+        // calls during upgrades mess with some tests when we fork, fix to this block
       },
       // accounts: [
       //   {
