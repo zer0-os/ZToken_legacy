@@ -1,10 +1,12 @@
 node_modules
 bin
+.idea
 
 #Hardhat files
 cache
 artifacts
 typechain/
+typechain-js/
 .env
 
 # OpenZeppelin
