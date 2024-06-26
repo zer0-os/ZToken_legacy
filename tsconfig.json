@@ -8,8 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "outDir": "lib"
+    "outDir": "typechain-js"
   },
-  "include": ["./scripts", "./tasks", "./test", "./typechain", "./utilities", "test-dmob"],
-  "files": ["./hardhat.config.ts"]
+  "include": ["./typechain"]
 }
