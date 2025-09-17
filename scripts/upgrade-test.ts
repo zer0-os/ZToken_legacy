@@ -1,8 +1,6 @@
 import * as hre from "hardhat";
 
 import {
-  ERC20Mock,
-  ZeroDAOToken,
   ZeroDAOTokenV2,
   ERC20Mock__factory,
   ZeroDAOToken__factory,
@@ -17,10 +15,12 @@ const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
 
   // Sepolia address
-  const wildAddress = "0xce32eB5782e7B30F05144cF0eC542AC28226D63D";
-  const mockAddress = "0xebaA3D9F2f21f7aA9c45fae035C0eeF1558cB81E";
+  const wildAddress = process.env.WILD_ADDRESS;
+  if (!wildAddress) throw Error("No WILD token contract address given");
 
-  const wildToken = new ZeroDAOToken__factory(deployer).attach(wildAddress);
+  const mockAddress = process.env.MOCK_ADDRESS ?? "";
+  if (!mockAddress) throw Error("No MOCK token contract address given");
+
   const mockToken = new ERC20Mock__factory(deployer).attach(mockAddress);
 
   logger.info(`1. Give balance of "mockToken" to "wildToken" contract`);

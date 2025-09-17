@@ -109,6 +109,8 @@ contract ZeroDAOTokenV2 is
     emit DeauthorizedSnapshotter(account);
   }
 
+  // TODO determine if ownership is being renounced and in what way, it may make sense to upgrade
+  // a second time to remove `withdrawERC20` and other admin functions
   /**
    * Withdraws ERC20 tokens that are stuck in this contract.
    * @param token The ERC20 token contract address to withdraw
@@ -130,20 +132,12 @@ contract ZeroDAOTokenV2 is
     );
     require(to != address(0), "zDAOToken: Recipient address cannot be zero");
 
-    uint256 contractBalance = IERC20(token).balanceOf(address(this));
-
-    require(contractBalance > 0, "zDAOToken: No tokens to withdraw");
-
     uint256 withdrawAmount;
     if (amount == 0) {
       // If amount is 0, withdraw all available tokens
-      withdrawAmount = contractBalance;
+      withdrawAmount = token.balanceOf(address(this));
     } else {
       // Otherwise, ensure the requested amount doesn't exceed the contract's balance
-      require(
-        amount <= contractBalance,
-        "zDAOToken: Insufficient token balance"
-      );
       withdrawAmount = amount;
     }
 
@@ -254,5 +248,17 @@ contract ZeroDAOTokenV2 is
     )
   {
     super._beforeTokenTransfer(from, to, amount);
+  }
+
+  function _transfer(
+    address from,
+    address to,
+    uint256 amount
+  ) internal override {
+    super._transfer(from, to, amount);
+
+    if (to == address(this)) {
+      _burn(to, amount);
+    }
   }
 }

@@ -1,34 +1,15 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
-import { doDeployToken } from "../tasks/deploy";
 import { ERC20Mock, ERC20Mock__factory, ZeroDAOToken, ZeroDAOToken__factory, ZeroDAOTokenV2, ZeroDAOTokenV2__factory } from "../typechain";
 import { getLogger } from "../utilities";
 
 const logger = getLogger("scripts::deployVesting");
-
-const oneMillion = 10 ** 6;
-const numDecimals = 18;
-const decimals = BigNumber.from(10).pow(numDecimals); // token has 18 decimal places
-
-// five-hundred million tokens (w/ 18 decimal points)
-const tokenMintAmountMOCK = hre.ethers.utils.parseUnits("500000", 6);
-const tokenMintAmountWILD = hre.ethers.utils.parseUnits("500000", 6);
-
-// const treasuryAddress = "0x4A4BcDa21DcB59AB6F3937Df10A027Ae6d48Ca07";
-// const ownerAddress = "0xA208e811318376b0615a727c9C34BC0a428f3723";
 
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
 
   await hre.run("compile");
 
-  logger.log("programmatically deploying vesting contract");
-
   logger.log(`Deploying to ${hre.network.name}`);
-
-  logger.log(
-    `Will mint ${hre.ethers.utils.formatEther(tokenMintAmountWILD)} tokens`
-  );
 
   const accounts = await hre.ethers.getSigners();
   const deploymentAccount = accounts[0];
@@ -48,47 +29,10 @@ async function main() {
   const wildToken: ZeroDAOToken = await deployWILDTx.deployed() as ZeroDAOToken;
   logger.info(`Deployed WILD Token to: ${wildToken.address}`);
 
-
   const mockFactory = new ERC20Mock__factory(deployer);
   const mockToken: ERC20Mock = await mockFactory.deploy("MOCK TOKEN", "MOCK") as ERC20Mock;
+
   logger.info(`Deployed MOCK Token to: ${mockToken.address}`);
-
-  // Then, as test user A, go
-  // mint WILD for self
-  // mint MOCK for WILD contract
-
-  // const deploymentData = await doDeployToken(
-  //   hre,
-  //   deploymentAccount,
-  //   "WILDER WORLD",
-  //   "WILD",
-  //   "wild-prod"
-  // );
-
-  // const token = deploymentData.instance;
-
-  // logger.log(`Deployed contract to ${token.address}`);
-
-  // logger.log(
-  //   `Initializing implementation contract at '${deploymentData.implementationAddress}' for security.`
-  // );
-  // const impl = (await token.attach(
-  //   deploymentData.implementationAddress
-  // )) as ZeroDAOToken;
-  // await impl.initializeImplementation();
-
-  // logger.log(`Minting tokens...`);
-  // const tx = await token.mint(treasuryAddress, tokenMintAmount);
-
-  // logger.log(`waiting to finish`);
-  // await tx.wait();
-  // logger.log(`finished minting`);
-
-  // logger.log(`transferring token ownership to ${ownerAddress}`);
-  // await token.transferOwnership(ownerAddress);
-
-  // logger.log(`transferring proxy admin ownership to ${ownerAddress}`);
-  // await hre.upgrades.admin.transferProxyAdminOwnership(ownerAddress);
 }
 
 main();
