@@ -22,7 +22,15 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
-      { version: "0.8.3", settings: {} },
+      {
+        version: "0.8.3",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
       { version: "0.6.8", settings: {} }
     ],
   },
@@ -34,13 +42,6 @@ const config: HardhatUserConfig = {
     timeout: 50000,
   },
   networks: {
-    // hardhat: {
-    // forking: {
-    //   url:
-    //     // "https://eth-mainnet.alchemyapi.io/v2/MnO3SuHlzuCydPWE1XhsYZM_pHZP8_ix",
-    //   blockNumber: 11845661,
-    // },
-    // },
     kovan: {
       accounts: { mnemonic: process.env.TESTNET_MNEMONIC || "" },
       url: `https://kovan.infura.io/v3/0e6434f252a949719227b5d68caa2657`,
