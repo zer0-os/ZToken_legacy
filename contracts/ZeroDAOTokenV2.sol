@@ -48,6 +48,15 @@ contract ZeroDAOTokenV2 is
   }
 
   /**
+   * Mints new tokens.
+   * @param account the account to mint the tokens for
+   * @param amount the amount of tokens to mint.
+   */
+  function mint(address account, uint256 amount) external onlyOwner {
+    _mint(account, amount);
+  }
+
+  /**
    * Burns tokens from an address.
    * @param account the account to mint the tokens for
    * @param amount the amount of tokens to mint.
@@ -109,8 +118,6 @@ contract ZeroDAOTokenV2 is
     emit DeauthorizedSnapshotter(account);
   }
 
-  // TODO determine if ownership is being renounced and in what way, it may make sense to upgrade
-  // a second time to remove `withdrawERC20` and other admin functions
   /**
    * Withdraws ERC20 tokens that are stuck in this contract.
    * @param token The ERC20 token contract address to withdraw
@@ -248,17 +255,5 @@ contract ZeroDAOTokenV2 is
     )
   {
     super._beforeTokenTransfer(from, to, amount);
-  }
-
-  function _transfer(
-    address from,
-    address to,
-    uint256 amount
-  ) internal override {
-    super._transfer(from, to, amount);
-
-    if (to == address(this)) {
-      _burn(to, amount);
-    }
   }
 }
