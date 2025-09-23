@@ -5,12 +5,17 @@ import {
   ERC20Mock__factory,
   ZeroDAOToken__factory,
   ZeroDAOTokenV2__factory
-} from "../typechain";
+} from "../../typechain";
 
-import { getLogger } from "../utilities";
+import { getLogger } from "../../utilities";
 
 const logger = getLogger("test-upgrade::balance::transfer");
 
+
+/**
+ * Full flow testing the token contract upgrade on Sepolia
+ * TODO break into separate upgrades
+ */
 const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
 
