@@ -11,6 +11,8 @@ import {
 } from "../typechain";
 
 import * as hre from "hardhat";
+import { compareStorageData, ContractStorageData, readContractStorage } from "../scripts/utils/storage-check";
+
 
 describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
   let accounts: SignerWithAddress[];
@@ -24,6 +26,7 @@ describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
   let zeroDAOToken: ZeroDAOToken;
   let zeroDAOTokenV2: ZeroDAOTokenV2;
   let mockToken: ERC20Mock;
+  let preUpgradeState : ContractStorageData;
   // Update as needed for testing
   const decimals = 6;
   const testTokenAmount = ethers.utils.parseUnits("500000", decimals);
@@ -71,6 +74,11 @@ describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
       const preUpgradeTotalSupply = await zeroDAOToken.totalSupply();
       const preUpgradeUser1Balance = await zeroDAOToken.balanceOf(user1.address);
       const preUpgradeContractBalance = await mockToken.balanceOf(zeroDAOToken.address);
+
+      preUpgradeState = await readContractStorage(
+        new ZeroDAOToken__factory(creator),
+        zeroDAOToken
+      );
 
       // Perform the upgrade
       zeroDAOTokenV2 = await hre.upgrades.upgradeProxy(
@@ -188,7 +196,20 @@ describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
           ethers.utils.parseUnits("2000", decimals)
         )
       ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
-    })
+    });
+
+    it("Post-upgrade base state should match state pre-upgrade", async () => {
+      // Verify storage layout is compatible
+      const postUpgradeState = await readContractStorage(
+        new ZeroDAOTokenV2__factory(creator),
+        zeroDAOTokenV2
+      );
+
+      compareStorageData(
+        preUpgradeState,
+        postUpgradeState,
+      );
+    });
   });
 
   describe("post-upgrade core functionality", () => {
