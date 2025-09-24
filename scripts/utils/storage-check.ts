@@ -6,18 +6,18 @@ import * as hre from "hardhat";
 
 export type ContractStorageElement = string | number | BigNumber | Array<object>;
 export type ContractStorageData = Array<{
-  [label : string] : ContractStorageElement;
+  [label: string]: ContractStorageElement;
 }>;
 export type ContractStorageDiff = Array<{
-  key : string;
-  valueBefore : ContractStorageElement;
-  valueAfter : ContractStorageElement;
+  key: string;
+  valueBefore: ContractStorageElement;
+  valueAfter: ContractStorageElement;
 }>;
 
 
 export const getContractStorageLayout = async (
-  contractFactory : ContractFactory
-) : Promise<StorageLayout> => {
+  contractFactory: ContractFactory
+): Promise<StorageLayout> => {
   const validations = await readValidations(hre);
   const unlinkedBytecode = getUnlinkedBytecode(validations, contractFactory.bytecode);
   const version = getVersion(unlinkedBytecode, contractFactory.bytecode);
@@ -26,16 +26,16 @@ export const getContractStorageLayout = async (
 };
 
 export const readContractStorage = async (
-  contractFactory : ContractFactory,
-  contractObj : Contract
-) : Promise<ContractStorageData> => {
+  contractFactory: ContractFactory,
+  contractObj: Contract
+): Promise<ContractStorageData> => {
   const layout = await getContractStorageLayout(contractFactory);
 
   return layout.storage.reduce(
     async (
-      acc : Promise<ContractStorageData>,
+      acc: Promise<ContractStorageData>,
       { label, type }
-    ) : Promise<ContractStorageData> => {
+    ): Promise<ContractStorageData> => {
       const newAcc = await acc;
 
       if (type.includes("mapping") || type.includes("array"))
@@ -46,7 +46,7 @@ export const readContractStorage = async (
         const value = await contractObj[(newLabel as keyof Contract)]();
 
         newAcc.push({ [label]: value });
-      } catch (e : unknown) {
+      } catch (e: unknown) {
         if ((e as Error).message.includes("is not a function"))
           return newAcc; // Skip non-public variables
 
@@ -61,11 +61,11 @@ export const readContractStorage = async (
 
 
 export const compareStorageData = (
-  dataBefore : ContractStorageData,
-  dataAfter : ContractStorageData,
+  dataBefore: ContractStorageData,
+  dataAfter: ContractStorageData,
 ) => {
   const storageDiff = dataAfter.reduce(
-    (acc : ContractStorageDiff | undefined, stateVar, idx) => {
+    (acc: ContractStorageDiff | undefined, stateVar, idx) => {
       const [key, value] = Object.entries(stateVar)[0];
 
       if (!dataBefore[idx]) return acc;

@@ -52,11 +52,11 @@ const config: HardhatUserConfig = {
     //   accounts: { mnemonic: process.env.TESTNET_MNEMONIC || "" },
     //   url: "https://rinkeby.infura.io/v3/77c3d733140f4c12a77699e24cb30c27",
     // },
-    // sepolia: {
-    //   chainId: 11155111,
-    //   accounts: [`${process.env.TESTNET_PRIVATE_KEY}`],
-    //   url: `${process.env.SEPOLIA_RPC_URL}`,
-    // },
+    sepolia: {
+      chainId: 11155111,
+      accounts: [`${process.env.TESTNET_PRIVATE_KEY}`],
+      url: `${process.env.SEPOLIA_RPC_URL}`,
+    },
     localhost: {
       gas: "auto",
       gasPrice: "auto",

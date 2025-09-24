@@ -1160,7 +1160,7 @@
   resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
-"@zero-tech/protocol-utils@^0.1.0":
+"@zero-tech/protocol-utils@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@zero-tech/protocol-utils/-/protocol-utils-0.1.0.tgz#8a4c680837cee0431f54997f8623e8231728fbb7"
   integrity sha512-0qL1lCPuTyi1HX8jB++tw7FC9RZHrKkzz44dDHVX+mBtwSN4baC+PjZ4mbakKZElJPab+EBHynRv57gsdzfRHA==
