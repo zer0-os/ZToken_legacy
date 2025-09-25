@@ -10,6 +10,7 @@ import * as path from "path";
 // To be executed AFTER the upgrade from the Safe
 const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
+  const outputFile = `04-post-upgrade-state-${hre.network.name}-${Date.now()}.json`;
 
   const tokenAddress = process.env.TOKEN_ADDRESS;
   if (!tokenAddress) throw Error("No token address present in env");
@@ -22,7 +23,7 @@ const main = async () => {
     token
   );
 
-  fs.writeFileSync(`04-post-upgrade-state-${hre.network.name}-${Date.now()}.json`, JSON.stringify(postUpgradeState, undefined, 2));
+  fs.writeFileSync(, JSON.stringify(postUpgradeState, undefined, 2));
 
   // Now compare pre and post upgrade state by
   // reading the `03-pre-upgrade-state-sepolia.json`

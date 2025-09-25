@@ -8,6 +8,7 @@ import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-ethers";
 import "solidity-coverage";
+import { getEnabledCategories } from "node:trace_events";
 
 task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -29,7 +30,17 @@ const config: HardhatUserConfig = {
           },
         },
       },
-      { version: "0.6.8", settings: {} }
+      {
+        version: "0.6.8",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
+      },
+      { version: "0.6.0", settings: {} }
+
     ],
   },
   paths: {

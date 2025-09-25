@@ -12,6 +12,19 @@ import {
 
 import * as hre from "hardhat";
 import { compareStorageData, ContractStorageData, readContractStorage } from "../scripts/utils/storage-check";
+import {
+  deployZeroDAOTokenAndTransferOwnership,
+  deployERC20MockAndMintToRecipient
+} from "./helpers/deployment-helpers";
+import {
+  captureContractStorageState,
+  compareContractStorageStates
+} from "./helpers/storage-helpers";
+import {
+  upgradeContractAndVerifyStorage,
+  verifyUpgradedContractFunctionality
+} from "./helpers/upgrade-helpers";
+import { deployV1 } from "../scripts/upgrade/01-helper";
 
 
 describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
@@ -26,7 +39,7 @@ describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
   let zeroDAOToken: ZeroDAOToken;
   let zeroDAOTokenV2: ZeroDAOTokenV2;
   let mockToken: ERC20Mock;
-  let preUpgradeState : ContractStorageData;
+  let preUpgradeState: ContractStorageData;
   // Update as needed for testing
   const decimals = 6;
   const testTokenAmount = ethers.utils.parseUnits("500000", decimals);
@@ -42,17 +55,11 @@ describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
   describe("ZeroDAOToken to ZeroDAOTokenV2 upgrade test - mint function removal", () => {
     it("Deploys original ZeroDAOToken contract", async () => {
       // Deploy the original ZeroDAOToken using the original factory
-      zeroDAOToken = await hre.upgrades.deployProxy(
-        new ZeroDAOToken__factory(creator),
-        ["Test DAO Token", "TDT"]
-      ) as ZeroDAOToken;
-
-      await zeroDAOToken.deployed();
-
-      // Verify deployment
-      expect(await zeroDAOToken.name()).to.eq("Test DAO Token");
-      expect(await zeroDAOToken.symbol()).to.eq("TDT");
-      expect(await zeroDAOToken.owner()).to.eq(creator.address);
+      // Use the `deployV1` Helper to that sets up the initial environment the same way it is used in scripts
+      // - Deploy ZeroDAOToken contract
+      // - Deploy an ERC20Mock contract, give funds to ZeroDAOToken
+      // - Transfer ownership to a given address
+      zeroDAOToken = await deployV1(creator);
     });
 
     it("Deploys mock token and mints balance to deployed zeroDAOToken", async () => {
