@@ -23,7 +23,7 @@ const main = async () => {
     token
   );
 
-  fs.writeFileSync(, JSON.stringify(postUpgradeState, undefined, 2));
+  fs.writeFileSync(`04-post-upgrade-state-${hre.network.name}.json`, JSON.stringify(postUpgradeState, undefined, 2));
 
   // Now compare pre and post upgrade state by
   // reading the `03-pre-upgrade-state-sepolia.json`
@@ -31,7 +31,7 @@ const main = async () => {
 
   // Find the pre-upgrade state file
   const files = fs.readdirSync('.');
-  const preUpgradeFile = files.find(file => file.startsWith('03-pre-upgrade-state-') && file.endsWith('.json'));
+  const preUpgradeFile = files.find(file => file.startsWith('03-read-state-') && file.endsWith('.json'));
 
   if (!preUpgradeFile) {
     throw new Error('Pre-upgrade state file not found. Expected file starting with "03-pre-upgrade-state-"');
@@ -48,8 +48,6 @@ const main = async () => {
     console.error('Storage comparison failed:', error);
     throw error;
   }
-
-
 }
 
 main();

@@ -11,7 +11,7 @@ const main = async () => {
   await deployV1(
     deployer,
     outputFile
-  )
+  );
 };
 
 main()

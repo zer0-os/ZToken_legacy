@@ -9,7 +9,7 @@ import { readState } from "./03-helper";
  */
 const main = async () => {
   const [creator] = await hre.ethers.getSigners();
-  const outputFile = `02-deploy-v2-${hre.network.name}.json`;
+  const outputFile = `03-read-state-${hre.network.name}.json`;
 
   await readState(
     creator,

@@ -10,7 +10,6 @@ export const deployV1 = async (
   creator: SignerWithAddress,
   outputFile?: string
 ): Promise<ZeroDAOToken> => {
-
   const logger = getLogger("deploy-v1");
 
   const name = "Wilder World Test";
@@ -18,7 +17,7 @@ export const deployV1 = async (
 
   // The address of the new owner to be transferred to for WILD as well as ProxyAdmin
   // If not using hardhat, this should be a Safe address
-  let newOwnerAddress = process.env.OWNER_ADDRESS;
+  let newOwnerAddress = process.env.OWNER_ADDRESS; // TODO script instead, make param
 
   if (!newOwnerAddress) {
     if (hre.network.name !== "hardhat") {
@@ -35,17 +34,35 @@ export const deployV1 = async (
   logger.info(`New owner will be: ${newOwnerAddress}`);
 
   // Deploy ZeroDaoTokenV1 and transfer ownership
-  const zeroDAOTokenV1 = await deployAndTransferOwner<ZeroDAOToken>(
-    new ZeroDAOToken__factory(creator),
+  const factory = new ZeroDAOToken__factory(creator);
+  const zeroDAOTokenV1 = await hre.upgrades.deployProxy(
+    factory,
     [
       name,
       symbol
     ],
-    newOwnerAddress
-  );
+  ) as ZeroDAOToken;
+
+  if (hre.network.name !== "hardhat") {
+    await zeroDAOTokenV1.deployed();
+  }
+
+  logger.info("Transferring ownership of proxy...");
+  // Transfer ownership of contract itself
+  await zeroDAOTokenV1["transferOwnership(address)"](newOwnerAddress);
+
+  // Transfer ownership or proxy admin, if needed
+  const proxyAdmin = await hre.upgrades.admin.getInstance();
+  const owner = await proxyAdmin.owner();
+  logger.info(`Current Proxy Admin owner: ${owner}`);
+
+  if (owner !== newOwnerAddress && owner === creator.address) {
+    logger.info(`Transferring Proxy Admin Ownership to ${newOwnerAddress}`);
+    await proxyAdmin.transferOwnership(newOwnerAddress);
+  }
 
   logger.info(`${name} token deployed to address: ${zeroDAOTokenV1.address}`);
-  logger.info(`Ownership transferred to: ${newOwnerAddress}`);
+  logger.info(`Ownership transferred successfully`);
 
   // Deploy a mock token to later transfer balance to the zeroDAOToken
   const mockName = "Mock Token";

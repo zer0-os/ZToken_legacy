@@ -12,18 +12,6 @@ import {
 
 import * as hre from "hardhat";
 import { compareStorageData, ContractStorageData, readContractStorage } from "../scripts/utils/storage-check";
-import {
-  deployZeroDAOTokenAndTransferOwnership,
-  deployERC20MockAndMintToRecipient
-} from "./helpers/deployment-helpers";
-import {
-  captureContractStorageState,
-  compareContractStorageStates
-} from "./helpers/storage-helpers";
-import {
-  upgradeContractAndVerifyStorage,
-  verifyUpgradedContractFunctionality
-} from "./helpers/upgrade-helpers";
 import { deployV1 } from "../scripts/upgrade/01-helper";
 
 
