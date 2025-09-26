@@ -12,7 +12,7 @@ import {
 
 import * as hre from "hardhat";
 import { compareStorageData, ContractStorageData, readContractStorage } from "../scripts/utils/storage-check";
-import { deployV1 } from "../scripts/upgrade/01-helper";
+import { deployFundTransfer } from "./helpers/deploy-fund-transfer";
 
 
 describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
@@ -47,7 +47,7 @@ describe("zDAOToken => zDAOTokenV2 Upgrade Test", () => {
       // - Deploy ZeroDAOToken contract
       // - Deploy an ERC20Mock contract, give funds to ZeroDAOToken
       // - Transfer ownership to a given address
-      zeroDAOToken = await deployV1(creator);
+      zeroDAOToken = await deployFundTransfer(creator);
     });
 
     it("Deploys mock token and mints balance to deployed zeroDAOToken", async () => {
