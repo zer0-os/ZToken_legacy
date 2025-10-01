@@ -5,7 +5,7 @@ bin
 cache
 artifacts
 typechain/
-.env
+*.env*
 
 # OpenZeppelin
 .openzeppelin/dev-*.json

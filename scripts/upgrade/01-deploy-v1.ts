@@ -1,5 +1,6 @@
 import * as hre from "hardhat";
 import { deployFundTransfer } from "../../test/helpers/deploy-fund-transfer";
+import { DEFAULT_MOCK_TOKEN_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS } from "../../test/helpers/constants";
 
 /**
  * Script 01: Deploy V1 Token Contract
@@ -25,17 +26,24 @@ const main = async () => {
 
   // The address of the new owner to be transferred to for WILD as well as ProxyAdmin
   // If not using hardhat, this should be a Safe address
-  let newOwnerAddress = process.env.OWNER_ADDRESS; // TODO script instead, make param
+  let newOwnerAddress = process.env.OWNER_ADDRESS;
 
   if (!newOwnerAddress) {
     throw new Error("No address given for transfer ownership call");
   }
 
+  const amount = hre.ethers.utils.parseUnits(
+    DEFAULT_MOCK_TOKEN_AMOUNT,
+    DEFAULT_MOCK_TOKEN_DECIMALS
+  );
+
   // Deploy V1 token contract with mock token for testing
   await deployFundTransfer(
     deployer,
     newOwnerAddress,
-    outputFile
+    outputFile,
+    amount,
+    true
   );
 };
 

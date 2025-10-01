@@ -42,7 +42,8 @@ const main = async () => {
   await readState(
     creator,
     tokenAddress,
-    outputFile
+    outputFile,
+    false
   );
 }
 

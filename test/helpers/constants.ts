@@ -22,7 +22,8 @@ export const HARDHAT_NETWORK_NAME = "hardhat";
 // Logger Names
 export const DEPLOY_FUND_TRANSFER_LOGGER = "deploy-fund-transfer";
 export const DEPLOY_V2_LOGGER = "deploy-v2";
-export const READ_AND_COMPARE_LOGGER = "readAndCompare";
+export const READ_STATE_LOGGER = "read-state"
+export const READ_AND_COMPARE_LOGGER = "read-compare-state";
 
 // Messages
 export const TRANSFERRING_OWNERSHIP_MESSAGE = "Transferring ownership of proxy...";

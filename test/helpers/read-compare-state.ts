@@ -34,26 +34,27 @@ import {
  * @throws Error if storage comparison fails (indicates data corruption)
  * @throws Error if TOKEN_ADDRESS is not set
  */
-export const readAndCompare = async (
+export const readCompareState = async (
   deployer: SignerWithAddress,
   tokenAddress: string,
   priorState: ContractStorageData,
-  outputFile?: string
+  outputFile?: string,
+  verbose: boolean = false
 ) => {
   const logger = getLogger(READ_AND_COMPARE_LOGGER);
+  logger.state.isEnabled = verbose;
+
 
   logger.info(READING_POST_UPGRADE_STATE_MESSAGE);
 
   const state = await readState(
     deployer,
-    tokenAddress
+    tokenAddress,
+    outputFile,
   );
 
-  if (outputFile) {
-    fs.writeFileSync(outputFile, JSON.stringify(state, undefined, 2));
-  }
-
   logger.info(COMPARING_STATES_MESSAGE);
+
   try {
     compareStorageData(priorState, state);
     logger.info(STORAGE_COMPARISON_PASSED_MESSAGE);

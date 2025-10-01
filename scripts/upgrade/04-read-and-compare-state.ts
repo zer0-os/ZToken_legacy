@@ -1,6 +1,6 @@
 import * as hre from "hardhat";
 import * as fs from "fs";
-import { readAndCompare } from "../../test/helpers/read-and-compare-state";
+import { readCompareState } from "../../test/helpers/read-compare-state";
 
 /**
  * Script 04: Read and Compare Contract State (Post-Upgrade)
@@ -46,7 +46,6 @@ const main = async () => {
     throw new Error('Pre-upgrade state file not found. Expected file starting with "03-read-state-". Please run script 03 first.');
   }
 
-  console.log(`Reading pre-upgrade state from: ${preUpgradeFile}`);
   const preUpgradeState = JSON.parse(fs.readFileSync(preUpgradeFile, 'utf8'));
 
   let tokenAddress = process.env.TOKEN_ADDRESS;
@@ -55,11 +54,12 @@ const main = async () => {
   }
 
   // Read current state and compare with pre-upgrade state
-  await readAndCompare(
+  await readCompareState(
     creator,
     tokenAddress,
     preUpgradeState,
-    outputFile
+    outputFile,
+    true
   );
 }
 

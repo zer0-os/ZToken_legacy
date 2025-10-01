@@ -7,11 +7,12 @@ import {
   ZeroDAOTokenV2,
   ZeroDAOTokenV2__factory,
   ERC20Mock__factory,
+  ERC20Mock,
 } from "../typechain";
 import { deployFundTransfer } from "./helpers/deploy-fund-transfer";
 import { deployV2 } from "./helpers/deploy-v2";
 import { readState } from "./helpers/read-state";
-import { readAndCompare } from "./helpers/read-and-compare-state";
+import { readCompareState } from "./helpers/read-compare-state";
 import { ContractStorageData } from "../scripts/utils/storage-check";
 import {
   DEFAULT_ZERO_TOKEN_NAME,
@@ -32,15 +33,15 @@ describe("zDAO Token Upgrade", () => {
 
   let tokenV1: ZeroDAOToken;
   let tokenV2: ZeroDAOTokenV2;
-  let mockTokenAddress: string;
+  let mockToken: ERC20Mock;
+  let preUpgradeState: ContractStorageData;
 
   before(async () => {
     [creator, user1, user2] = await hre.ethers.getSigners();
   });
 
   describe("Token Upgrade Flow", () => {
-    let preUpgradeState: ContractStorageData;
-    let mockToken: any;
+
 
     it("should deploy and fund V1 token with mock ERC20", async () => {
       // Call deploy-fund-transfer helper
@@ -55,7 +56,6 @@ describe("zDAO Token Upgrade", () => {
       // For now, let's create our own mock token for testing the withdrawERC20 function
       const mockTokenFactory = new ERC20Mock__factory(creator);
       mockToken = await mockTokenFactory.deploy(DEFAULT_TEST_MOCK_TOKEN_NAME, DEFAULT_TEST_MOCK_TOKEN_SYMBOL);
-      mockTokenAddress = mockToken.address;
 
       // Mint some mock tokens to the V1 contract for testing withdrawERC20
       const mintAmount = ethers.utils.parseUnits(DEFAULT_TEST_MINT_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
@@ -86,7 +86,7 @@ describe("zDAO Token Upgrade", () => {
       // Find the account that matches the proxy admin owner
       upgrader = accounts.find(account => account.address.toLowerCase() === proxyAdminOwner.toLowerCase()) || creator;
 
-      // Upgrade from v1 to v2 using the hre.upgrades.upgradeProxy helper with the correct signer
+      // Upgrade from v1 to v2 using
       const tokenV2Factory = new ZeroDAOTokenV2__factory(upgrader);
 
       tokenV2 = await hre.upgrades.upgradeProxy(
@@ -99,24 +99,15 @@ describe("zDAO Token Upgrade", () => {
 
     it("should read and compare state after upgrade", async () => {
       // Call readStateAndCompare helper to compare states
-      await readAndCompare(creator, tokenV2.address, preUpgradeState);
-
-      // If we reach this point, the comparison passed
-      expect(true).to.be.true;
+      // This function throws internally if there is a discrepency between
+      // the pre and post upgrade states. By not throwing, we know it passes.
+      await readCompareState(creator, tokenV2.address, preUpgradeState);
     });
 
     it("should test withdrawERC20 function and verify balances", async () => {
-      // Get the token owner (who can call withdrawERC20)
-      const tokenOwner = await tokenV2.owner();
-      const accounts = await hre.ethers.getSigners();
-      const ownerSigner = accounts.find(account => account.address.toLowerCase() === tokenOwner.toLowerCase()) || creator;
 
       // Connect to the token as the owner
-      const tokenV2AsOwner = tokenV2.connect(ownerSigner);
-
-      // Get mock token contract instance
-      const mockTokenFactory = new ERC20Mock__factory(creator);
-      const mockToken = mockTokenFactory.attach(mockTokenAddress);
+      const tokenV2AsOwner = tokenV2.connect(creator);
 
       // Check initial balance of the contract
       const initialBalance = await mockToken.balanceOf(tokenV2.address);
@@ -137,7 +128,6 @@ describe("zDAO Token Upgrade", () => {
       );
 
       // Verify the transaction was successful
-      expect(tx).to.not.be.undefined;
       await tx.wait();
 
       // Check balances after withdrawal
@@ -149,19 +139,13 @@ describe("zDAO Token Upgrade", () => {
 
       // Verify the recipient balance increased by the withdrawal amount
       expect(recipientFinalBalance).to.equal(recipientInitialBalance.add(withdrawAmount));
-
-      // Log the changes for verification
-      console.log(`Initial contract balance: ${initialBalance.toString()}`);
-      console.log(`Final contract balance: ${finalContractBalance.toString()}`);
-      console.log(`Withdrawn amount: ${withdrawAmount.toString()}`);
-      console.log(`Recipient balance change: ${recipientFinalBalance.sub(recipientInitialBalance).toString()}`);
     });
 
     it("should verify token functionality is preserved after upgrade", async () => {
       // Get the token owner (who can call mint)
-      const tokenOwner = await tokenV2.owner();
+      const tokenOwnerAddress = await tokenV2.owner();
       const accounts = await hre.ethers.getSigners();
-      const ownerSigner = accounts.find(account => account.address.toLowerCase() === tokenOwner.toLowerCase()) || creator;
+      const ownerSigner = accounts.find(account => account.address.toLowerCase() === tokenOwnerAddress.toLowerCase()) || creator;
 
       // Connect to the token as the owner
       const tokenV2AsOwner = tokenV2.connect(ownerSigner);

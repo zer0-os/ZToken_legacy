@@ -16,6 +16,7 @@ import {
   TRANSFERRING_OWNERSHIP_MESSAGE,
   OWNERSHIP_TRANSFERRED_MESSAGE
 } from "./constants";
+import { BigNumber } from "ethers";
 
 /**
  * Deploy V1 Token Contract with Mock Token Setup
@@ -48,9 +49,11 @@ export const deployFundTransfer = async (
   creator: SignerWithAddress,
   newOwnerAddress: string,
   outputFile?: string,
-  amount?: number
+  amount?: number | BigNumber,
+  verbose: boolean = false
 ): Promise<ZeroDAOToken> => {
   const logger = getLogger(DEPLOY_FUND_TRANSFER_LOGGER);
+  logger.state.isEnabled = verbose;
 
   const name = DEFAULT_ZERO_TOKEN_NAME;
   const symbol = DEFAULT_ZERO_TOKEN_SYMBOL;

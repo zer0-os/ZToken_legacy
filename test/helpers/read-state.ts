@@ -4,6 +4,8 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ZeroDAOToken__factory } from "../../typechain";
 import { ContractStorageData, readContractStorage } from "../../scripts/utils/storage-check";
 import { Contract } from "ethers";
+import { getLogger } from "../../utilities";
+import { READ_STATE_LOGGER } from "./constants";
 
 /**
  * Read Contract Storage State
@@ -33,14 +35,20 @@ import { Contract } from "ethers";
  * 
  * @throws Error if TOKEN_ADDRESS is not set for non-hardhat networks
  */
-export const readState = async <T>(
+export const readState = async (
   deployer: SignerWithAddress,
   tokenAddress: string,
-  outputFile?: string
+  outputFile?: string,
+  verbose: boolean = false
 ): Promise<ContractStorageData> => {
+  const logger = getLogger(READ_STATE_LOGGER);
+
+  logger.state.isEnabled = verbose;
 
   const tokenFactory = new ZeroDAOToken__factory(deployer);
   const token = tokenFactory.attach(tokenAddress);
+
+  logger.info(`Reading storage state for contract: ${token.address}`);
 
   const state = await readContractStorage(
     tokenFactory,

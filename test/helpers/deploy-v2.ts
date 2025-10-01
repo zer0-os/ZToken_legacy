@@ -35,9 +35,11 @@ import {
  */
 export const deployV2 = async (
   deployer: SignerWithAddress,
-  outputFile?: string
+  outputFile?: string,
+  verbose: boolean = false
 ): Promise<ZeroDAOTokenV2> => {
   const logger = getLogger(DEPLOY_V2_LOGGER);
+  logger.state.isEnabled = verbose;
 
   logger.info(`Network: ${hre.network.name}`);
   logger.info(DEPLOYING_V2_MESSAGE);

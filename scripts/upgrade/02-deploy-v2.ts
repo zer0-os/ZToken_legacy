@@ -33,8 +33,9 @@ const main = async () => {
   // Deploy V2 implementation contract
   await deployV2(
     deployer,
-    outputFile
-  )
+    outputFile,
+    true
+  );
 };
 
 main()
