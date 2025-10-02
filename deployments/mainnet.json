@@ -1,0 +1,17 @@
+{
+  "token": [
+    {
+      "tag": "wilder-prod",
+      "address": "0x2a3bFF78B79A009976EeA096a51A948a3dC00e34",
+      "version": "ce4272339ef9d2fd9053afea697bed1b1b8c47edaa1726c8e8734df05d3ec518",
+      "date": "2021-05-07T19:16:47.677Z",
+      "args": {
+        "name": "Wilder",
+        "symbol": "WILD"
+      },
+      "isUpgradable": true,
+      "admin": "0xAaCa00D1000AD76960FD5f0A8B6d15587bFC1ab4",
+      "implementation": "0x67AAc030b59d266e754b0b24af9cc77EC2534a37"
+    }
+  ]
+}
