@@ -1,45 +1,41 @@
 import * as hre from "hardhat";
-import * as fs from "fs";
-import { ZeroDAOTokenV2__factory, ZeroDAOTokenV2 } from "../../typechain";
-import { getLogger } from "../../utilities";
-
-const logger = getLogger("deploy-v2");
+import { deployV2 } from "../../test/helpers/deploy-v2";
 
 /**
- * Deploy ZeroDAOTokenV2 implementation contract
- * This deploys the V2 implementation that can later be used for upgrades
+ * Script 02: Deploy V2 Implementation Contract
+ * 
+ * This script deploys the ZeroDAOTokenV2 implementation contract that will be used
+ * for upgrading the existing V1 proxy contract. This is step 2 in the upgrade process.
+ * 
+ * Note: This only deploys the implementation contract, not a proxy. The actual upgrade
+ * happens separately using the proxy upgrade mechanism.
+ * 
+ * Operations performed:
+ * - Deploy ZeroDAOTokenV2 implementation contract
+ * - Save deployment details to output file
+ * 
+ * Prerequisites:
+ * - V1 contract should already be deployed (from script 01)
+ * - Deployer account should have sufficient funds for deployment
+ * 
+ * Output:
+ * - Creates a JSON file with implementation address: `02-deploy-v2-${network}.json`
+ * 
+ * Production Notes:
+ * - Ensure proper addresses are configured
+ * - Deployer account needs funds for deployment
+ * - For mainnet, proposer should be configured on Safe multisig
  */
 const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
-
-  logger.info(`Network: ${hre.network.name}`);
-  logger.info(`Deploying ZeroDAOTokenV2 implementation`);
-  logger.info(`Deployer: ${deployer.address}`);
-
-  // Deploy ZeroDAOTokenV2 implementation (not as proxy)
-  const tokenFactory = new ZeroDAOTokenV2__factory(deployer);
-  const zeroDAOTokenV2 = await tokenFactory.deploy() as ZeroDAOTokenV2;
-
-  if (hre.network.name !== "hardhat") {
-    await zeroDAOTokenV2.deployed();
-  }
-
-  logger.info(`ZeroDAOTokenV2 implementation deployed to address: ${zeroDAOTokenV2.address}`);
-
-  const obj = {
-    network: hre.network.name,
-    zeroDAOTokenV2Implementation: zeroDAOTokenV2.address,
-    deployedAt: new Date().toISOString()
-  };
-
-  // Write to file with predictable naming
   const outputFile = `02-deploy-v2-${hre.network.name}.json`;
-  fs.writeFileSync(outputFile, JSON.stringify(obj, undefined, 2));
-  logger.info(`Deployment data saved to: ${outputFile}`);
 
-  logger.info("=== Deployment Summary ===");
-  logger.info(`Network: ${obj.network}`);
-  logger.info(`ZeroDAOTokenV2 Implementation: ${obj.zeroDAOTokenV2Implementation}`);
+  // Deploy V2 implementation contract
+  await deployV2(
+    deployer,
+    outputFile,
+    true
+  );
 };
 
 main()
@@ -47,6 +43,5 @@ main()
     process.exit(0);
   })
   .catch((error) => {
-    logger.error("Deployment failed:", error);
-    process.exit(1);
+    throw error;
   });
