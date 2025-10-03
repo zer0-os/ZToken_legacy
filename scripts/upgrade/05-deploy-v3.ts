@@ -34,7 +34,7 @@ const main = async () => {
   logger.info("Executing...");
 
   const [deployer] = await hre.ethers.getSigners();
-  const outputFile = `02-deploy-v2-${hre.network.name}.json`;
+  const outputFile = `05-deploy-v2-${hre.network.name}.json`;
 
   logger.info(`Deploying ZeroDAOTokenV2 to ${hre.network.name}`);
 

@@ -26,6 +26,7 @@ import {
   DEFAULT_WITHDRAW_AMOUNT,
   DEFAULT_TOKEN_MINT_AMOUNT,
   DEFAULT_TRANSFER_AMOUNT,
+  IMPL_STORAGE_SLOT,
 } from "./helpers/constants";
 
 describe("zDAO Token Upgrades", () => {
@@ -99,11 +100,19 @@ describe("zDAO Token Upgrades", () => {
       // Same proxy address
       expect(tokenV2.address).to.equal(tokenV1.address);
 
+      const paddedImplAddress = await hre.ethers.provider.getStorageAt(
+        tokenV2.address,
+        IMPL_STORAGE_SLOT
+      );
+
+      // Remove padding in bytes before comparing
+      const implAddress = paddedImplAddress.slice(0, 2) + paddedImplAddress.slice(26);
+
       // Make sure that we also call to `initializeImplementation` from the implementation
       // contract as well to ensure we don't risk losing ownership
       const implOwner = await initImpl(
         new ZeroDAOTokenV2__factory(creator),
-        tokenV2.address
+        implAddress
       );
 
       expect(implOwner).to.eq(creator.address);

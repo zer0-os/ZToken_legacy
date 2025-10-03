@@ -1,14 +1,12 @@
-import * as hre from "hardhat";
-import { IMPL_STORAGE_SLOT } from "./constants";
 import { ContractFactory } from "ethers";
 
 export const initImpl = async (
   contractFactory: ContractFactory,
-  contractAddress: string
+  implAddress: string
 ): Promise<string> => {
-  const tokenV2Impl = contractFactory.attach(contractAddress);
+  const impl = contractFactory.attach(implAddress);
 
-  await tokenV2Impl.initializeImplementation();
+  await impl.initializeImplementation();
 
-  return tokenV2Impl.owner();
+  return impl.owner();
 };
