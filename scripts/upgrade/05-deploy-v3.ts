@@ -1,8 +1,7 @@
 import * as hre from "hardhat";
-import { deployV2 } from "../../test/helpers/deploy-v2";
-import { ZeroDAOTokenV2, ZeroDAOTokenV2__factory } from "../../typechain";
+import { ZeroDAOTokenV3 } from "../../typechain";
 import { getLogger } from "../../utilities";
-import { initImpl } from "../../test/helpers/init-impl";
+import { deployV3 } from "../../test/helpers/deploy-v3";
 
 /**
  * Script 02: Deploy V2 Implementation Contract
@@ -40,17 +39,13 @@ const main = async () => {
   logger.info(`Deploying ZeroDAOTokenV2 to ${hre.network.name}`);
 
   // Deploy V2 implementation contract
-  const contract: ZeroDAOTokenV2 = await deployV2(
+  const contract: ZeroDAOTokenV3 = await deployV3(
     deployer,
     outputFile,
     true
   );
 
-  // Calling to initalize the implementation contract
-  await initImpl(
-    new ZeroDAOTokenV2__factory(deployer),
-    contract.address
-  );
+  logger.info(`Successfully deploy ZeroDAOTokenV3 at ${contract.address}`);
 };
 
 main()

@@ -1,6 +1,7 @@
 import * as hre from "hardhat";
 import { deployFundTransfer } from "../../test/helpers/deploy-fund-transfer";
 import { DEFAULT_MOCK_TOKEN_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS } from "../../test/helpers/constants";
+import { getLogger } from "../../utilities";
 
 /**
  * Script 01: Deploy V1 Token Contract
@@ -21,6 +22,10 @@ import { DEFAULT_MOCK_TOKEN_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS } from "../../te
  * - Creates a JSON file with deployment details: `01-deploy-v1-${network}.json`
  */
 const main = async () => {
+  const logger = getLogger("01-deploy-v1");
+
+  logger.info("Executing...");
+
   const [deployer] = await hre.ethers.getSigners();
   const outputFile = `01-deploy-v1-${hre.network.name}.json`;
 
@@ -36,6 +41,8 @@ const main = async () => {
     DEFAULT_MOCK_TOKEN_AMOUNT,
     DEFAULT_MOCK_TOKEN_DECIMALS
   );
+
+  logger.info(`Deploying ZeroDAOToken to ${hre.network.name}`);
 
   // Deploy V1 token contract with mock token for testing
   await deployFundTransfer(

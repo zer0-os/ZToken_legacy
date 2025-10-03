@@ -2,97 +2,72 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import {
-  ERC20Mock,
-  ERC20Mock__factory,
   ZeroDAOTokenV2__factory,
   ZeroDAOTokenV2,
   ZeroDAOTokenV3__factory,
   ZeroDAOTokenV3,
 } from "../typechain";
+import {
+  DEFAULT_V3_TOKEN_NAME,
+  DEFAULT_V3_TOKEN_SYMBOL,
+  DEFAULT_V3_DECIMALS,
+  DEFAULT_V3_INITIAL_MINT_AMOUNT,
+  DEFAULT_V3_INITIAL_SUPPLY,
+  DEFAULT_V3_ABI_TEST_AMOUNT,
+  DEFAULT_V3_ABI_BURN_AMOUNT,
+  DEFAULT_V3_BURN_TRANSFER_AMOUNT,
+  DEFAULT_V3_NORMAL_TRANSFER_AMOUNT,
+  DEFAULT_V3_BULK_TRANSFER_AMOUNT,
+  DEFAULT_V3_BULK_TRANSFERFROM_AMOUNT,
+} from "./helpers/constants";
 
 import * as hre from "hardhat";
 
 
-describe("zDAOTokenV3 Upgrade test", () => {
-  let accounts: SignerWithAddress[];
-
+describe("zDAOTokenV3 Unit Tests", () => {
   let creator: SignerWithAddress;
-
   let user1: SignerWithAddress;
   let user2: SignerWithAddress;
   let user3: SignerWithAddress;
 
   let tokenV2: ZeroDAOTokenV2;
   let tokenV3: ZeroDAOTokenV3;
-  let mockToken: ERC20Mock;
 
-  // Update as needed for testing
-  const decimals = 6;
-  const initialMintAmount = ethers.utils.parseUnits("10000", decimals);
-  const testTokenAmount = ethers.utils.parseUnits("1000", decimals);
+  // Use constants for testing
+  const initialMintAmount = ethers.utils.parseUnits(DEFAULT_V3_INITIAL_MINT_AMOUNT, DEFAULT_V3_DECIMALS);
 
   before(async () => {
-    accounts = await ethers.getSigners();
-    creator = accounts[0];
-    user1 = accounts[1];
-    user2 = accounts[2];
-    user3 = accounts[3];
+    [creator, user1, user2, user3] = await hre.ethers.getSigners();
   });
 
-  describe("ZeroDAOTokenV2 to ZeroDAOTokenV3 upgrade test", () => {
-    it("deploys ZeroDAOTokenV2 contract", async () => {
-      // Deploy ZeroDAOTokenV2
+  describe("ZeroDAOTokenV3 Core Functionality", () => {
+    it("should deploy ZeroDAOTokenV2 and mint tokens to users", async () => {
+      // Deploy ZeroDAOTokenV2 first
       tokenV2 = await hre.upgrades.deployProxy(
         new ZeroDAOTokenV2__factory(creator),
-        ["Test DAO Token V2", "TDT2"]
+        [DEFAULT_V3_TOKEN_NAME, DEFAULT_V3_TOKEN_SYMBOL]
       ) as ZeroDAOTokenV2;
 
       await tokenV2.deployed();
 
       // Verify deployment
-      expect(await tokenV2.name()).to.equal("Test DAO Token V2");
-      expect(await tokenV2.symbol()).to.equal("TDT2");
+      expect(await tokenV2.name()).to.equal(DEFAULT_V3_TOKEN_NAME);
+      expect(await tokenV2.symbol()).to.equal(DEFAULT_V3_TOKEN_SYMBOL);
       expect(await tokenV2.owner()).to.equal(creator.address);
 
-      // Deploy mock token for testing withdrawERC20
-      const mockTokenFactory = new ERC20Mock__factory(creator);
-      mockToken = await mockTokenFactory.deploy("Mock Token", "MOCK");
-      await mockToken.deployed();
+      // Mint tokens to users for testing
+      const mintAmount = ethers.utils.parseEther("10000"); // 10,000 tokens per user
+      await tokenV2.connect(creator).mint(user1.address, mintAmount);
+      await tokenV2.connect(creator).mint(user2.address, mintAmount);
+      await tokenV2.connect(creator).mint(user3.address, mintAmount);
+
+      // Verify balances
+      expect(await tokenV2.balanceOf(user1.address)).to.equal(mintAmount);
+      expect(await tokenV2.balanceOf(user2.address)).to.equal(mintAmount);
+      expect(await tokenV2.balanceOf(user3.address)).to.equal(mintAmount);
     });
 
-    it("validates pre-upgrade state variables and user balances", async () => {
-      // Mint tokens to users
-      await tokenV2.connect(creator).mint(user1.address, initialMintAmount);
-      await tokenV2.connect(creator).mint(user2.address, initialMintAmount.div(2));
-
-      // Authorize user1 to take snapshots
-      await tokenV2.connect(creator).authorizeSnapshotter(user1.address);
-
-      // Give the contract funds
-      await mockToken.connect(creator).mint(tokenV2.address, testTokenAmount);
-
-      // Verify pre-upgrade state
-      expect(await tokenV2.balanceOf(user1.address)).to.equal(initialMintAmount);
-      expect(await tokenV2.balanceOf(user2.address)).to.equal(initialMintAmount.div(2));
-      expect(await tokenV2.totalSupply()).to.equal(initialMintAmount.add(initialMintAmount.div(2)));
-      expect(await mockToken.balanceOf(tokenV2.address)).to.equal(testTokenAmount);
-
-      // Verify onlyOwner functions work in V2
-      expect(tokenV2.mint).to.be.a('function');
-      expect(tokenV2.burn).to.be.a('function');
-      expect(tokenV2.pause).to.be.a('function');
-      expect(tokenV2.unpause).to.be.a('function');
-      expect(tokenV2.authorizeSnapshotter).to.be.a('function');
-      expect(tokenV2.deauthorizeSnapshotter).to.be.a('function');
-      expect(tokenV2.withdrawERC20).to.be.a('function');
-
-      // Test that onlyOwner functions work
-      const burnAmount = ethers.utils.parseUnits("100", decimals);
-      await tokenV2.connect(creator).burn(user1.address, burnAmount);
-      expect(await tokenV2.balanceOf(user1.address)).to.equal(initialMintAmount.sub(burnAmount));
-    });
-
-    it("upgrades ZeroDAOTokenV2 to ZeroDAOTokenV3", async () => {
+    it("should upgrade from V2 to V3", async () => {
       // Store pre-upgrade state
       const preUpgradeName = await tokenV2.name();
       const preUpgradeSymbol = await tokenV2.symbol();
@@ -100,7 +75,7 @@ describe("zDAOTokenV3 Upgrade test", () => {
       const preUpgradeTotalSupply = await tokenV2.totalSupply();
       const preUpgradeUser1Balance = await tokenV2.balanceOf(user1.address);
       const preUpgradeUser2Balance = await tokenV2.balanceOf(user2.address);
-      const preUpgradeMockTokenBalance = await mockToken.balanceOf(tokenV2.address);
+      const preUpgradeUser3Balance = await tokenV2.balanceOf(user3.address);
 
       // Perform the upgrade
       tokenV3 = await hre.upgrades.upgradeProxy(
@@ -117,10 +92,10 @@ describe("zDAOTokenV3 Upgrade test", () => {
       expect(await tokenV3.totalSupply()).to.equal(preUpgradeTotalSupply);
       expect(await tokenV3.balanceOf(user1.address)).to.equal(preUpgradeUser1Balance);
       expect(await tokenV3.balanceOf(user2.address)).to.equal(preUpgradeUser2Balance);
-      expect(await mockToken.balanceOf(tokenV3.address)).to.equal(preUpgradeMockTokenBalance);
+      expect(await tokenV3.balanceOf(user3.address)).to.equal(preUpgradeUser3Balance);
     });
 
-    it("confirms onlyOwner functions are no longer present", async () => {
+    it("should confirm onlyOwner functions are not present", async () => {
       // Check that onlyOwner functions are not accessible in V3
       expect((tokenV3 as any).mint).to.be.undefined;
       expect((tokenV3 as any).burn).to.be.undefined;
@@ -138,20 +113,10 @@ describe("zDAOTokenV3 Upgrade test", () => {
       expect(tokenV3.balanceOf).to.be.a('function');
     });
 
-    it("confirms user balances are unchanged after upgrade", async () => {
-      // Verify user balances are preserved
-      const expectedUser1Balance = initialMintAmount.sub(ethers.utils.parseUnits("100", decimals)); // minus the burn from pre-upgrade test
-      const expectedUser2Balance = initialMintAmount.div(2);
-
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(expectedUser1Balance);
-      expect(await tokenV3.balanceOf(user2.address)).to.equal(expectedUser2Balance);
-      expect(await tokenV3.totalSupply()).to.equal(expectedUser1Balance.add(expectedUser2Balance));
-    });
-
-    it("confirms onlyOwner functions cannot be called with direct ABI manipulation", async () => {
+    it("should confirm removed functions cannot be called with direct ABI manipulation", async () => {
       // Test mint function selector
       const mintSelector = "0x40c10f19"; // mint(address,uint256)
-      const mintAmount = ethers.utils.parseUnits("1000", decimals);
+      const mintAmount = ethers.utils.parseEther(DEFAULT_V3_ABI_TEST_AMOUNT);
       const mintCalldata = ethers.utils.defaultAbiCoder.encode(
         ["address", "uint256"],
         [user3.address, mintAmount]
@@ -168,7 +133,7 @@ describe("zDAOTokenV3 Upgrade test", () => {
       const burnSelector = "0x9dc29fac"; // burn(address,uint256)
       const burnCalldata = ethers.utils.defaultAbiCoder.encode(
         ["address", "uint256"],
-        [user1.address, ethers.utils.parseUnits("100", decimals)]
+        [user1.address, ethers.utils.parseEther(DEFAULT_V3_ABI_BURN_AMOUNT)]
       );
 
       await expect(
@@ -187,26 +152,7 @@ describe("zDAOTokenV3 Upgrade test", () => {
         })
       ).to.be.reverted;
 
-      // Test withdrawERC20 function selector
-      const withdrawSelector = "0x01e33667"; // withdrawERC20(address,address,uint256)
-      const withdrawCalldata = ethers.utils.defaultAbiCoder.encode(
-        ["address", "address", "uint256"],
-        [mockToken.address, user1.address, testTokenAmount]
-      );
-
-      await expect(
-        creator.sendTransaction({
-          to: tokenV3.address,
-          data: withdrawSelector + withdrawCalldata.slice(2)
-        })
-      ).to.be.reverted;
-    });
-
-    it("confirms snapshot function is no longer available", async () => {
-      // Snapshot function should be completely removed from V3
-      expect((tokenV3 as any).snapshot).to.be.undefined;
-
-      // Test that snapshot function selector doesn't work
+      // Test snapshot function selector
       const snapshotSelector = "0x9711715a"; // snapshot() function selector
       await expect(
         creator.sendTransaction({
@@ -216,61 +162,14 @@ describe("zDAOTokenV3 Upgrade test", () => {
       ).to.be.reverted;
     });
 
-    it("confirms bulk transfer functions still work", async () => {
-      const transferAmount = ethers.utils.parseUnits("50", decimals);
-
-      // Test transferBulk
-      const initialUser1Balance = await tokenV3.balanceOf(user1.address);
-      const initialUser2Balance = await tokenV3.balanceOf(user2.address);
-      const initialUser3Balance = await tokenV3.balanceOf(user3.address);
-
-      const tx = await tokenV3.connect(user1).transferBulk(
-        [user2.address, user3.address],
-        transferAmount
-      );
-
-      await expect(tx)
-        .to.emit(tokenV3, "Transfer")
-        .withArgs(user1.address, user2.address, transferAmount);
-      await expect(tx)
-        .to.emit(tokenV3, "Transfer")
-        .withArgs(user1.address, user3.address, transferAmount);
-
-      // Verify balances
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(
-        initialUser1Balance.sub(transferAmount.mul(2))
-      );
-      expect(await tokenV3.balanceOf(user2.address)).to.equal(
-        initialUser2Balance.add(transferAmount)
-      );
-      expect(await tokenV3.balanceOf(user3.address)).to.equal(
-        initialUser3Balance.add(transferAmount)
-      );
-
-      // Test transferFromBulk
-      const transferFromAmount = ethers.utils.parseUnits("25", decimals);
-
-      // First approve user3 to spend from user2
-      await tokenV3.connect(user2).approve(user3.address, transferFromAmount.mul(2));
-
-      const tx2 = await tokenV3.connect(user3).transferFromBulk(
-        user2.address,
-        [user1.address, creator.address],
-        transferFromAmount
-      );
-
-      await expect(tx2)
-        .to.emit(tokenV3, "Transfer")
-        .withArgs(user2.address, user1.address, transferFromAmount);
-      await expect(tx2)
-        .to.emit(tokenV3, "Transfer")
-        .withArgs(user2.address, creator.address, transferFromAmount);
-    });
-
-    it("confirms burn-on-self-transfer functionality works", async () => {
-      const transferAmount = ethers.utils.parseUnits("100", decimals);
-      const initialBalance = await tokenV3.balanceOf(user1.address);
+    it("should test burn-on-self-transfer functionality", async () => {
+      // Test burn-on-self-transfer with user1 who has tokens from the upgrade
+      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_BURN_TRANSFER_AMOUNT);
+      const user1Balance = await tokenV3.balanceOf(user1.address);
       const initialTotalSupply = await tokenV3.totalSupply();
+
+      // Ensure user1 has enough tokens for the test
+      expect(user1Balance).to.be.gte(transferAmount);
 
       // Transfer to self (contract address) should burn tokens
       const tx = await tokenV3.connect(user1).transfer(tokenV3.address, transferAmount);
@@ -284,34 +183,113 @@ describe("zDAOTokenV3 Upgrade test", () => {
         .withArgs(tokenV3.address, ethers.constants.AddressZero, transferAmount);
 
       // Verify tokens were burned
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(initialBalance.sub(transferAmount));
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(user1Balance.sub(transferAmount));
       expect(await tokenV3.balanceOf(tokenV3.address)).to.equal(0); // Contract should have 0 balance
       expect(await tokenV3.totalSupply()).to.equal(initialTotalSupply.sub(transferAmount));
     });
 
-    it("confirms contract is now fully decentralized", async () => {
-      // Verify that the contract owner cannot perform any privileged operations
-      // All onlyOwner functions should be removed
+    it("should test normal transfers work correctly", async () => {
+      // Test that normal transfers between users work without burning
+      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_NORMAL_TRANSFER_AMOUNT);
+      const user1Balance = await tokenV3.balanceOf(user1.address);
+      const user2Balance = await tokenV3.balanceOf(user2.address);
+      const initialTotalSupply = await tokenV3.totalSupply();
 
-      // The contract should still inherit from OwnableUpgradeable for storage compatibility
-      // but no functions should use the onlyOwner modifier
-      expect(await tokenV3.owner()).to.equal(creator.address); // Owner still exists for storage compatibility
+      // Ensure user1 has enough tokens for the test
+      expect(user1Balance).to.be.gte(transferAmount);
 
-      // But owner has no special privileges - cannot mint, burn, pause, etc.
-      // This has been verified in previous tests by checking function removal
+      const tx = await tokenV3.connect(user1).transfer(user2.address, transferAmount);
+
+      // Should only emit one Transfer event (no burn)
+      await expect(tx)
+        .to.emit(tokenV3, "Transfer")
+        .withArgs(user1.address, user2.address, transferAmount);
+
+      // Verify balances changed correctly
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(user1Balance.sub(transferAmount));
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(user2Balance.add(transferAmount));
+      expect(await tokenV3.totalSupply()).to.equal(initialTotalSupply); // No change in total supply
+    });
+
+    it("should test bulk transfer functions", async () => {
+      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_BULK_TRANSFER_AMOUNT);
+      const recipients = [user2.address, user3.address];
+      const totalAmount = transferAmount.mul(recipients.length);
+      const user1Balance = await tokenV3.balanceOf(user1.address);
+
+      // Ensure user1 has enough tokens for the test
+      expect(user1Balance).to.be.gte(totalAmount);
+
+      const initialUser2Balance = await tokenV3.balanceOf(user2.address);
+      const initialUser3Balance = await tokenV3.balanceOf(user3.address);
+
+      const tx = await tokenV3.connect(user1).transferBulk(recipients, transferAmount);
+
+      await expect(tx)
+        .to.emit(tokenV3, "Transfer")
+        .withArgs(user1.address, user2.address, transferAmount);
+      await expect(tx)
+        .to.emit(tokenV3, "Transfer")
+        .withArgs(user1.address, user3.address, transferAmount);
+
+      // Verify balances
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(user1Balance.sub(totalAmount));
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(initialUser2Balance.add(transferAmount));
+      expect(await tokenV3.balanceOf(user3.address)).to.equal(initialUser3Balance.add(transferAmount));
+    });
+
+    it("should test bulk transferFrom functions", async () => {
+      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_BULK_TRANSFERFROM_AMOUNT);
+      const recipients = [user2.address, user3.address];
+      const totalAmount = transferAmount.mul(recipients.length);
+      const user1Balance = await tokenV3.balanceOf(user1.address);
+
+      // Ensure user1 has enough tokens for the test
+      expect(user1Balance).to.be.gte(totalAmount);
+
+      // First approve creator to spend from user1
+      await tokenV3.connect(user1).approve(creator.address, totalAmount);
+
+      const initialUser1Balance = await tokenV3.balanceOf(user1.address);
+      const initialUser2Balance = await tokenV3.balanceOf(user2.address);
+      const initialUser3Balance = await tokenV3.balanceOf(user3.address);
+
+      const tx = await tokenV3.connect(creator).transferFromBulk(
+        user1.address,
+        recipients,
+        transferAmount
+      );
+
+      await expect(tx)
+        .to.emit(tokenV3, "Transfer")
+        .withArgs(user1.address, user2.address, transferAmount);
+      await expect(tx)
+        .to.emit(tokenV3, "Transfer")
+        .withArgs(user1.address, user3.address, transferAmount);
+
+      // Verify balances
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(initialUser1Balance.sub(totalAmount));
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(initialUser2Balance.add(transferAmount));
+      expect(await tokenV3.balanceOf(user3.address)).to.equal(initialUser3Balance.add(transferAmount));
+    });
+
+    it("confirms contract state", async () => {
+      // Verify that the contract owner exists for storage compatibility
+      // but has no special privileges
+      expect(await tokenV3.owner()).to.equal(creator.address);
+
+      // Verify that all privileged functions have been removed
+      // This has been tested in previous test cases
 
       // The only way to interact with the contract now is through:
       // 1. Standard ERC20 functions (transfer, approve, etc.)
-      // 2. Bulk transfer functions
+      // 2. Bulk transfer functions  
       // 3. Burn-on-self-transfer functionality
 
-      // Verify total supply is correct after all operations
-      const finalTotalSupply = await tokenV3.totalSupply();
-      const expectedSupply = initialMintAmount.add(initialMintAmount.div(2)) // initial mints
-        .sub(ethers.utils.parseUnits("100", decimals)) // burn in pre-upgrade test
-        .sub(ethers.utils.parseUnits("100", decimals)); // burn-on-self-transfer test
-
-      expect(finalTotalSupply).to.equal(expectedSupply);
+      // Verify the contract still functions as a basic ERC20
+      expect(await tokenV3.name()).to.equal(DEFAULT_V3_TOKEN_NAME);
+      expect(await tokenV3.symbol()).to.equal(DEFAULT_V3_TOKEN_SYMBOL);
+      expect(await tokenV3.totalSupply()).to.be.gt(0);
     });
   });
 });

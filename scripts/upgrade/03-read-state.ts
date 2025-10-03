@@ -30,7 +30,7 @@ import { ZeroDAOToken__factory } from "../../typechain";
  */
 const main = async () => {
   const [creator] = await hre.ethers.getSigners();
-  const outputFile = `03-read-state-${hre.network.name}.json`;
+  const outputFile = `03-read-state-v1-to-v2-${hre.network.name}.json`;
 
   // Get the token address from initial deployment in step 1
   let tokenAddress = process.env.TOKEN_ADDRESS;
