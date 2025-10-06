@@ -1,7 +1,5 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import * as hre from "hardhat";
-import { doDeployToken } from "../tasks/deploy";
-import { ZeroDAOToken } from "../typechain";
+import { ERC20Mock, ERC20Mock__factory, ZeroDAOToken, ZeroDAOToken__factory, ZeroDAOTokenV2, ZeroDAOTokenV2__factory } from "../typechain";
 import { getLogger } from "../utilities";
 
 const logger = getLogger("scripts::deployWILD");
@@ -17,15 +15,11 @@ const treasuryAddress = "0x24089292d5e5B4E487b07C8dF44f973A0AAb7D7b";
 const ownerAddress = "0x32eB727B120Acf288306fBD67a60D1b6d8984476";
 
 async function main() {
+  const [deployer] = await hre.ethers.getSigners();
+
   await hre.run("compile");
 
-  logger.log("programmatically deploying vesting contract");
-
   logger.log(`Deploying to ${hre.network.name}`);
-
-  logger.log(
-    `Will mint ${hre.ethers.utils.formatEther(tokenMintAmount)} tokens`
-  );
 
   const accounts = await hre.ethers.getSigners();
   const deploymentAccount = accounts[0];
@@ -45,30 +39,13 @@ async function main() {
     "wilder-prod"
   );
 
-  const token = deploymentData.instance;
+  const wildToken: ZeroDAOToken = await deployWILDTx.deployed() as ZeroDAOToken;
+  logger.info(`Deployed WILD Token to: ${wildToken.address}`);
 
-  logger.log(`Deployed contract to ${token.address}`);
+  const mockFactory = new ERC20Mock__factory(deployer);
+  const mockToken: ERC20Mock = await mockFactory.deploy("MOCK TOKEN", "MOCK") as ERC20Mock;
 
-  logger.log(
-    `Initializing implementation contract at '${deploymentData.implementationAddress}' for security.`
-  );
-  const impl = (await token.attach(
-    deploymentData.implementationAddress
-  )) as ZeroDAOToken;
-  await impl.initializeImplementation();
-
-  logger.log(`Minting tokens...`);
-  const tx = await token.mint(treasuryAddress, tokenMintAmount);
-
-  logger.log(`waiting to finish`);
-  await tx.wait();
-  logger.log(`finished minting`);
-
-  logger.log(`transferring token ownership to ${ownerAddress}`);
-  await token.transferOwnership(ownerAddress);
-
-  logger.log(`transferring proxy admin ownership to ${ownerAddress}`);
-  await hre.upgrades.admin.transferProxyAdminOwnership(ownerAddress);
+  logger.info(`Deployed MOCK Token to: ${mockToken.address}`);
 }
 
 main();

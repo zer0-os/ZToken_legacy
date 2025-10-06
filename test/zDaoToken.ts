@@ -2,7 +2,10 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { ZeroDAOToken, ZeroDAOToken__factory } from "../typechain";
+import {
+  ZeroDAOToken,
+  ZeroDAOToken__factory,
+} from "../typechain";
 
 describe("zDAO Token", () => {
   let accounts: SignerWithAddress[];
@@ -23,6 +26,7 @@ describe("zDAO Token", () => {
     user3 = accounts[3];
   });
 
+  // old ignore
   const reDeployBefore = () => {
     before(async () => {
       const tokenFactory = new ZeroDAOToken__factory(creator);
