@@ -23,7 +23,6 @@ import {
 
 import * as hre from "hardhat";
 
-
 describe("zDAOTokenV3 Unit Tests", () => {
   let creator: SignerWithAddress;
   let user1: SignerWithAddress;
@@ -34,7 +33,10 @@ describe("zDAOTokenV3 Unit Tests", () => {
   let tokenV3: ZeroDAOTokenV3;
 
   // Use constants for testing
-  const initialMintAmount = ethers.utils.parseUnits(DEFAULT_V3_INITIAL_MINT_AMOUNT, DEFAULT_V3_DECIMALS);
+  const initialMintAmount = ethers.utils.parseUnits(
+    DEFAULT_V3_INITIAL_MINT_AMOUNT,
+    DEFAULT_V3_DECIMALS
+  );
 
   before(async () => {
     [creator, user1, user2, user3] = await hre.ethers.getSigners();
@@ -43,10 +45,10 @@ describe("zDAOTokenV3 Unit Tests", () => {
   describe("ZeroDAOTokenV3 Core Functionality", () => {
     it("should deploy ZeroDAOTokenV2 and mint tokens to users", async () => {
       // Deploy ZeroDAOTokenV2 first
-      tokenV2 = await hre.upgrades.deployProxy(
+      tokenV2 = (await hre.upgrades.deployProxy(
         new ZeroDAOTokenV2__factory(creator),
         [DEFAULT_V3_TOKEN_NAME, DEFAULT_V3_TOKEN_SYMBOL]
-      ) as ZeroDAOTokenV2;
+      )) as ZeroDAOTokenV2;
 
       await tokenV2.deployed();
 
@@ -78,10 +80,10 @@ describe("zDAOTokenV3 Unit Tests", () => {
       const preUpgradeUser3Balance = await tokenV2.balanceOf(user3.address);
 
       // Perform the upgrade
-      tokenV3 = await hre.upgrades.upgradeProxy(
+      tokenV3 = (await hre.upgrades.upgradeProxy(
         tokenV2.address,
         new ZeroDAOTokenV3__factory(creator)
-      ) as ZeroDAOTokenV3;
+      )) as ZeroDAOTokenV3;
 
       expect(tokenV3.address).to.equal(tokenV2.address);
 
@@ -90,9 +92,15 @@ describe("zDAOTokenV3 Unit Tests", () => {
       expect(await tokenV3.symbol()).to.equal(preUpgradeSymbol);
       expect(await tokenV3.owner()).to.equal(preUpgradeOwner);
       expect(await tokenV3.totalSupply()).to.equal(preUpgradeTotalSupply);
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(preUpgradeUser1Balance);
-      expect(await tokenV3.balanceOf(user2.address)).to.equal(preUpgradeUser2Balance);
-      expect(await tokenV3.balanceOf(user3.address)).to.equal(preUpgradeUser3Balance);
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(
+        preUpgradeUser1Balance
+      );
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(
+        preUpgradeUser2Balance
+      );
+      expect(await tokenV3.balanceOf(user3.address)).to.equal(
+        preUpgradeUser3Balance
+      );
     });
 
     it("should confirm onlyOwner functions are not present", async () => {
@@ -107,10 +115,10 @@ describe("zDAOTokenV3 Unit Tests", () => {
       expect((tokenV3 as any).withdrawERC20).to.be.undefined;
 
       // Verify that remaining functions still exist
-      expect(tokenV3.transferBulk).to.be.a('function');
-      expect(tokenV3.transferFromBulk).to.be.a('function');
-      expect(tokenV3.transfer).to.be.a('function');
-      expect(tokenV3.balanceOf).to.be.a('function');
+      expect(tokenV3.transferBulk).to.be.a("function");
+      expect(tokenV3.transferFromBulk).to.be.a("function");
+      expect(tokenV3.transfer).to.be.a("function");
+      expect(tokenV3.balanceOf).to.be.a("function");
     });
 
     it("should confirm removed functions cannot be called with direct ABI manipulation", async () => {
@@ -125,7 +133,7 @@ describe("zDAOTokenV3 Unit Tests", () => {
       await expect(
         creator.sendTransaction({
           to: tokenV3.address,
-          data: mintSelector + mintCalldata.slice(2)
+          data: mintSelector + mintCalldata.slice(2),
         })
       ).to.be.reverted;
 
@@ -139,7 +147,7 @@ describe("zDAOTokenV3 Unit Tests", () => {
       await expect(
         creator.sendTransaction({
           to: tokenV3.address,
-          data: burnSelector + burnCalldata.slice(2)
+          data: burnSelector + burnCalldata.slice(2),
         })
       ).to.be.reverted;
 
@@ -148,7 +156,7 @@ describe("zDAOTokenV3 Unit Tests", () => {
       await expect(
         creator.sendTransaction({
           to: tokenV3.address,
-          data: pauseSelector
+          data: pauseSelector,
         })
       ).to.be.reverted;
 
@@ -157,14 +165,16 @@ describe("zDAOTokenV3 Unit Tests", () => {
       await expect(
         creator.sendTransaction({
           to: tokenV3.address,
-          data: snapshotSelector
+          data: snapshotSelector,
         })
       ).to.be.reverted;
     });
 
     it("should test burn-on-self-transfer functionality", async () => {
       // Test burn-on-self-transfer with user1 who has tokens from the upgrade
-      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_BURN_TRANSFER_AMOUNT);
+      const transferAmount = ethers.utils.parseEther(
+        DEFAULT_V3_BURN_TRANSFER_AMOUNT
+      );
       const user1Balance = await tokenV3.balanceOf(user1.address);
       const initialTotalSupply = await tokenV3.totalSupply();
 
@@ -172,7 +182,9 @@ describe("zDAOTokenV3 Unit Tests", () => {
       expect(user1Balance).to.be.gte(transferAmount);
 
       // Transfer to self (contract address) should burn tokens
-      const tx = await tokenV3.connect(user1).transfer(tokenV3.address, transferAmount);
+      const tx = await tokenV3
+        .connect(user1)
+        .transfer(tokenV3.address, transferAmount);
 
       // Should emit Transfer to contract and then Transfer from contract to zero (burn)
       await expect(tx)
@@ -180,17 +192,27 @@ describe("zDAOTokenV3 Unit Tests", () => {
         .withArgs(user1.address, tokenV3.address, transferAmount);
       await expect(tx)
         .to.emit(tokenV3, "Transfer")
-        .withArgs(tokenV3.address, ethers.constants.AddressZero, transferAmount);
+        .withArgs(
+          tokenV3.address,
+          ethers.constants.AddressZero,
+          transferAmount
+        );
 
       // Verify tokens were burned
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(user1Balance.sub(transferAmount));
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(
+        user1Balance.sub(transferAmount)
+      );
       expect(await tokenV3.balanceOf(tokenV3.address)).to.equal(0); // Contract should have 0 balance
-      expect(await tokenV3.totalSupply()).to.equal(initialTotalSupply.sub(transferAmount));
+      expect(await tokenV3.totalSupply()).to.equal(
+        initialTotalSupply.sub(transferAmount)
+      );
     });
 
     it("should test normal transfers work correctly", async () => {
       // Test that normal transfers between users work without burning
-      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_NORMAL_TRANSFER_AMOUNT);
+      const transferAmount = ethers.utils.parseEther(
+        DEFAULT_V3_NORMAL_TRANSFER_AMOUNT
+      );
       const user1Balance = await tokenV3.balanceOf(user1.address);
       const user2Balance = await tokenV3.balanceOf(user2.address);
       const initialTotalSupply = await tokenV3.totalSupply();
@@ -198,7 +220,9 @@ describe("zDAOTokenV3 Unit Tests", () => {
       // Ensure user1 has enough tokens for the test
       expect(user1Balance).to.be.gte(transferAmount);
 
-      const tx = await tokenV3.connect(user1).transfer(user2.address, transferAmount);
+      const tx = await tokenV3
+        .connect(user1)
+        .transfer(user2.address, transferAmount);
 
       // Should only emit one Transfer event (no burn)
       await expect(tx)
@@ -206,13 +230,19 @@ describe("zDAOTokenV3 Unit Tests", () => {
         .withArgs(user1.address, user2.address, transferAmount);
 
       // Verify balances changed correctly
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(user1Balance.sub(transferAmount));
-      expect(await tokenV3.balanceOf(user2.address)).to.equal(user2Balance.add(transferAmount));
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(
+        user1Balance.sub(transferAmount)
+      );
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(
+        user2Balance.add(transferAmount)
+      );
       expect(await tokenV3.totalSupply()).to.equal(initialTotalSupply); // No change in total supply
     });
 
     it("should test bulk transfer functions", async () => {
-      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_BULK_TRANSFER_AMOUNT);
+      const transferAmount = ethers.utils.parseEther(
+        DEFAULT_V3_BULK_TRANSFER_AMOUNT
+      );
       const recipients = [user2.address, user3.address];
       const totalAmount = transferAmount.mul(recipients.length);
       const user1Balance = await tokenV3.balanceOf(user1.address);
@@ -223,7 +253,9 @@ describe("zDAOTokenV3 Unit Tests", () => {
       const initialUser2Balance = await tokenV3.balanceOf(user2.address);
       const initialUser3Balance = await tokenV3.balanceOf(user3.address);
 
-      const tx = await tokenV3.connect(user1).transferBulk(recipients, transferAmount);
+      const tx = await tokenV3
+        .connect(user1)
+        .transferBulk(recipients, transferAmount);
 
       await expect(tx)
         .to.emit(tokenV3, "Transfer")
@@ -233,13 +265,21 @@ describe("zDAOTokenV3 Unit Tests", () => {
         .withArgs(user1.address, user3.address, transferAmount);
 
       // Verify balances
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(user1Balance.sub(totalAmount));
-      expect(await tokenV3.balanceOf(user2.address)).to.equal(initialUser2Balance.add(transferAmount));
-      expect(await tokenV3.balanceOf(user3.address)).to.equal(initialUser3Balance.add(transferAmount));
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(
+        user1Balance.sub(totalAmount)
+      );
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(
+        initialUser2Balance.add(transferAmount)
+      );
+      expect(await tokenV3.balanceOf(user3.address)).to.equal(
+        initialUser3Balance.add(transferAmount)
+      );
     });
 
     it("should test bulk transferFrom functions", async () => {
-      const transferAmount = ethers.utils.parseEther(DEFAULT_V3_BULK_TRANSFERFROM_AMOUNT);
+      const transferAmount = ethers.utils.parseEther(
+        DEFAULT_V3_BULK_TRANSFERFROM_AMOUNT
+      );
       const recipients = [user2.address, user3.address];
       const totalAmount = transferAmount.mul(recipients.length);
       const user1Balance = await tokenV3.balanceOf(user1.address);
@@ -254,11 +294,9 @@ describe("zDAOTokenV3 Unit Tests", () => {
       const initialUser2Balance = await tokenV3.balanceOf(user2.address);
       const initialUser3Balance = await tokenV3.balanceOf(user3.address);
 
-      const tx = await tokenV3.connect(creator).transferFromBulk(
-        user1.address,
-        recipients,
-        transferAmount
-      );
+      const tx = await tokenV3
+        .connect(creator)
+        .transferFromBulk(user1.address, recipients, transferAmount);
 
       await expect(tx)
         .to.emit(tokenV3, "Transfer")
@@ -268,9 +306,15 @@ describe("zDAOTokenV3 Unit Tests", () => {
         .withArgs(user1.address, user3.address, transferAmount);
 
       // Verify balances
-      expect(await tokenV3.balanceOf(user1.address)).to.equal(initialUser1Balance.sub(totalAmount));
-      expect(await tokenV3.balanceOf(user2.address)).to.equal(initialUser2Balance.add(transferAmount));
-      expect(await tokenV3.balanceOf(user3.address)).to.equal(initialUser3Balance.add(transferAmount));
+      expect(await tokenV3.balanceOf(user1.address)).to.equal(
+        initialUser1Balance.sub(totalAmount)
+      );
+      expect(await tokenV3.balanceOf(user2.address)).to.equal(
+        initialUser2Balance.add(transferAmount)
+      );
+      expect(await tokenV3.balanceOf(user3.address)).to.equal(
+        initialUser3Balance.add(transferAmount)
+      );
     });
 
     it("confirms contract state", async () => {
@@ -283,7 +327,7 @@ describe("zDAOTokenV3 Unit Tests", () => {
 
       // The only way to interact with the contract now is through:
       // 1. Standard ERC20 functions (transfer, approve, etc.)
-      // 2. Bulk transfer functions  
+      // 2. Bulk transfer functions
       // 3. Burn-on-self-transfer functionality
 
       // Verify the contract still functions as a basic ERC20

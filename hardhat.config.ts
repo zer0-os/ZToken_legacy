@@ -35,12 +35,11 @@ const config: HardhatUserConfig = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
-        }
+            runs: 200,
+          },
+        },
       },
-      { version: "0.6.0", settings: {} }
-
+      { version: "0.6.0", settings: {} },
     ],
   },
   paths: {
@@ -87,11 +86,10 @@ const config: HardhatUserConfig = {
         chainId: 11155111,
         urls: {
           apiURL: "https://api-sepolia.etherscan.io/api",
-          browserURL: "https://sepolia.etherscan.io"
-        }
-      }
-
-    ]
+          browserURL: "https://sepolia.etherscan.io",
+        },
+      },
+    ],
   },
 };
 export default config;
