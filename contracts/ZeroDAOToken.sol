@@ -21,10 +21,10 @@ contract ZeroDAOToken is
   // Mapping which stores all addresses allowed to snapshot
   mapping(address => bool) authorizedToSnapshot;
 
-  function initialize(string memory name, string memory symbol)
-    public
-    initializer
-  {
+  function initialize(
+    string memory name,
+    string memory symbol
+  ) public initializer {
     __Ownable_init();
     __ERC20_init(name, symbol);
     __ERC20Snapshot_init();
@@ -114,10 +114,10 @@ contract ZeroDAOToken is
    * @param amount The amount of tokens to send
    * @return Boolean if the transfer was a success
    */
-  function transferBulk(address[] calldata recipients, uint256 amount)
-    external
-    returns (bool)
-  {
+  function transferBulk(
+    address[] calldata recipients,
+    uint256 amount
+  ) external returns (bool) {
     address sender = _msgSender();
 
     uint256 total = amount * recipients.length;
