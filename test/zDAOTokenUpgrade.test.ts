@@ -28,8 +28,8 @@ import {
 
 describe("zDAO Token Upgrade", () => {
   let creator: SignerWithAddress;
-  let user1: SignerWithAddress;
-  let user2: SignerWithAddress;
+  let userA: SignerWithAddress;
+  let userB: SignerWithAddress;
 
   let tokenV1: ZeroDAOToken;
   let tokenV2: ZeroDAOTokenV2;
@@ -37,12 +37,10 @@ describe("zDAO Token Upgrade", () => {
   let preUpgradeState: ContractStorageData;
 
   before(async () => {
-    [creator, user1, user2] = await hre.ethers.getSigners();
+    [creator, userA, userB] = await hre.ethers.getSigners();
   });
 
   describe("Token Upgrade Flow", () => {
-
-
     it("should deploy and fund V1 token with mock ERC20", async () => {
       // Call deploy-fund-transfer helper
       tokenV1 = await deployFundTransfer(creator, creator.address);
@@ -61,20 +59,18 @@ describe("zDAO Token Upgrade", () => {
       const mintAmount = ethers.utils.parseUnits(DEFAULT_TEST_MINT_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
       await mockToken.mint(tokenV1.address, mintAmount);
 
+      // Fund users for later when public `mint` and `burn` functions are removed
+      await tokenV1.mint(userA.address, mintAmount);
+      await tokenV1.mint(userB.address, mintAmount);
+
       const balance = await mockToken.balanceOf(tokenV1.address);
       expect(balance).to.equal(mintAmount);
     });
 
-    it("should read state before upgrade", async () => {
+    it("should upgrade from V1 to V2", async () => {
       // Call readState helper to get state before upgrading
       preUpgradeState = await readState(creator, tokenV1.address);
 
-      expect(preUpgradeState).to.not.be.undefined;
-      expect(Array.isArray(preUpgradeState)).to.be.true;
-      expect(preUpgradeState.length).to.be.greaterThan(0);
-    });
-
-    it("should upgrade from V1 to V2", async () => {
       // Get the proxy admin and its owner
       const proxyAdmin = await hre.upgrades.admin.getInstance();
       const proxyAdminOwner = await proxyAdmin.owner();
@@ -105,23 +101,18 @@ describe("zDAO Token Upgrade", () => {
     });
 
     it("should test withdrawERC20 function and verify balances", async () => {
-
-      // Connect to the token as the owner
-      const tokenV2AsOwner = tokenV2.connect(creator);
-
       // Check initial balance of the contract
-      const initialBalance = await mockToken.balanceOf(tokenV2.address);
-      expect(initialBalance).to.be.gt(0);
+      const contractBalanceBefore = await mockToken.balanceOf(tokenV2.address);
 
       // Check initial balance of recipient (creator)
-      const recipientInitialBalance = await mockToken.balanceOf(creator.address);
+      const creatorBalance = await mockToken.balanceOf(creator.address);
 
       // Define withdrawal amount
       const withdrawAmount = ethers.utils.parseUnits(DEFAULT_WITHDRAW_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
-      expect(withdrawAmount).to.be.lte(initialBalance);
+      expect(withdrawAmount).to.be.lte(contractBalanceBefore);
 
       // Call withdrawERC20 function as the token owner
-      const tx = await tokenV2AsOwner.withdrawERC20(
+      const tx = await tokenV2.connect(creator).withdrawERC20(
         mockToken.address,
         creator.address,
         withdrawAmount
@@ -131,42 +122,200 @@ describe("zDAO Token Upgrade", () => {
       await tx.wait();
 
       // Check balances after withdrawal
-      const finalContractBalance = await mockToken.balanceOf(tokenV2.address);
-      const recipientFinalBalance = await mockToken.balanceOf(creator.address);
+      const contractBalanceFinal = await mockToken.balanceOf(tokenV2.address);
+      const creatorBalanceFinal = await mockToken.balanceOf(creator.address);
 
       // Verify the contract balance decreased by the withdrawal amount
-      expect(finalContractBalance).to.equal(initialBalance.sub(withdrawAmount));
+      expect(contractBalanceFinal).to.equal(contractBalanceBefore.sub(withdrawAmount));
 
       // Verify the recipient balance increased by the withdrawal amount
-      expect(recipientFinalBalance).to.equal(recipientInitialBalance.add(withdrawAmount));
+      expect(creatorBalanceFinal).to.equal(creatorBalance.add(withdrawAmount));
     });
 
     it("should verify token functionality is preserved after upgrade", async () => {
-      // Get the token owner (who can call mint)
-      const tokenOwnerAddress = await tokenV2.owner();
-      const accounts = await hre.ethers.getSigners();
-      const ownerSigner = accounts.find(account => account.address.toLowerCase() === tokenOwnerAddress.toLowerCase()) || creator;
+      // Verify basic token properties are preserved
+      expect(await tokenV2.name()).to.equal(DEFAULT_ZERO_TOKEN_NAME);
+      expect(await tokenV2.symbol()).to.equal(DEFAULT_ZERO_TOKEN_SYMBOL);
+      expect(await tokenV2.owner()).to.equal(creator.address);
 
-      // Connect to the token as the owner
-      const tokenV2AsOwner = tokenV2.connect(ownerSigner);
+      // Check balances - userA and userB should have tokens from the pre-upgrade minting
+      const creatorBalance = await tokenV2.balanceOf(creator.address);
+      const userABalance = await tokenV2.balanceOf(userA.address);
+      const userBBalance = await tokenV2.balanceOf(userB.address);
 
-      // Test that basic V1 functionality still works
-      const mintAmount = ethers.utils.parseEther(DEFAULT_TOKEN_MINT_AMOUNT);
+      // Verify that userA and userB have the expected token balances from pre-upgrade minting
+      const expectedMintAmount = ethers.utils.parseUnits(DEFAULT_TEST_MINT_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
+      expect(userABalance).to.equal(expectedMintAmount);
+      expect(userBBalance).to.equal(expectedMintAmount);
 
-      await tokenV2AsOwner.mint(user1.address, mintAmount);
-      const balance = await tokenV2.balanceOf(user1.address);
-      expect(balance).to.equal(mintAmount);
+      // Test basic transfer functionality using userA's tokens
+      const transferAmount = ethers.utils.parseUnits(DEFAULT_TRANSFER_AMOUNT, 18);
+      const initialUserABalance = await tokenV2.balanceOf(userA.address);
+      const initialCreatorBalance = await tokenV2.balanceOf(creator.address);
 
-      // Test transfer functionality
-      const transferAmount = ethers.utils.parseEther(DEFAULT_TRANSFER_AMOUNT);
-      const tokenAsUser1 = tokenV2.connect(user1);
-      await tokenAsUser1.transfer(user2.address, transferAmount);
+      // Transfer from userA to creator
+      await tokenV2.connect(userA).transfer(creator.address, transferAmount);
 
-      const user1Balance = await tokenV2.balanceOf(user1.address);
-      const user2Balance = await tokenV2.balanceOf(user2.address);
+      // Verify balances updated correctly
+      expect(await tokenV2.balanceOf(userA.address)).to.equal(initialUserABalance.sub(transferAmount));
+      expect(await tokenV2.balanceOf(creator.address)).to.equal(initialCreatorBalance.add(transferAmount));
 
-      expect(user1Balance).to.equal(mintAmount.sub(transferAmount));
-      expect(user2Balance).to.equal(transferAmount);
+      // Test snapshot functionality
+      const snapshotTx = await tokenV2.connect(creator).snapshot();
+      await expect(snapshotTx).to.emit(tokenV2, "Snapshot");
+
+      // Verify snapshot captured the current balances
+      const userABalanceAtSnapshot = await tokenV2.balanceOf(userA.address);
+      const snapshotId = 1; // First snapshot
+      const userASnapshotBalance = await tokenV2.balanceOfAt(userA.address, snapshotId);
+      expect(userASnapshotBalance).to.equal(userABalanceAtSnapshot);
+
+      // Test snapshotter authorization functionality
+      await expect(tokenV2.connect(userA).snapshot()).to.be.revertedWith(
+        "zDAOToken: Not authorized to snapshot"
+      );
+
+      // Authorize userA to snapshot
+      const authTx = await tokenV2.connect(creator).authorizeSnapshotter(userA.address);
+      await expect(authTx).to.emit(tokenV2, "AuthorizedSnapshotter").withArgs(userA.address);
+
+      // Now userA should be able to snapshot
+      const userASnapshotTx = await tokenV2.connect(userA).snapshot();
+      await expect(userASnapshotTx).to.emit(tokenV2, "Snapshot");
+
+      // Deauthorize userA
+      const deauthTx = await tokenV2.connect(creator).deauthorizeSnapshotter(userA.address);
+      await expect(deauthTx).to.emit(tokenV2, "DeauthorizedSnapshotter").withArgs(userA.address);
+
+      // userA should no longer be able to snapshot
+      await expect(tokenV2.connect(userA).snapshot()).to.be.revertedWith(
+        "zDAOToken: Not authorized to snapshot"
+      );
+
+      // Test pause/unpause functionality
+      const pauseTx = await tokenV2.connect(creator).pause();
+      await expect(pauseTx).to.emit(tokenV2, "Paused");
+
+      // Transfers should be blocked when paused - test with userB's tokens
+      await expect(
+        tokenV2.connect(userB).transfer(creator.address, transferAmount)
+      ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
+
+      // Unpause
+      const unpauseTx = await tokenV2.connect(creator).unpause();
+      await expect(unpauseTx).to.emit(tokenV2, "Unpaused");
+
+      // Test that transfers work again after unpausing
+      const userBBalanceBeforeTransfer = await tokenV2.balanceOf(userB.address);
+      const creatorBalanceBeforeTransfer = await tokenV2.balanceOf(creator.address);
+
+      await tokenV2.connect(userB).transfer(creator.address, transferAmount);
+
+      expect(await tokenV2.balanceOf(userB.address)).to.equal(userBBalanceBeforeTransfer.sub(transferAmount));
+      expect(await tokenV2.balanceOf(creator.address)).to.equal(creatorBalanceBeforeTransfer.add(transferAmount));
+
+      // Test bulk transfer functionality using creator's accumulated tokens
+      const currentCreatorBalance = await tokenV2.balanceOf(creator.address);
+      if (currentCreatorBalance.gt(ethers.utils.parseUnits("200", 18))) {
+        const bulkTransferAmount = ethers.utils.parseUnits("50", 18);
+        const recipients = [userA.address, userB.address];
+
+        const initialUserABalanceForBulk = await tokenV2.balanceOf(userA.address);
+        const initialUserBBalanceForBulk = await tokenV2.balanceOf(userB.address);
+
+        const bulkTx = await tokenV2.connect(creator).transferBulk(recipients, bulkTransferAmount);
+
+        // Verify events were emitted
+        await expect(bulkTx)
+          .to.emit(tokenV2, "Transfer")
+          .withArgs(creator.address, userA.address, bulkTransferAmount);
+        await expect(bulkTx)
+          .to.emit(tokenV2, "Transfer")
+          .withArgs(creator.address, userB.address, bulkTransferAmount);
+
+        // Verify balances
+        expect(await tokenV2.balanceOf(userA.address)).to.equal(initialUserABalanceForBulk.add(bulkTransferAmount));
+        expect(await tokenV2.balanceOf(userB.address)).to.equal(initialUserBBalanceForBulk.add(bulkTransferAmount));
+      }
+
+      // Test transferFromBulk functionality with approval
+      const userABalanceForBulkFrom = await tokenV2.balanceOf(userA.address);
+      if (userABalanceForBulkFrom.gt(ethers.utils.parseUnits("100", 18))) {
+        const bulkTransferAmount = ethers.utils.parseUnits("25", 18);
+        const recipients = [creator.address, userB.address];
+        const totalAmount = bulkTransferAmount.mul(recipients.length);
+
+        // userA approves userB to spend tokens
+        await tokenV2.connect(userA).approve(userB.address, totalAmount);
+
+        const initialCreatorBalanceForBulkFrom = await tokenV2.balanceOf(creator.address);
+        const initialUserBBalanceForBulkFrom = await tokenV2.balanceOf(userB.address);
+        const initialUserABalanceForBulkFrom = await tokenV2.balanceOf(userA.address);
+
+        // userB calls transferFromBulk to transfer userA's tokens
+        const bulkFromTx = await tokenV2.connect(userB).transferFromBulk(
+          userA.address,
+          recipients,
+          bulkTransferAmount
+        );
+
+        // Verify events were emitted
+        await expect(bulkFromTx)
+          .to.emit(tokenV2, "Transfer")
+          .withArgs(userA.address, creator.address, bulkTransferAmount);
+        await expect(bulkFromTx)
+          .to.emit(tokenV2, "Transfer")
+          .withArgs(userA.address, userB.address, bulkTransferAmount);
+
+        // Verify balances
+        expect(await tokenV2.balanceOf(userA.address)).to.equal(initialUserABalanceForBulkFrom.sub(totalAmount));
+        expect(await tokenV2.balanceOf(creator.address)).to.equal(initialCreatorBalanceForBulkFrom.add(bulkTransferAmount));
+        expect(await tokenV2.balanceOf(userB.address)).to.equal(initialUserBBalanceForBulkFrom.add(bulkTransferAmount));
+      }
+
+      // Test the new V2 burn-on-transfer-to-contract functionality
+      const userABalanceBeforeBurn = await tokenV2.balanceOf(userA.address);
+      const burnAmount = ethers.utils.parseUnits("10", 18);
+
+      if (userABalanceBeforeBurn.gt(burnAmount)) {
+        const totalSupplyBefore = await tokenV2.totalSupply();
+
+        // Transfer to the contract address should burn the tokens
+        await tokenV2.connect(userA).transfer(tokenV2.address, burnAmount);
+
+        const userABalanceAfterBurn = await tokenV2.balanceOf(userA.address);
+        const contractBalance = await tokenV2.balanceOf(tokenV2.address);
+        const totalSupplyAfter = await tokenV2.totalSupply();
+
+        // Verify tokens were burned (not transferred to contract)
+        expect(userABalanceAfterBurn).to.equal(userABalanceBeforeBurn.sub(burnAmount));
+        expect(contractBalance).to.equal(0); // Contract should have no tokens
+        expect(totalSupplyAfter).to.equal(totalSupplyBefore.sub(burnAmount)); // Total supply decreased
+      }
+
+      // Test that non-owners cannot call owner-only functions
+      await expect(tokenV2.connect(userA).pause()).to.be.revertedWith("Ownable: caller is not the owner");
+      await expect(tokenV2.connect(userA).authorizeSnapshotter(userB.address)).to.be.revertedWith("Ownable: caller is not the owner");
+
+      // Verify that mint and burn functions no longer exist (should throw if called)
+      // Note: These functions were removed in V2, so calling them should fail
+      try {
+        // @ts-ignore - Intentionally calling removed function to verify it's gone
+        await tokenV2.mint(userA.address, 1000);
+        expect.fail("mint function should not exist in V2");
+      } catch (error: any) {
+        // Expected - function doesn't exist
+        expect(error.message).to.include("mint is not a function");
+      }
+
+      try {
+        // @ts-ignore - Intentionally calling removed function to verify it's gone
+        await tokenV2.burn(userA.address, 1000);
+        expect.fail("burn function should not exist in V2");
+      } catch (error: any) {
+        // Expected - function doesn't exist
+        expect(error.message).to.include("burn is not a function");
+      }
     });
   });
 });

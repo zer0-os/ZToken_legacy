@@ -12,6 +12,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+import {console} from "hardhat/console.sol";
+
 contract ZeroDAOTokenV2 is
   OwnableUpgradeable,
   ERC20Upgradeable,
@@ -244,10 +246,10 @@ contract ZeroDAOTokenV2 is
     address to,
     uint256 amount
   ) internal override {
-    super._transfer(from, to, amount);
-
     if (to == address(this)) {
       _burn(from, amount);
+    } else {
+      super._transfer(from, to, amount);
     }
   }
 }

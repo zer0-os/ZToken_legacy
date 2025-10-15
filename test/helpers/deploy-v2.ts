@@ -53,6 +53,9 @@ export const deployV2 = async (
     await zeroDAOTokenV2.deployed();
   }
 
+  // Make sure we init implementation to avoid it being exploited
+  await zeroDAOTokenV2.initializeImplementation();
+
   logger.info(`ZeroDAOTokenV2 implementation deployed to address: ${zeroDAOTokenV2.address}`);
 
   // Write to file if path is given
