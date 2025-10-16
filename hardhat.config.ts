@@ -90,7 +90,6 @@ const config: HardhatUserConfig = {
           browserURL: "https://sepolia.etherscan.io"
         }
       }
-
     ]
   },
 };

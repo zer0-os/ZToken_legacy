@@ -34,11 +34,14 @@ const main = async () => {
 
   // Confirm the public `mint` is no longer on the contract by trying to call it and logging the failure
   try {
-    await deployer.sendTransaction({
+    const tx = await deployer.sendTransaction({
       to: tokenAddress,
       data: mintData,
-      value: 0
+      value: 0,
+      gasLimit: 500000
     });
+
+    await tx.wait(3);
   } catch (e) {
     const outputObj = {
       message: (e as Error).message
@@ -48,11 +51,13 @@ const main = async () => {
 
   // Confirm the public `burn` is no longer on the contract by trying to call it and logging the failure
   try {
-    await deployer.sendTransaction({
+    const tx = await deployer.sendTransaction({
       to: tokenAddress,
       data: burnData,
       value: 0
     });
+
+    await tx.wait(3);
   } catch (e) {
     const outputObj = {
       message: (e as Error).message

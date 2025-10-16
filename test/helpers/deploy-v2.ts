@@ -60,10 +60,26 @@ export const deployV2 = async (
 
   // Write to file if path is given
   if (outputFile) {
+    let verificationMessage = "";
+    // Verify newly deployed implementation
+    try {
+      await hre.run(
+        "verify:verify",
+        {
+          address: zeroDAOTokenV2.address
+        }
+      );
+    } catch (e) {
+      // The verification may show an error but still work
+      // We save this to file in case
+      verificationMessage = (e as Error).message;
+    }
+
     const obj = {
       network: hre.network.name,
       zeroDAOTokenV2Implementation: zeroDAOTokenV2.address,
-      deployedAt: new Date().toISOString()
+      deployedAt: new Date().toISOString(),
+      verificationMessage
     };
 
     fs.writeFileSync(outputFile, JSON.stringify(obj, undefined, 2));

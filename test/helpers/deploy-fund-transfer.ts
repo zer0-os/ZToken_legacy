@@ -77,7 +77,14 @@ export const deployFundTransfer = async (
     await zeroDAOTokenV1.deployed();
   }
 
+  // Before transferring ownership we call mint to give creator funds
+  await zeroDAOTokenV1.connect(creator).mint(
+    creator.address,
+    hre.ethers.utils.parseEther("100000")
+  );
+
   logger.info(TRANSFERRING_OWNERSHIP_MESSAGE);
+
   // Transfer ownership of contract itself
   await zeroDAOTokenV1["transferOwnership(address)"](newOwnerAddress);
 

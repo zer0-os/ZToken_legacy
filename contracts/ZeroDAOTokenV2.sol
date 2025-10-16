@@ -115,10 +115,7 @@ contract ZeroDAOTokenV2 is
       address(token) != address(0),
       "zDAOToken: Token address cannot be zero"
     );
-    require(
-      address(token) != address(this),
-      "zDAOToken: Token address cannot be this token"
-    );
+
     require(to != address(0), "zDAOToken: Recipient address cannot be zero");
 
     uint256 withdrawAmount;
@@ -126,7 +123,6 @@ contract ZeroDAOTokenV2 is
       // If amount is 0, withdraw all available tokens
       withdrawAmount = token.balanceOf(address(this));
     } else {
-      // Otherwise, ensure the requested amount doesn't exceed the contract's balance
       withdrawAmount = amount;
     }
 
