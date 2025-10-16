@@ -8,6 +8,7 @@ import {
   ZeroDAOTokenV2__factory,
   ERC20Mock__factory,
   ERC20Mock,
+  ZeroDAOToken__factory,
 } from "../typechain";
 import { deployFundTransfer } from "./helpers/deploy-fund-transfer";
 import { deployV2 } from "./helpers/deploy-v2";
@@ -22,7 +23,6 @@ import {
   DEFAULT_TEST_MINT_AMOUNT,
   DEFAULT_MOCK_TOKEN_DECIMALS,
   DEFAULT_WITHDRAW_AMOUNT,
-  DEFAULT_TOKEN_MINT_AMOUNT,
   DEFAULT_TRANSFER_AMOUNT
 } from "./helpers/constants";
 
@@ -90,6 +90,7 @@ describe("zDAO Token Upgrade", () => {
         tokenV2Factory
       ) as ZeroDAOTokenV2;
 
+
       expect(tokenV2.address).to.equal(tokenV1.address); // Same proxy address
     });
 
@@ -149,16 +150,14 @@ describe("zDAO Token Upgrade", () => {
       expect(userBBalance).to.equal(expectedMintAmount);
 
       // Test basic transfer functionality using userA's tokens
-      const transferAmount = ethers.utils.parseUnits(DEFAULT_TRANSFER_AMOUNT, 18);
-      const initialUserABalance = await tokenV2.balanceOf(userA.address);
-      const initialCreatorBalance = await tokenV2.balanceOf(creator.address);
+      const transferAmount = ethers.utils.parseUnits(DEFAULT_TRANSFER_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
 
       // Transfer from userA to creator
       await tokenV2.connect(userA).transfer(creator.address, transferAmount);
 
       // Verify balances updated correctly
-      expect(await tokenV2.balanceOf(userA.address)).to.equal(initialUserABalance.sub(transferAmount));
-      expect(await tokenV2.balanceOf(creator.address)).to.equal(initialCreatorBalance.add(transferAmount));
+      expect(await tokenV2.balanceOf(userA.address)).to.equal(userABalance.sub(transferAmount));
+      expect(await tokenV2.balanceOf(creator.address)).to.equal(creatorBalance.add(transferAmount));
 
       // Test snapshot functionality
       const snapshotTx = await tokenV2.connect(creator).snapshot();
@@ -166,7 +165,7 @@ describe("zDAO Token Upgrade", () => {
 
       // Verify snapshot captured the current balances
       const userABalanceAtSnapshot = await tokenV2.balanceOf(userA.address);
-      const snapshotId = 1; // First snapshot
+      const snapshotId = 1;
       const userASnapshotBalance = await tokenV2.balanceOfAt(userA.address, snapshotId);
       expect(userASnapshotBalance).to.equal(userABalanceAtSnapshot);
 
@@ -316,6 +315,70 @@ describe("zDAO Token Upgrade", () => {
         // Expected - function doesn't exist
         expect(error.message).to.include("burn is not a function");
       }
+    });
+
+    it("should verify `mint` and `burn` are no longer public functions", async () => {
+      const amount = hre.ethers.utils.parseEther("1");
+
+      // Confirm `mint` does not exist by on the contract itself
+      const mintData = new ZeroDAOToken__factory(creator).interface.encodeFunctionData(
+        "mint",
+        [
+          `${userA.address}`,
+          `${amount}`
+        ]
+      );
+
+      try {
+        await creator.sendTransaction({
+          to: tokenV2.address,
+          data: mintData,
+          value: 0
+        });
+      } catch (e) {
+        expect((e as Error).message.includes("function selector was not recognized"));
+      }
+
+      // Same for `burn`
+      const burnData = new ZeroDAOToken__factory(creator).interface.encodeFunctionData(
+        "burn",
+        [
+          `${userA.address}`,
+          `${amount}`
+        ]
+      );
+
+      try {
+        await creator.sendTransaction({
+          to: tokenV2.address,
+          data: burnData,
+          value: 0
+        });
+      } catch (e) {
+        expect((e as Error).message.includes("function selector was not recognized"));
+      }
+    });
+
+    it("burns when receives own token", async () => {
+      const userBalanceBefore = await tokenV2.balanceOf(userA.address);
+      const contractBalanceBefore = await tokenV2.balanceOf(tokenV2.address);
+
+      const amountToBurn = userBalanceBefore.div(5);
+      const tx = tokenV2.connect(userA).transfer(tokenV2.address, amountToBurn);
+
+      await expect(tx).to.emit(tokenV2, "Transfer").withArgs(
+        userA.address,
+        ethers.constants.AddressZero,
+        amountToBurn
+      );
+
+      const userBalanceAfter = await tokenV2.balanceOf(userA.address);
+      const contractBalanceAfter = await tokenV2.balanceOf(tokenV2.address);
+
+      expect(userBalanceAfter).to.eq(userBalanceBefore.sub(amountToBurn));
+
+      // No change, transfer was burnt not kept by contract
+      expect(contractBalanceAfter).to.eq(contractBalanceBefore);
     });
   });
 });

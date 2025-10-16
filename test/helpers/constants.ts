@@ -9,12 +9,12 @@ export const DEFAULT_TEST_MOCK_TOKEN_NAME = "Test Mock Token";
 export const DEFAULT_TEST_MOCK_TOKEN_SYMBOL = "TMOCK";
 
 // Default Amounts
-export const DEFAULT_MOCK_TOKEN_AMOUNT = "500000"; // 500,000 with 6 decimals
-export const DEFAULT_MOCK_TOKEN_DECIMALS = 6;
-export const DEFAULT_TEST_MINT_AMOUNT = "100000"; // 100,000 with 6 decimals
-export const DEFAULT_WITHDRAW_AMOUNT = "50000"; // 50,000 with 6 decimals
-export const DEFAULT_TOKEN_MINT_AMOUNT = "1000"; // 1,000 tokens (18 decimals)
-export const DEFAULT_TRANSFER_AMOUNT = "100"; // 100 tokens (18 decimals)
+export const DEFAULT_MOCK_TOKEN_DECIMALS = "6";
+export const DEFAULT_MOCK_TOKEN_AMOUNT = "500000";
+export const DEFAULT_TEST_MINT_AMOUNT = "100000";
+export const DEFAULT_WITHDRAW_AMOUNT = "50000";
+export const DEFAULT_TOKEN_MINT_AMOUNT = "1000";
+export const DEFAULT_TRANSFER_AMOUNT = "100";
 
 // Network Constants
 export const HARDHAT_NETWORK_NAME = "hardhat";
