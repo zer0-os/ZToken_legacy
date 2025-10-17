@@ -1,10 +1,18 @@
-import { getStorageLayout, getUnlinkedBytecode, getVersion, StorageLayout } from '@openzeppelin/upgrades-core';
+import {
+  getStorageLayout,
+  getUnlinkedBytecode,
+  getVersion,
+  StorageLayout,
+} from "@openzeppelin/upgrades-core";
 import { readValidations } from "@openzeppelin/hardhat-upgrades/dist/validations";
 import { BigNumber, Contract, ContractFactory } from "ethers";
 import * as hre from "hardhat";
 
-
-export type ContractStorageElement = string | number | BigNumber | Array<object>;
+export type ContractStorageElement =
+  | string
+  | number
+  | BigNumber
+  | Array<{}>;
 export type ContractStorageData = Array<{
   [label: string]: ContractStorageElement;
 }>;
@@ -14,12 +22,14 @@ export type ContractStorageDiff = Array<{
   valueAfter: ContractStorageElement;
 }>;
 
-
 export const getContractStorageLayout = async (
   contractFactory: ContractFactory
 ): Promise<StorageLayout> => {
   const validations = await readValidations(hre);
-  const unlinkedBytecode = getUnlinkedBytecode(validations, contractFactory.bytecode);
+  const unlinkedBytecode = getUnlinkedBytecode(
+    validations,
+    contractFactory.bytecode
+  );
   const version = getVersion(unlinkedBytecode, contractFactory.bytecode);
 
   return getStorageLayout(validations, version);
@@ -38,17 +48,15 @@ export const readContractStorage = async (
     ): Promise<ContractStorageData> => {
       const newAcc = await acc;
 
-      if (type.includes("mapping") || type.includes("array"))
-        return newAcc; // Skip mappings and arrays
+      if (type.includes("mapping") || type.includes("array")) return newAcc; // Skip mappings and arrays
 
       try {
         const newLabel = label.startsWith("_") ? label.slice(1) : label;
-        const value = await contractObj[(newLabel as keyof Contract)]();
+        const value = await contractObj[newLabel as keyof Contract]();
 
         newAcc.push({ [label]: value });
       } catch (e: unknown) {
-        if ((e as Error).message.includes("is not a function"))
-          return newAcc; // Skip non-public variables
+        if ((e as Error).message.includes("is not a function")) return newAcc; // Skip non-public variables
 
         console.log(`Error on LABEL ${label}: ${(e as Error).message}`);
       }
@@ -59,10 +67,9 @@ export const readContractStorage = async (
   );
 };
 
-
 export const compareStorageData = (
   dataBefore: ContractStorageData,
-  dataAfter: ContractStorageData,
+  dataAfter: ContractStorageData
 ) => {
   const storageDiff = dataAfter.reduce(
     (acc: ContractStorageDiff | undefined, stateVar, idx) => {
@@ -71,7 +78,8 @@ export const compareStorageData = (
       if (!dataBefore[idx]) return acc;
 
       const equals = BigNumber.isBigNumber(value)
-        ? (value as BigNumber).eq((dataBefore[idx][key] as BigNumber)) : value === dataBefore[idx][key];
+        ? (value as BigNumber).eq(dataBefore[idx][key] as BigNumber)
+        : value === dataBefore[idx][key];
 
       if (!equals) {
         console.error(
@@ -79,7 +87,7 @@ export const compareStorageData = (
         );
 
         return [
-          ...acc as ContractStorageDiff,
+          ...(acc as ContractStorageDiff),
           {
             key,
             valueBefore: dataBefore[idx][key],
@@ -89,7 +97,8 @@ export const compareStorageData = (
       } else {
         return acc;
       }
-    }, []
+    },
+    []
   );
 
   if (storageDiff && storageDiff.length > 0) {

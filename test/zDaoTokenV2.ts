@@ -32,13 +32,10 @@ describe("zDAOTokenV2 Test", () => {
   before(async () => {
     [creator, userA, userB] = await ethers.getSigners();
 
-    zeroDAOTokenV2 = await hre.upgrades.deployProxy(
+    zeroDAOTokenV2 = (await hre.upgrades.deployProxy(
       new ZeroDAOTokenV2__factory(creator),
-      [
-        "Test WILD",
-        "tWILD"
-      ]
-    ) as ZeroDAOTokenV2;
+      ["Test WILD", "tWILD"]
+    )) as ZeroDAOTokenV2;
 
     const mockTokenFactory = new ERC20Mock__factory(creator);
     mockToken = await mockTokenFactory.deploy("Test Mock Token", "TMT");
@@ -51,15 +48,15 @@ describe("zDAOTokenV2 Test", () => {
   describe("#withdrawERC20", () => {
     it("calls withdrawERC20 to withdraw a specific amount to an EOA", async () => {
       const userBalanceBefore = await mockToken.balanceOf(userA.address);
-      const contractBalanceBefore = await mockToken.balanceOf(zeroDAOTokenV2.address);
+      const contractBalanceBefore = await mockToken.balanceOf(
+        zeroDAOTokenV2.address
+      );
 
       // Call withdrawERC20 function - use creator since they own the contract
       // Use exact amount the contract has on it as a parameter
-      const tx = zeroDAOTokenV2.connect(creator).withdrawERC20(
-        mockToken.address,
-        userA.address,
-        contractBalanceBefore
-      );
+      const tx = zeroDAOTokenV2
+        .connect(creator)
+        .withdrawERC20(mockToken.address, userA.address, contractBalanceBefore);
 
       // Verify the transaction emitted the correct event
       await expect(tx)
@@ -67,28 +64,36 @@ describe("zDAOTokenV2 Test", () => {
         .withArgs(mockToken.address, userA.address, testTokenAmount);
 
       // Check contract balance (should be 0)
-      const contractBalanceAfter = await mockToken.balanceOf(zeroDAOTokenV2.address);
-      expect(contractBalanceAfter).to.eq(contractBalanceBefore.sub(testTokenAmount));
+      const contractBalanceAfter = await mockToken.balanceOf(
+        zeroDAOTokenV2.address
+      );
+      expect(contractBalanceAfter).to.eq(
+        contractBalanceBefore.sub(testTokenAmount)
+      );
 
       // Check recipient balance (should have received the tokens)
       const finalRecipientBalance = await mockToken.balanceOf(userA.address);
-      expect(finalRecipientBalance).to.eq(userBalanceBefore.add(testTokenAmount));
+      expect(finalRecipientBalance).to.eq(
+        userBalanceBefore.add(testTokenAmount)
+      );
     });
 
     it("tests withdrawERC20 with amount 0 (withdraw all)", async () => {
       // First, give the contract some more tokens
       const additionalAmount = ethers.utils.parseUnits("100000", decimals);
-      await mockToken.connect(creator).mint(zeroDAOTokenV2.address, additionalAmount);
+      await mockToken
+        .connect(creator)
+        .mint(zeroDAOTokenV2.address, additionalAmount);
 
-      const contractBalanceBefore = await mockToken.balanceOf(zeroDAOTokenV2.address);
+      const contractBalanceBefore = await mockToken.balanceOf(
+        zeroDAOTokenV2.address
+      );
       const userBalanceBefore = await mockToken.balanceOf(userB.address);
 
       // Call withdrawERC20 with amount 0 (withdraw all)
-      const tx = zeroDAOTokenV2.connect(creator).withdrawERC20(
-        mockToken.address,
-        userB.address,
-        0
-      );
+      const tx = zeroDAOTokenV2
+        .connect(creator)
+        .withdrawERC20(mockToken.address, userB.address, 0);
 
       // Verify the transaction emitted the correct event with the full amount
       await expect(tx)
@@ -96,63 +101,67 @@ describe("zDAOTokenV2 Test", () => {
         .withArgs(mockToken.address, userB.address, additionalAmount);
 
       // Check final balances
-      const contractBalanceAfter = await mockToken.balanceOf(zeroDAOTokenV2.address);
+      const contractBalanceAfter = await mockToken.balanceOf(
+        zeroDAOTokenV2.address
+      );
       const userBalanceAfter = await mockToken.balanceOf(userB.address);
 
       // Confirm it drained the contract
       expect(contractBalanceAfter).to.eq(0);
-      expect(contractBalanceAfter).to.eq(contractBalanceBefore.sub(additionalAmount));
+      expect(contractBalanceAfter).to.eq(
+        contractBalanceBefore.sub(additionalAmount)
+      );
       expect(userBalanceAfter).to.eq(userBalanceBefore.add(additionalAmount));
     });
 
     it("Fails when called by non-owner", async () => {
       // Give the contract some tokens first
-      await mockToken.connect(creator).mint(zeroDAOTokenV2.address, testTokenAmount);
+      await mockToken
+        .connect(creator)
+        .mint(zeroDAOTokenV2.address, testTokenAmount);
 
       // Try to call withdrawERC20 from non-owner account (creator is not the owner, creator is)
       await expect(
-        zeroDAOTokenV2.connect(userA).withdrawERC20(
-          mockToken.address,
-          creator.address,
-          testTokenAmount
-        )
+        zeroDAOTokenV2
+          .connect(userA)
+          .withdrawERC20(mockToken.address, creator.address, testTokenAmount)
       ).to.be.revertedWith("Ownable: caller is not the owner");
     });
 
     it("Fails when token or recipient address is zero", async () => {
       // Test zero token address - use creator since they own the contract
       await expect(
-        zeroDAOTokenV2.connect(creator).withdrawERC20(
-          ethers.constants.AddressZero,
-          userA.address,
-          testTokenAmount
-        )
+        zeroDAOTokenV2
+          .connect(creator)
+          .withdrawERC20(
+            ethers.constants.AddressZero,
+            userA.address,
+            testTokenAmount
+          )
       ).to.be.revertedWith("zDAOToken: Token address cannot be zero");
 
       // Test zero recipient address - use creator since they own the contract
       await expect(
-        zeroDAOTokenV2.connect(creator).withdrawERC20(
-          mockToken.address,
-          ethers.constants.AddressZero,
-          testTokenAmount
-        )
+        zeroDAOTokenV2
+          .connect(creator)
+          .withdrawERC20(
+            mockToken.address,
+            ethers.constants.AddressZero,
+            testTokenAmount
+          )
       ).to.be.revertedWith("zDAOToken: Recipient address cannot be zero");
     });
 
     it("Fails when contract has insufficient token balance", async () => {
       // First, withdraw any remaining amount to ensure the following call fails correctly
-      await zeroDAOTokenV2.connect(creator).withdrawERC20(
-        mockToken.address,
-        creator.address,
-        0
-      );
+      await zeroDAOTokenV2
+        .connect(creator)
+        .withdrawERC20(mockToken.address, creator.address, 0);
 
       await expect(
-        zeroDAOTokenV2.connect(creator).withdrawERC20(
-          mockToken.address,
-          userA.address,
-          testTokenAmount
-        )
+        zeroDAOTokenV2
+          .connect(creator)
+          .withdrawERC20(mockToken.address, userA.address, testTokenAmount)
       ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
     });
   });
@@ -162,32 +171,28 @@ describe("zDAOTokenV2 Test", () => {
     let zeroDAOTokenV2: ZeroDAOTokenV2;
 
     before(async () => {
-      zeroDAOToken = await hre.upgrades.deployProxy(
+      zeroDAOToken = (await hre.upgrades.deployProxy(
         new ZeroDAOToken__factory(creator),
-        [
-          "TEST WILD",
-          "tWILD"
-        ]
-      ) as ZeroDAOToken;
+        ["TEST WILD", "tWILD"]
+      )) as ZeroDAOToken;
 
       // Give balance to creator with public mint
-      await zeroDAOToken.connect(creator).mint(
-        userA.address,
-        testTokenAmount
-      );
+      await zeroDAOToken.connect(creator).mint(userA.address, testTokenAmount);
 
       // Then upgrade to have contract with internal burn on overridden `_transfer`
-      zeroDAOTokenV2 = await hre.upgrades.upgradeProxy(
+      zeroDAOTokenV2 = (await hre.upgrades.upgradeProxy(
         zeroDAOToken.address,
-        new ZeroDAOTokenV2__factory(creator),
-      ) as ZeroDAOTokenV2;
+        new ZeroDAOTokenV2__factory(creator)
+      )) as ZeroDAOTokenV2;
     });
 
     it("does not burn tokens on transfer to non-contract addresses", async () => {
       const userABalanceBefore = await zeroDAOTokenV2.balanceOf(userA.address);
       const userBBalanceBefore = await zeroDAOTokenV2.balanceOf(userB.address);
 
-      const tx = await zeroDAOTokenV2.connect(userA).transfer(userB.address, testTokenAmount);
+      const tx = await zeroDAOTokenV2
+        .connect(userA)
+        .transfer(userB.address, testTokenAmount);
       await tx.wait();
 
       const userABalanceAfter = await zeroDAOTokenV2.balanceOf(userA.address);
@@ -199,16 +204,22 @@ describe("zDAOTokenV2 Test", () => {
     });
 
     it("burns tokens on transfer to contract", async () => {
-      const contractBalanceBefore = await zeroDAOTokenV2.balanceOf(userA.address);
+      const contractBalanceBefore = await zeroDAOTokenV2.balanceOf(
+        userA.address
+      );
       const userBBalanceBefore = await zeroDAOTokenV2.balanceOf(userB.address);
 
       // console.log("v1Address: ", zeroDAOToken.address);
       // console.log("v2Address: ", zeroDAOTokenV2.address);
       // console.log("userB: ", userB.address)
       // Transfer tokens to contract directly
-      await zeroDAOTokenV2.connect(userB).transfer(zeroDAOTokenV2.address, testTokenAmount);
+      await zeroDAOTokenV2
+        .connect(userB)
+        .transfer(zeroDAOTokenV2.address, testTokenAmount);
 
-      const contractBalanceAfter = await zeroDAOTokenV2.balanceOf(userA.address);
+      const contractBalanceAfter = await zeroDAOTokenV2.balanceOf(
+        userA.address
+      );
       const userBBalanceAfter = await zeroDAOTokenV2.balanceOf(userB.address);
 
       // Amount was not transferred to contract, it was burned

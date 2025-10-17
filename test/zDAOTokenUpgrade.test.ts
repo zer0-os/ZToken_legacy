@@ -23,7 +23,7 @@ import {
   DEFAULT_TEST_MINT_AMOUNT,
   DEFAULT_MOCK_TOKEN_DECIMALS,
   DEFAULT_WITHDRAW_AMOUNT,
-  DEFAULT_TRANSFER_AMOUNT
+  DEFAULT_TRANSFER_AMOUNT,
 } from "./helpers/constants";
 
 describe("zDAO Token Upgrade", () => {
@@ -53,10 +53,16 @@ describe("zDAO Token Upgrade", () => {
       // We need to find that mock token address from the deployment
       // For now, let's create our own mock token for testing the withdrawERC20 function
       const mockTokenFactory = new ERC20Mock__factory(creator);
-      mockToken = await mockTokenFactory.deploy(DEFAULT_TEST_MOCK_TOKEN_NAME, DEFAULT_TEST_MOCK_TOKEN_SYMBOL);
+      mockToken = await mockTokenFactory.deploy(
+        DEFAULT_TEST_MOCK_TOKEN_NAME,
+        DEFAULT_TEST_MOCK_TOKEN_SYMBOL
+      );
 
       // Mint some mock tokens to the V1 contract for testing withdrawERC20
-      const mintAmount = ethers.utils.parseUnits(DEFAULT_TEST_MINT_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
+      const mintAmount = ethers.utils.parseUnits(
+        DEFAULT_TEST_MINT_AMOUNT,
+        DEFAULT_MOCK_TOKEN_DECIMALS
+      );
       await mockToken.mint(tokenV1.address, mintAmount);
 
       // Fund users for later when public `mint` and `burn` functions are removed
@@ -80,16 +86,19 @@ describe("zDAO Token Upgrade", () => {
       const accounts = await hre.ethers.getSigners();
 
       // Find the account that matches the proxy admin owner
-      upgrader = accounts.find(account => account.address.toLowerCase() === proxyAdminOwner.toLowerCase()) || creator;
+      upgrader =
+        accounts.find(
+          (account) =>
+            account.address.toLowerCase() === proxyAdminOwner.toLowerCase()
+        ) || creator;
 
       // Upgrade from v1 to v2 using
       const tokenV2Factory = new ZeroDAOTokenV2__factory(upgrader);
 
-      tokenV2 = await hre.upgrades.upgradeProxy(
+      tokenV2 = (await hre.upgrades.upgradeProxy(
         tokenV1.address,
         tokenV2Factory
-      ) as ZeroDAOTokenV2;
-
+      )) as ZeroDAOTokenV2;
 
       expect(tokenV2.address).to.equal(tokenV1.address); // Same proxy address
     });
@@ -109,15 +118,16 @@ describe("zDAO Token Upgrade", () => {
       const creatorBalance = await mockToken.balanceOf(creator.address);
 
       // Define withdrawal amount
-      const withdrawAmount = ethers.utils.parseUnits(DEFAULT_WITHDRAW_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
+      const withdrawAmount = ethers.utils.parseUnits(
+        DEFAULT_WITHDRAW_AMOUNT,
+        DEFAULT_MOCK_TOKEN_DECIMALS
+      );
       expect(withdrawAmount).to.be.lte(contractBalanceBefore);
 
       // Call withdrawERC20 function as the token owner
-      const tx = await tokenV2.connect(creator).withdrawERC20(
-        mockToken.address,
-        creator.address,
-        withdrawAmount
-      );
+      const tx = await tokenV2
+        .connect(creator)
+        .withdrawERC20(mockToken.address, creator.address, withdrawAmount);
 
       // Verify the transaction was successful
       await tx.wait();
@@ -127,7 +137,9 @@ describe("zDAO Token Upgrade", () => {
       const creatorBalanceFinal = await mockToken.balanceOf(creator.address);
 
       // Verify the contract balance decreased by the withdrawal amount
-      expect(contractBalanceFinal).to.equal(contractBalanceBefore.sub(withdrawAmount));
+      expect(contractBalanceFinal).to.equal(
+        contractBalanceBefore.sub(withdrawAmount)
+      );
 
       // Verify the recipient balance increased by the withdrawal amount
       expect(creatorBalanceFinal).to.equal(creatorBalance.add(withdrawAmount));
@@ -145,19 +157,29 @@ describe("zDAO Token Upgrade", () => {
       const userBBalance = await tokenV2.balanceOf(userB.address);
 
       // Verify that userA and userB have the expected token balances from pre-upgrade minting
-      const expectedMintAmount = ethers.utils.parseUnits(DEFAULT_TEST_MINT_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
+      const expectedMintAmount = ethers.utils.parseUnits(
+        DEFAULT_TEST_MINT_AMOUNT,
+        DEFAULT_MOCK_TOKEN_DECIMALS
+      );
       expect(userABalance).to.equal(expectedMintAmount);
       expect(userBBalance).to.equal(expectedMintAmount);
 
       // Test basic transfer functionality using userA's tokens
-      const transferAmount = ethers.utils.parseUnits(DEFAULT_TRANSFER_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
+      const transferAmount = ethers.utils.parseUnits(
+        DEFAULT_TRANSFER_AMOUNT,
+        DEFAULT_MOCK_TOKEN_DECIMALS
+      );
 
       // Transfer from userA to creator
       await tokenV2.connect(userA).transfer(creator.address, transferAmount);
 
       // Verify balances updated correctly
-      expect(await tokenV2.balanceOf(userA.address)).to.equal(userABalance.sub(transferAmount));
-      expect(await tokenV2.balanceOf(creator.address)).to.equal(creatorBalance.add(transferAmount));
+      expect(await tokenV2.balanceOf(userA.address)).to.equal(
+        userABalance.sub(transferAmount)
+      );
+      expect(await tokenV2.balanceOf(creator.address)).to.equal(
+        creatorBalance.add(transferAmount)
+      );
 
       // Test snapshot functionality
       const snapshotTx = await tokenV2.connect(creator).snapshot();
@@ -166,7 +188,10 @@ describe("zDAO Token Upgrade", () => {
       // Verify snapshot captured the current balances
       const userABalanceAtSnapshot = await tokenV2.balanceOf(userA.address);
       const snapshotId = 1;
-      const userASnapshotBalance = await tokenV2.balanceOfAt(userA.address, snapshotId);
+      const userASnapshotBalance = await tokenV2.balanceOfAt(
+        userA.address,
+        snapshotId
+      );
       expect(userASnapshotBalance).to.equal(userABalanceAtSnapshot);
 
       // Test snapshotter authorization functionality
@@ -175,16 +200,24 @@ describe("zDAO Token Upgrade", () => {
       );
 
       // Authorize userA to snapshot
-      const authTx = await tokenV2.connect(creator).authorizeSnapshotter(userA.address);
-      await expect(authTx).to.emit(tokenV2, "AuthorizedSnapshotter").withArgs(userA.address);
+      const authTx = await tokenV2
+        .connect(creator)
+        .authorizeSnapshotter(userA.address);
+      await expect(authTx)
+        .to.emit(tokenV2, "AuthorizedSnapshotter")
+        .withArgs(userA.address);
 
       // Now userA should be able to snapshot
       const userASnapshotTx = await tokenV2.connect(userA).snapshot();
       await expect(userASnapshotTx).to.emit(tokenV2, "Snapshot");
 
       // Deauthorize userA
-      const deauthTx = await tokenV2.connect(creator).deauthorizeSnapshotter(userA.address);
-      await expect(deauthTx).to.emit(tokenV2, "DeauthorizedSnapshotter").withArgs(userA.address);
+      const deauthTx = await tokenV2
+        .connect(creator)
+        .deauthorizeSnapshotter(userA.address);
+      await expect(deauthTx)
+        .to.emit(tokenV2, "DeauthorizedSnapshotter")
+        .withArgs(userA.address);
 
       // userA should no longer be able to snapshot
       await expect(tokenV2.connect(userA).snapshot()).to.be.revertedWith(
@@ -206,12 +239,18 @@ describe("zDAO Token Upgrade", () => {
 
       // Test that transfers work again after unpausing
       const userBBalanceBeforeTransfer = await tokenV2.balanceOf(userB.address);
-      const creatorBalanceBeforeTransfer = await tokenV2.balanceOf(creator.address);
+      const creatorBalanceBeforeTransfer = await tokenV2.balanceOf(
+        creator.address
+      );
 
       await tokenV2.connect(userB).transfer(creator.address, transferAmount);
 
-      expect(await tokenV2.balanceOf(userB.address)).to.equal(userBBalanceBeforeTransfer.sub(transferAmount));
-      expect(await tokenV2.balanceOf(creator.address)).to.equal(creatorBalanceBeforeTransfer.add(transferAmount));
+      expect(await tokenV2.balanceOf(userB.address)).to.equal(
+        userBBalanceBeforeTransfer.sub(transferAmount)
+      );
+      expect(await tokenV2.balanceOf(creator.address)).to.equal(
+        creatorBalanceBeforeTransfer.add(transferAmount)
+      );
 
       // Test bulk transfer functionality using creator's accumulated tokens
       const currentCreatorBalance = await tokenV2.balanceOf(creator.address);
@@ -219,10 +258,16 @@ describe("zDAO Token Upgrade", () => {
         const bulkTransferAmount = ethers.utils.parseUnits("50", 18);
         const recipients = [userA.address, userB.address];
 
-        const initialUserABalanceForBulk = await tokenV2.balanceOf(userA.address);
-        const initialUserBBalanceForBulk = await tokenV2.balanceOf(userB.address);
+        const initialUserABalanceForBulk = await tokenV2.balanceOf(
+          userA.address
+        );
+        const initialUserBBalanceForBulk = await tokenV2.balanceOf(
+          userB.address
+        );
 
-        const bulkTx = await tokenV2.connect(creator).transferBulk(recipients, bulkTransferAmount);
+        const bulkTx = await tokenV2
+          .connect(creator)
+          .transferBulk(recipients, bulkTransferAmount);
 
         // Verify events were emitted
         await expect(bulkTx)
@@ -233,8 +278,12 @@ describe("zDAO Token Upgrade", () => {
           .withArgs(creator.address, userB.address, bulkTransferAmount);
 
         // Verify balances
-        expect(await tokenV2.balanceOf(userA.address)).to.equal(initialUserABalanceForBulk.add(bulkTransferAmount));
-        expect(await tokenV2.balanceOf(userB.address)).to.equal(initialUserBBalanceForBulk.add(bulkTransferAmount));
+        expect(await tokenV2.balanceOf(userA.address)).to.equal(
+          initialUserABalanceForBulk.add(bulkTransferAmount)
+        );
+        expect(await tokenV2.balanceOf(userB.address)).to.equal(
+          initialUserBBalanceForBulk.add(bulkTransferAmount)
+        );
       }
 
       // Test transferFromBulk functionality with approval
@@ -247,16 +296,20 @@ describe("zDAO Token Upgrade", () => {
         // userA approves userB to spend tokens
         await tokenV2.connect(userA).approve(userB.address, totalAmount);
 
-        const initialCreatorBalanceForBulkFrom = await tokenV2.balanceOf(creator.address);
-        const initialUserBBalanceForBulkFrom = await tokenV2.balanceOf(userB.address);
-        const initialUserABalanceForBulkFrom = await tokenV2.balanceOf(userA.address);
+        const initialCreatorBalanceForBulkFrom = await tokenV2.balanceOf(
+          creator.address
+        );
+        const initialUserBBalanceForBulkFrom = await tokenV2.balanceOf(
+          userB.address
+        );
+        const initialUserABalanceForBulkFrom = await tokenV2.balanceOf(
+          userA.address
+        );
 
         // userB calls transferFromBulk to transfer userA's tokens
-        const bulkFromTx = await tokenV2.connect(userB).transferFromBulk(
-          userA.address,
-          recipients,
-          bulkTransferAmount
-        );
+        const bulkFromTx = await tokenV2
+          .connect(userB)
+          .transferFromBulk(userA.address, recipients, bulkTransferAmount);
 
         // Verify events were emitted
         await expect(bulkFromTx)
@@ -267,9 +320,15 @@ describe("zDAO Token Upgrade", () => {
           .withArgs(userA.address, userB.address, bulkTransferAmount);
 
         // Verify balances
-        expect(await tokenV2.balanceOf(userA.address)).to.equal(initialUserABalanceForBulkFrom.sub(totalAmount));
-        expect(await tokenV2.balanceOf(creator.address)).to.equal(initialCreatorBalanceForBulkFrom.add(bulkTransferAmount));
-        expect(await tokenV2.balanceOf(userB.address)).to.equal(initialUserBBalanceForBulkFrom.add(bulkTransferAmount));
+        expect(await tokenV2.balanceOf(userA.address)).to.equal(
+          initialUserABalanceForBulkFrom.sub(totalAmount)
+        );
+        expect(await tokenV2.balanceOf(creator.address)).to.equal(
+          initialCreatorBalanceForBulkFrom.add(bulkTransferAmount)
+        );
+        expect(await tokenV2.balanceOf(userB.address)).to.equal(
+          initialUserBBalanceForBulkFrom.add(bulkTransferAmount)
+        );
       }
 
       // Test the new V2 burn-on-transfer-to-contract functionality
@@ -287,14 +346,20 @@ describe("zDAO Token Upgrade", () => {
         const totalSupplyAfter = await tokenV2.totalSupply();
 
         // Verify tokens were burned (not transferred to contract)
-        expect(userABalanceAfterBurn).to.equal(userABalanceBeforeBurn.sub(burnAmount));
+        expect(userABalanceAfterBurn).to.equal(
+          userABalanceBeforeBurn.sub(burnAmount)
+        );
         expect(contractBalance).to.equal(0); // Contract should have no tokens
         expect(totalSupplyAfter).to.equal(totalSupplyBefore.sub(burnAmount)); // Total supply decreased
       }
 
       // Test that non-owners cannot call owner-only functions
-      await expect(tokenV2.connect(userA).pause()).to.be.revertedWith("Ownable: caller is not the owner");
-      await expect(tokenV2.connect(userA).authorizeSnapshotter(userB.address)).to.be.revertedWith("Ownable: caller is not the owner");
+      await expect(tokenV2.connect(userA).pause()).to.be.revertedWith(
+        "Ownable: caller is not the owner"
+      );
+      await expect(
+        tokenV2.connect(userA).authorizeSnapshotter(userB.address)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
 
       // Verify that mint and burn functions no longer exist (should throw if called)
       // Note: These functions were removed in V2, so calling them should fail
@@ -321,41 +386,37 @@ describe("zDAO Token Upgrade", () => {
       const amount = hre.ethers.utils.parseEther("1");
 
       // Confirm `mint` does not exist by on the contract itself
-      const mintData = new ZeroDAOToken__factory(creator).interface.encodeFunctionData(
-        "mint",
-        [
-          `${userA.address}`,
-          `${amount}`
-        ]
-      );
+      const mintData = new ZeroDAOToken__factory(
+        creator
+      ).interface.encodeFunctionData("mint", [`${userA.address}`, `${amount}`]);
 
       try {
         await creator.sendTransaction({
           to: tokenV2.address,
           data: mintData,
-          value: 0
+          value: 0,
         });
       } catch (e) {
-        expect((e as Error).message.includes("function selector was not recognized"));
+        expect(
+          (e as Error).message.includes("function selector was not recognized")
+        );
       }
 
       // Same for `burn`
-      const burnData = new ZeroDAOToken__factory(creator).interface.encodeFunctionData(
-        "burn",
-        [
-          `${userA.address}`,
-          `${amount}`
-        ]
-      );
+      const burnData = new ZeroDAOToken__factory(
+        creator
+      ).interface.encodeFunctionData("burn", [`${userA.address}`, `${amount}`]);
 
       try {
         await creator.sendTransaction({
           to: tokenV2.address,
           data: burnData,
-          value: 0
+          value: 0,
         });
       } catch (e) {
-        expect((e as Error).message.includes("function selector was not recognized"));
+        expect(
+          (e as Error).message.includes("function selector was not recognized")
+        );
       }
     });
 
@@ -366,11 +427,9 @@ describe("zDAO Token Upgrade", () => {
       const amountToBurn = userBalanceBefore.div(5);
       const tx = tokenV2.connect(userA).transfer(tokenV2.address, amountToBurn);
 
-      await expect(tx).to.emit(tokenV2, "Transfer").withArgs(
-        userA.address,
-        ethers.constants.AddressZero,
-        amountToBurn
-      );
+      await expect(tx)
+        .to.emit(tokenV2, "Transfer")
+        .withArgs(userA.address, ethers.constants.AddressZero, amountToBurn);
 
       const userBalanceAfter = await tokenV2.balanceOf(userA.address);
       const contractBalanceAfter = await tokenV2.balanceOf(tokenV2.address);

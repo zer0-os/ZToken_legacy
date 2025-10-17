@@ -1,9 +1,13 @@
 import * as hre from "hardhat";
-import *  as fs from "fs";
+import * as fs from "fs";
 import { assert } from "console";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { getLogger } from "../../utilities";
-import { ZeroDAOToken, ZeroDAOToken__factory, ERC20Mock__factory } from "../../typechain";
+import {
+  ZeroDAOToken,
+  ZeroDAOToken__factory,
+  ERC20Mock__factory,
+} from "../../typechain";
 import {
   DEFAULT_ZERO_TOKEN_NAME,
   DEFAULT_ZERO_TOKEN_SYMBOL,
@@ -14,23 +18,23 @@ import {
   HARDHAT_NETWORK_NAME,
   DEPLOY_FUND_TRANSFER_LOGGER,
   TRANSFERRING_OWNERSHIP_MESSAGE,
-  OWNERSHIP_TRANSFERRED_MESSAGE
+  OWNERSHIP_TRANSFERRED_MESSAGE,
 } from "./constants";
 import { BigNumber } from "ethers";
 
 /**
  * Deploy V1 Token Contract with Mock Token Setup
- * 
+ *
  * This function handles the complete deployment and setup of the V1 ZeroDAOToken
  * contract along with a mock ERC20 token for testing purposes. It's designed to
  * create a complete testing environment for the upgrade process.
- * 
+ *
  * @param creator - The signer account that will deploy the contracts
  * @param outputFile - Optional path to save deployment details as JSON
  * @param amount - Optional amount of mock tokens to mint (defaults to 500,000 with 6 decimals)
- * 
+ *
  * @returns Promise<ZeroDAOToken> - The deployed ZeroDAOToken contract instance
- * 
+ *
  * Operations performed:
  * 1. Deploy ZeroDAOToken V1 as an upgradeable proxy
  * 2. Transfer ownership of the token contract to specified address
@@ -38,10 +42,10 @@ import { BigNumber } from "ethers";
  * 4. Deploy a mock ERC20 token for testing
  * 5. Mint mock tokens to the ZeroDAOToken contract
  * 6. Save deployment details to output file (if specified)
- * 
+ *
  * Environment Variables:
  * - OWNER_ADDRESS: Address to transfer ownership to (optional for hardhat)
- * 
+ *
  * @throws Error if OWNER_ADDRESS is not set for non-hardhat networks
  * @throws AssertionError if token minting fails
  */
@@ -50,7 +54,7 @@ export const deployFundTransfer = async (
   newOwnerAddress: string,
   outputFile?: string,
   amount?: number | BigNumber,
-  verbose: boolean = false
+  verbose = false
 ): Promise<ZeroDAOToken> => {
   const logger = getLogger(DEPLOY_FUND_TRANSFER_LOGGER);
   logger.state.isEnabled = verbose;
@@ -65,23 +69,19 @@ export const deployFundTransfer = async (
 
   // Deploy ZeroDaoTokenV1 and transfer ownership
   const factory = new ZeroDAOToken__factory(creator);
-  const zeroDAOTokenV1 = await hre.upgrades.deployProxy(
-    factory,
-    [
-      name,
-      symbol
-    ],
-  ) as ZeroDAOToken;
+  const zeroDAOTokenV1 = (await hre.upgrades.deployProxy(factory, [
+    name,
+    symbol,
+  ])) as ZeroDAOToken;
 
   if (hre.network.name !== HARDHAT_NETWORK_NAME) {
     await zeroDAOTokenV1.deployed();
   }
 
   // Before transferring ownership we call mint to give creator funds
-  await zeroDAOTokenV1.connect(creator).mint(
-    creator.address,
-    hre.ethers.utils.parseEther("100000")
-  );
+  await zeroDAOTokenV1
+    .connect(creator)
+    .mint(creator.address, hre.ethers.utils.parseEther("100000"));
 
   logger.info(TRANSFERRING_OWNERSHIP_MESSAGE);
 
@@ -115,8 +115,17 @@ export const deployFundTransfer = async (
 
   logger.info(`${mockName} deployed to address: ${mockToken.address}`);
 
-  const amountToUse = amount ? amount : hre.ethers.utils.parseUnits(DEFAULT_MOCK_TOKEN_AMOUNT, DEFAULT_MOCK_TOKEN_DECIMALS);
-  logger.info(`Minting ${amountToUse.toString()} of ${mockSymbol} to ${zeroDAOTokenV1.address}`);
+  const amountToUse = amount
+    ? amount
+    : hre.ethers.utils.parseUnits(
+        DEFAULT_MOCK_TOKEN_AMOUNT,
+        DEFAULT_MOCK_TOKEN_DECIMALS
+      );
+  logger.info(
+    `Minting ${amountToUse.toString()} of ${mockSymbol} to ${
+      zeroDAOTokenV1.address
+    }`
+  );
 
   const balanceBefore = await mockToken.balanceOf(zeroDAOTokenV1.address);
   logger.info(`Balance before minting: ${balanceBefore.toString()}`);
@@ -128,9 +137,16 @@ export const deployFundTransfer = async (
   logger.info(`Balance after minting: ${balanceAfter.toString()}`);
 
   // Confirm balance has changed correctly
-  assert(balanceAfter.eq(balanceBefore.add(amountToUse)), "Balance minting failed");
+  assert(
+    balanceAfter.eq(balanceBefore.add(amountToUse)),
+    "Balance minting failed"
+  );
 
-  logger.info(`Minting successful: ${amountToUse.toString()} of ${mockSymbol} to ${zeroDAOTokenV1.address}`);
+  logger.info(
+    `Minting successful: ${amountToUse.toString()} of ${mockSymbol} to ${
+      zeroDAOTokenV1.address
+    }`
+  );
 
   // Write to file if path specified
   if (outputFile) {
@@ -144,7 +160,7 @@ export const deployFundTransfer = async (
       proxyAdminOwner: await proxyAdmin.owner(), // Should be the same as newOwnerAddress
       mockToken: mockToken.address,
       mockTokenAmount: amountToUse.toString(),
-      deployedAt: new Date().toISOString()
+      deployedAt: new Date().toISOString(),
     };
 
     fs.writeFileSync(outputFile, JSON.stringify(obj, undefined, 2));
@@ -152,4 +168,4 @@ export const deployFundTransfer = async (
   }
 
   return zeroDAOTokenV1;
-}
+};
