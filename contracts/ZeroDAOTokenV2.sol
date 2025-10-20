@@ -48,24 +48,6 @@ contract ZeroDAOTokenV2 is
   }
 
   /**
-   * Mints new tokens.
-   * @param account the account to mint the tokens for
-   * @param amount the amount of tokens to mint.
-   */
-  function mint(address account, uint256 amount) external onlyOwner {
-    _mint(account, amount);
-  }
-
-  /**
-   * Burns tokens from an address.
-   * @param account the account to mint the tokens for
-   * @param amount the amount of tokens to mint.
-   */
-  function burn(address account, uint256 amount) external onlyOwner {
-    _burn(account, amount);
-  }
-
-  /**
    * Pauses the token contract preventing any token mint/transfer/burn operations.
    * Can only be called if the contract is unpaused.
    */
@@ -133,10 +115,7 @@ contract ZeroDAOTokenV2 is
       address(token) != address(0),
       "zDAOToken: Token address cannot be zero"
     );
-    require(
-      address(token) != address(this),
-      "zDAOToken: Token address cannot be this token"
-    );
+
     require(to != address(0), "zDAOToken: Recipient address cannot be zero");
 
     uint256 withdrawAmount;
@@ -144,7 +123,6 @@ contract ZeroDAOTokenV2 is
       // If amount is 0, withdraw all available tokens
       withdrawAmount = token.balanceOf(address(this));
     } else {
-      // Otherwise, ensure the requested amount doesn't exceed the contract's balance
       withdrawAmount = amount;
     }
 
@@ -255,5 +233,17 @@ contract ZeroDAOTokenV2 is
     )
   {
     super._beforeTokenTransfer(from, to, amount);
+  }
+
+  function _transfer(
+    address from,
+    address to,
+    uint256 amount
+  ) internal override {
+    if (to == address(this)) {
+      _burn(from, amount);
+    } else {
+      super._transfer(from, to, amount);
+    }
   }
 }

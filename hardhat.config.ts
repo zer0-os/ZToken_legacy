@@ -35,12 +35,11 @@ const config: HardhatUserConfig = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
-          }
-        }
+            runs: 200,
+          },
+        },
       },
-      { version: "0.6.0", settings: {} }
-
+      { version: "0.6.0", settings: {} },
     ],
   },
   paths: {
@@ -63,6 +62,11 @@ const config: HardhatUserConfig = {
     //   accounts: { mnemonic: process.env.TESTNET_MNEMONIC || "" },
     //   url: "https://rinkeby.infura.io/v3/77c3d733140f4c12a77699e24cb30c27",
     // },
+    mainnet: {
+      chainId: 1,
+      accounts: [`${process.env.MAINNET_PRIVATE_KEY}`],
+      url: `${process.env.MAINNET_RPC_URL}`,
+    },
     sepolia: {
       chainId: 11155111,
       accounts: [`${process.env.TESTNET_PRIVATE_KEY}`],
@@ -86,12 +90,11 @@ const config: HardhatUserConfig = {
         network: "sepolia",
         chainId: 11155111,
         urls: {
-          apiURL: "https://api-sepolia.etherscan.io/api",
-          browserURL: "https://sepolia.etherscan.io"
-        }
-      }
-
-    ]
+          apiURL: "https://api.etherscan.io/v2/api?chainid=11155111",
+          browserURL: "https://sepolia.etherscan.io",
+        },
+      },
+    ],
   },
 };
 export default config;

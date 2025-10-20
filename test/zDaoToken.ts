@@ -2,10 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import {
-  ZeroDAOToken,
-  ZeroDAOToken__factory,
-} from "../typechain";
+import { ZeroDAOToken, ZeroDAOToken__factory } from "../typechain";
 
 describe("zDAO Token", () => {
   let accounts: SignerWithAddress[];
